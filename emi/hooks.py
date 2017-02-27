@@ -110,4 +110,4 @@ app_license = "INDICTRANS"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "emi.event.get_events"
 # }
-
+fixtures = ["Web Form","Custom Field","Print Format","Property Setter","Letter Head"]

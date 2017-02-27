@@ -33,6 +33,11 @@ def get_data():
 				"name": "Sub Category",
 				"description": _("Sub Category")
 			},
+			{
+				"type":"doctype",
+				"name": "Vendor Evaluation",
+				"description": _("Vendor Evaluation")
+			},
 		]
 	},
 		
