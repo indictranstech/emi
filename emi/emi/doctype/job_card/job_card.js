@@ -1,32 +1,31 @@
 // Copyright (c) 2016, Indictranstech and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('Job Order', {
+frappe.ui.form.on('Job Card', {
 	refresh: function(frm) {
 		cur_frm.add_fetch('production_order', 'qty', 'quantity');	
 		cur_frm.add_fetch('production_order', 'production_item', 'item');
-	},
 
-
-
+	}
 });
+// Copyright (c) 2016, Indictranstech and contributors
+// For license information, please see license.txt
+
 
 frappe.ui.form.on('Job Order Detail',{
 	completed_job:function(frm, cdt, cdn){
 		var d = locals[cdt][cdn]
-		console.log("d", d.completed_job,d.job_allocated && d.job_allocated < d.completed_job)
-		if(d.job_allocated <= d.completed_job ){
-			//console.log("please")
+		if(flt(d.job_allocated) < flt(d.completed_job) ){
 			d.completed_job=""
-			frappe.throw("Please check the assigned Quantity not Greater than the Completed Qty");
+			frappe.throw("Please check the Completed Quantity not Greater than the Assigned Qty");
 		}
 		
 	},
 	rejected_qty:function(frm, cdt, cdn){
 		var d = locals[cdt][cdn]
-		if(d.rejected_qty >= d.job_allocated){
+		if(flt(d.job_allocated) < flt(d.rejected_qty)){
 			d.rejected_qty=""
-			frappe.throw("Please check the assigned Quantity not Greater than the Completed Qty");
+			frappe.throw("Please check the Rejected Quantity not Greater than the Assigned Qty");
 		}
 	},
 
@@ -34,8 +33,11 @@ frappe.ui.form.on('Job Order Detail',{
 		var d = locals[cdt][cdn]
 		console.log(".....hi", d)
 		d.job_order_id = "Job-"+ d.idx
-		//job_order_id.refresh()
+		d.production_order=frm.doc.production_order
+		d.item=frm.doc.item
+		console.log(frm.doc)
 	}
+
 	/*refresh:function(frm,cdt,cdn)
 	{
 		cur_frm.fields_dict['production_order'].get_query = function(doc) {
@@ -55,3 +57,16 @@ cur_frm.fields_dict.job_order_detail.grid.get_field("production_order").get_quer
 		}
 	}
 }
+cur_frm.fields_dict["production_order"].get_query = function(doc) {
+	return {
+		filters: {
+			"status": 'In Process'
+		}
+	}
+}
+/*for (var i in cur_frm.doc.items) {
+	var item = cur_frm.doc.items[i];
+	console.log("hello",item)
+	frappe.model.set_value("job_order_detail", item.production_order, production_order);
+}*/
+cur_frm.add_fetch('employee_name', 'employee_name', 'employee')
