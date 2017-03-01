@@ -1,5 +1,5 @@
 {
- "add_total_row": 1, 
+ "add_total_row": 0, 
  "apply_user_permissions": 1, 
  "creation": "2017-02-24 17:29:54.644146", 
  "disabled": 0, 
@@ -7,12 +7,12 @@
  "doctype": "Report", 
  "idx": 0, 
  "is_standard": "Yes", 
- "modified": "2017-02-27 15:57:20.866424", 
+ "modified": "2017-03-01 14:37:58.783339", 
  "modified_by": "Administrator", 
  "module": "Emi", 
  "name": "Process wise Production Report", 
  "owner": "Administrator", 
- "query": "select \n\tproduction_order as \"Production Order:Link/Production Order:100\",\n\trejected_qty as \"Rejected Quantity:Data:120\",\nifnull(sum(case when process='Shearing' then completed_job else 0 end),0) as Shearing,\nifnull(sum(case when process='Welding' then completed_job else 0 end),0) as Welding,\nifnull(sum(case when process='Cutting' then completed_job else 0 end),0) as Cutting\nfrom `tabJob Order Detail` \ngroup by production_order;", 
+ "query": "select \n\tjo.production_order as \"Production Order:Link/Production Order:100\",\n\tifnull(jo.production_order_quantity,0) as \"Expected Qty:Data:120\",\n\tifnull(sum(case when jo.process='Shearing' then  jo.completed_job else 0 end),0) as Shearing,\n\tifnull(sum(case when  jo.process='Welding' then  jo.completed_job else 0 end),0) as Welding,\n\tifnull(sum(case when  jo.process='Cutting' then  jo.completed_job else 0 end),0) as Cutting,\n\tifnull(sum(case when  jo.process='Cleaning' then  jo.completed_job else 0 end),0) as Cleaning,\n\t\n\tifnull((select sum(pri.qty) from `tabPurchase Receipt Item` pri  \n\tinner join `tabPurchase Receipt` pr on pri.parent=pr.name \nwhere \t\n\tjo.production_order=pr.production_order \n\tand pr.type_of_sub_contract='Hot Dip Galvanizing'),0) as Hot_Dip,\n\tifnull((select sum(pri.qty) from `tabPurchase Receipt Item` pri  \n\tinner join `tabPurchase Receipt` pr on pri.parent=pr.name \nwhere\n\tjo.production_order=pr.production_order \n\tand pr.type_of_sub_contract='Powder Coating'),0) as Powder,\n\tifnull((select sum(pri.qty) from `tabPurchase Receipt Item` pri \n\tinner join `tabPurchase Receipt` pr on pri.parent=pr.name \n\twhere\n\tjo.production_order=pr.production_order \n\tand pr.type_of_sub_contract='Weight Coating'),0) as Weight,\n\tifnull(sum(case when  jo.process='Final Inspection' then  jo.completed_job else 0 end),0) as Final_Inspection,\n\tjo.rejected_qty as \"Rejected Quantity:Data:120\"\nfrom `tabJob Order Detail` jo \ngroup by  jo.production_order;\n\n\n\n", 
  "ref_doctype": "Job Card", 
  "report_name": "Process wise Production Report", 
  "report_type": "Query Report"

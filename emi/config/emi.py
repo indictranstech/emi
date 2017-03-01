@@ -38,6 +38,11 @@ def get_data():
 				"name": "Vendor Evaluation",
 				"description": _("Vendor Evaluation")
 			},
+			{
+				"type":"doctype",
+				"name": "Quality Report",
+				"description": _("Quality Report")
+			},
 		]
 	},
 		

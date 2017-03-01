@@ -35,7 +35,7 @@ frappe.ui.form.on('Job Order Detail',{
 		d.job_order_id = "Job-"+ d.idx
 		d.production_order=frm.doc.production_order
 		d.item=frm.doc.item
-		console.log(frm.doc)
+		d.production_order_quantity=frm.doc.quantity
 	}
 
 	/*refresh:function(frm,cdt,cdn)
