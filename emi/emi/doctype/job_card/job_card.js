@@ -5,12 +5,9 @@ frappe.ui.form.on('Job Card', {
 	refresh: function(frm) {
 		cur_frm.add_fetch('production_order', 'qty', 'quantity');	
 		cur_frm.add_fetch('production_order', 'production_item', 'item');
-
+		cur_frm.add_fetch('production_order', 'description', 'description');
 	}
 });
-// Copyright (c) 2016, Indictranstech and contributors
-// For license information, please see license.txt
-
 
 frappe.ui.form.on('Job Order Detail',{
 	completed_job:function(frm, cdt, cdn){
@@ -31,29 +28,26 @@ frappe.ui.form.on('Job Order Detail',{
 
 	job_order_detail_add: function(frm, cdt, cdn) {
 		var d = locals[cdt][cdn]
-		console.log(".....hi", d)
 		d.job_order_id = "Job-"+ d.idx
 		d.production_order=frm.doc.production_order
 		d.item=frm.doc.item
-		d.production_order_quantity=frm.doc.quantity
+		d.description=frm.doc.description
 	}
 
-	/*refresh:function(frm,cdt,cdn)
-	{
-		cur_frm.fields_dict['production_order'].get_query = function(doc) {
-			return {
-				query:"emi.emi.emi.doctype.job_order.job_order.get_info_production",
-				console.log("hiiiiiiiiiiiiiii")
-			}
-		}
-
-	}*/
 });
 
 cur_frm.fields_dict.job_order_detail.grid.get_field("production_order").get_query = function(doc) {
 	return {
 		filters: {
 			"status": 'In Process'
+		}
+	}
+}
+cur_frm.fields_dict.job_order_detail.grid.get_field("machine_no").get_query = function(doc, cdt, cdn) {
+	var d = locals[cdt][cdn];
+	return {
+		filters: {
+			"machine_no": d.process
 		}
 	}
 }
@@ -64,9 +58,4 @@ cur_frm.fields_dict["production_order"].get_query = function(doc) {
 		}
 	}
 }
-/*for (var i in cur_frm.doc.items) {
-	var item = cur_frm.doc.items[i];
-	console.log("hello",item)
-	frappe.model.set_value("job_order_detail", item.production_order, production_order);
-}*/
 cur_frm.add_fetch('employee_name', 'employee_name', 'employee')

@@ -65,6 +65,13 @@ def get_data():
 			"label": _("Production Status Report"),
 			"description": _("Production Report (Process Wise)"),
 			"doctype":"Job Card"
+		},
+		{
+			"type": "report",
+			"name": "Job Card Report",
+			"label": _("Job Card Report"),
+			"description": _("Production Report (Process Wise)"),
+			"doctype":"Job Card"
 		}
 		]
 	}
