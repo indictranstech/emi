@@ -146,10 +146,9 @@ def get_data():
 		},
 		{
 			"type": "report",
-			"is_query_report": True,
-			"name": "Production%20Status",
-			"label": _("Production Status Report"),
-			"description": _("Production Report (Process Wise)"),
+			"name": "Job%20Card%20Report",
+			"label": _("Job Card Report"),
+			"description": _("Job Card Report"),
 			"doctype":"Job Card"
 		}
 		]
