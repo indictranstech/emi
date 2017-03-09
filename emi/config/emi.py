@@ -103,6 +103,18 @@ def get_data():
 				"label": _("Item"),
 				"description": _("Item")
 			},
+			{
+				"type": "doctype",
+				"name": "Brand",
+				"label": _("Category"),
+				"description": _("Category")
+			},
+			{
+				"type": "doctype",
+				"name": "Sub Category",
+				"label": _("Sub Category"),
+				"description": _("Sub Category")
+			},
 		]
 	},
 	{

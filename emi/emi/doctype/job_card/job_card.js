@@ -6,6 +6,7 @@ frappe.ui.form.on('Job Card', {
 		cur_frm.add_fetch('production_order', 'qty', 'quantity');	
 		cur_frm.add_fetch('production_order', 'production_item', 'item');
 		cur_frm.add_fetch('production_order', 'description', 'description');
+		cur_frm.add_fetch('production_order', 'sales_order', 'sales_order');
 	}
 });
 
@@ -32,6 +33,8 @@ frappe.ui.form.on('Job Order Detail',{
 		d.production_order=frm.doc.production_order
 		d.item=frm.doc.item
 		d.description=frm.doc.description
+		d.production_order_quantity=frm.doc.quantity
+		d.sales_order=frm.doc.sales_order
 	}
 
 });
