@@ -162,7 +162,15 @@ def get_data():
 			"label": _("Job Card Report"),
 			"description": _("Job Card Report"),
 			"doctype":"Job Card"
+		},
+		{
+			"type": "report",
+			"name": "Quality Inspect Report",
+			"label": _("Quality Inspect Report"),
+			"description": _("Quality Inspect Report"),
+			"doctype":"Quality Report"
 		}
 		]
 	}
 	]
+	
