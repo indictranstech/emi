@@ -24,7 +24,7 @@ class JobCard(Document):
 					"purpose": "Material Transfer",
 					"posting_date": chld.date,
 					"from_warehouse": po[0]['fg_warehouse'],
-					"to_warehouse": "Stores - E",
+					"to_warehouse": "Final Inspected Warehouse - E",
 					"items": get_order_items(po, chld, po[0]['fg_warehouse'], "Stores - E")
 				})
 		si.flags.ignore_mandatory = True
