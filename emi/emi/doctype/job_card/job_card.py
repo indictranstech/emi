@@ -25,7 +25,7 @@ class JobCard(Document):
 					"posting_date": chld.date,
 					"from_warehouse": po[0]['fg_warehouse'],
 					"to_warehouse": "Final Inspected Warehouse - E",
-					"items": get_order_items(po, chld, po[0]['fg_warehouse'], "Stores - E")
+					"items": get_order_items(po, chld, po[0]['fg_warehouse'], "Final Inspected Warehouse - E")
 				})
 		si.flags.ignore_mandatory = True
 		si.save(ignore_permissions=True)
