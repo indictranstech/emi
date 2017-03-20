@@ -7,6 +7,7 @@ frappe.ui.form.on('Job Card', {
 		cur_frm.add_fetch('production_order', 'production_item', 'item');
 		cur_frm.add_fetch('production_order', 'description', 'description');
 		cur_frm.add_fetch('production_order', 'sales_order', 'sales_order');
+		cur_frm.add_fetch('production_order', 'requested_for', 'requested_for');
 	}
 });
 
