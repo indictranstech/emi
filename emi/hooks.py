@@ -72,8 +72,12 @@ app_license = "INDICTRANS"
 
 doc_events = {
 	"Sales Invoice": {
-		"validate": "emi.emi.custom_methods.validate_delivery_note"	
-	}
+		"validate": "emi.emi.custom_methods.validate_delivery_note",
+	},
+
+	('Quotation', 'Sales Order'): {
+		"validate": "emi.emi.custom_methods.calulate_consolidated_margin"
+	},
 }
 
 # Scheduled Tasks
