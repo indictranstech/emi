@@ -70,13 +70,11 @@ app_license = "INDICTRANS"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"validate": "emi.emi.custom_methods.validate_delivery_note"	
+	}
+}
 
 # Scheduled Tasks
 # ---------------
