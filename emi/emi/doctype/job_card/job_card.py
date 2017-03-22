@@ -4,6 +4,7 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe import _
 from frappe.model.document import Document
 
 class JobCard(Document):
@@ -12,7 +13,7 @@ class JobCard(Document):
 		self.stock_entry_through_job_cart()
 
 	def stock_entry_through_job_cart(self):
-		si = None
+		# si = None
 		for chld in self.job_order_detail:
 			if chld.process == "Final Inspection":
 				po = frappe.db.sql("""select * from `tabProduction Order` where name ='{0}'""".format(chld.production_order),as_dict=1)
@@ -27,10 +28,12 @@ class JobCard(Document):
 					"to_warehouse": "Final Inspected Warehouse - E",
 					"items": get_order_items(po, chld, po[0]['fg_warehouse'], "Final Inspected Warehouse - E")
 				})
-		si.flags.ignore_mandatory = True
-		si.save(ignore_permissions=True)
-		si.submit()
-		frappe.db.commit()		
+				si.flags.ignore_mandatory = True
+				si.save(ignore_permissions=True)
+				si.submit()
+				frappe.db.commit()
+			else:
+				frappe.throw(_("Please mention Final Inspection"))		
 
 
 def get_order_items(po, chld, s_warehouse, t_warehouse):
