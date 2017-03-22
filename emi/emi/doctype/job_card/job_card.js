@@ -40,9 +40,12 @@ frappe.ui.form.on('Job Order Detail',{
 
 	process: function(frm, cdt, cdn) {
 		var d = locals[cdt][cdn]
+		d.employee = ""
+		d.employee_name = ""
 		processes = ["Punching", "Cutting", "Welding","Shearing","Cleaning","Final Inspection"]
 		emp_mandatory = inList(processes, d.process)
 		cur_frm.fields_dict["job_order_detail"].grid.toggle_reqd("employee_name", emp_mandatory);
+		cur_frm.refresh_fields();
 	}
 
 });
