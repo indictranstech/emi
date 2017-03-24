@@ -8,6 +8,30 @@ frappe.ui.form.on('Job Card', {
 		cur_frm.add_fetch('production_order', 'description', 'description');
 		cur_frm.add_fetch('production_order', 'sales_order', 'sales_order');
 		cur_frm.add_fetch('production_order', 'requested_for', 'requested_for');
+	},
+	validate: function(frm) {
+		var emp_mandatory_for = []
+		var supplier_mandotory = []
+		emp_processes = ["Punching", "Cutting", "Welding","Shearing","Cleaning","Final Inspection"]
+		supp_processes = ["Powder Coating", "Hot Dip Galvanizing", "Wet Coating"]
+		$.each(frm.doc.job_order_detail, function(idx, row) {
+			if (inList(emp_processes, row.process) && 
+				(emp_mandatory_for.indexOf(row.process) == -1) &&
+				!(row.employee_name)) {
+				emp_mandatory_for.push(row.process)
+			}
+			if (inList(supp_processes, row.process) &&
+				supplier_mandotory.indexOf(row.process) == -1 &&
+				!(row.supplier)) {
+				supplier_mandotory.push(row.process)
+			}
+		})
+		if (supplier_mandotory.length) {
+			frappe.throw("Supplier mandatory for processes: " + supplier_mandotory.join(","))		
+		}
+		if(emp_mandatory_for.length) {
+			frappe.throw("Employee Name mandatory for processes: " + emp_mandatory_for.join(","))		
+		}
 	}
 });
 
@@ -37,17 +61,6 @@ frappe.ui.form.on('Job Order Detail',{
 		d.production_order_quantity=frm.doc.quantity
 		d.sales_order=frm.doc.sales_order																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															
 	},
-
-	process: function(frm, cdt, cdn) {
-		var d = locals[cdt][cdn]
-		d.employee = ""
-		d.employee_name = ""
-		processes = ["Punching", "Cutting", "Welding","Shearing","Cleaning","Final Inspection"]
-		emp_mandatory = inList(processes, d.process)
-		cur_frm.fields_dict["job_order_detail"].grid.toggle_reqd("employee_name", emp_mandatory);
-		cur_frm.refresh_fields();
-	}
-
 });
 
 cur_frm.fields_dict.job_order_detail.grid.get_field("production_order").get_query = function(doc) {

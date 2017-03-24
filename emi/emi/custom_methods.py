@@ -10,11 +10,15 @@ def validate_delivery_note(doc, method):
 	
 def calulate_consolidated_margin(doc, method):
 	#calculat consolidate_margin = sum of item_price_rate - sum of total_margin
-	price_list_rate_sum = 0
-	margin_sum = 0
+	consolidated_margin = 0
 	for row in doc.items:
-		price_list_rate_sum += row.price_list_rate
-		margin_sum += row.total_margin
-	if margin_sum > 0:
-		doc.consolidated_margin = margin_sum - price_list_rate_sum
+		if row.margin_rate_or_amount:
+			if row.margin_type == "Percentage":
+				margin_amt = (row.price_list_rate * (row.margin_rate_or_amount/100)) * row.qty
+				consolidated_margin += margin_amt
+			elif row.margin_type == "Amount":
+				consolidated_margin += (row.margin_rate_or_amount * row.qty)
+	doc.consolidated_margin = consolidated_margin
+
+
 

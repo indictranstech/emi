@@ -13,11 +13,10 @@ class JobCard(Document):
 		self.stock_entry_through_job_cart()
 
 	def stock_entry_through_job_cart(self):
-		# si = None
+		# Stock Entry For Final Inspected Qty
 		for chld in self.job_order_detail:
 			if chld.process == "Final Inspection":
 				po = frappe.db.sql("""select * from `tabProduction Order` where name ='{0}'""".format(chld.production_order),as_dict=1)
-				print po, po[0]['fg_warehouse'], "uhhsdfdsb"
 				# po = frappe.db.sql("""select name, company, fg_warehouse, production_item,stock_uom  from `tabProduction Order` where name = {}""".format(chld.production_order))
 				 # = "PRO-00007"
 				si = frappe.get_doc({
@@ -32,11 +31,10 @@ class JobCard(Document):
 				si.save(ignore_permissions=True)
 				si.submit()
 				frappe.db.commit()
-			else:
-				frappe.throw(_("Please mention Final Inspection"))		
 
 
 def get_order_items(po, chld, s_warehouse, t_warehouse):
+	 	# Items from Production Order
 	 	items = []
 	 	items.append({
 			"s_warehouse": s_warehouse,
@@ -49,4 +47,5 @@ def get_order_items(po, chld, s_warehouse, t_warehouse):
 
 @frappe.whitelist()
 def get_info_production(doctype, txt, searchfield, start, page_len, filters):
+	#Production Order Process Filter in Job Card
 	return frappe.db.sql("""select name from `tabProduction Order` where status='In Process'""",as_list=1,debug=1)
