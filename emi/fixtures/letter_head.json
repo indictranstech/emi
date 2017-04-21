@@ -9,5 +9,27 @@
   "letter_head_name": "Everest", 
   "modified": "2017-03-15 12:11:09.321490", 
   "name": "Everest"
+ }, 
+ {
+  "content": "<div style=\"text-align: center;\">\n    <img src=\"/files/EMI L.Head Logo + Heading.png\">\n</div>", 
+  "disabled": 0, 
+  "docstatus": 0, 
+  "doctype": "Letter Head", 
+  "footer": "<img src=\"/files/EMI L.Head address.png\">", 
+  "is_default": 0, 
+  "letter_head_name": "EMI With Logo andName", 
+  "modified": "2017-04-12 11:16:57.644827", 
+  "name": "EMI With Logo andName"
+ }, 
+ {
+  "content": "<img src=\"/files/EMI L.Head address.png\">", 
+  "disabled": 0, 
+  "docstatus": 0, 
+  "doctype": "Letter Head", 
+  "footer": null, 
+  "is_default": 0, 
+  "letter_head_name": "EMI", 
+  "modified": "2017-04-05 17:46:22.568416", 
+  "name": "EMI"
  }
 ]

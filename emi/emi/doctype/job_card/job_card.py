@@ -24,8 +24,8 @@ class JobCard(Document):
 					"purpose": "Material Transfer",
 					"posting_date": chld.date,
 					"from_warehouse": po[0]['fg_warehouse'],
-					"to_warehouse": "Final Inspected Warehouse - E",
-					"items": get_order_items(po, chld, po[0]['fg_warehouse'], "Final Inspected Warehouse - E")
+					"to_warehouse": "Stores - E",
+					"items": get_order_items(po, chld, po[0]['fg_warehouse'], "Stores - E")
 				})
 				si.flags.ignore_mandatory = True
 				si.save(ignore_permissions=True)
@@ -49,3 +49,20 @@ def get_order_items(po, chld, s_warehouse, t_warehouse):
 def get_info_production(doctype, txt, searchfield, start, page_len, filters):
 	#Production Order Process Filter in Job Card
 	return frappe.db.sql("""select name from `tabProduction Order` where status='In Process'""",as_list=1,debug=1)
+
+"""
+get_query for Pending Sales order report
+"""
+@frappe.whitelist()
+def sales_order_query(doctype, txt, searchfield, start, page_len, filters):
+	return frappe.db.sql("""select name from `tabSales Order`
+		where status = 'Draft' or status = 'To Deliver and Bill' """,as_list=1)
+
+"""
+get_query for Pending Purchase order report
+"""
+@frappe.whitelist()
+def purchase_order_query(doctype, txt, searchfield, start, page_len, filters):
+	return frappe.db.sql("""select po.name,po.transaction_date,po.supplier
+							from `tabPurchase Order` po where po.status = 'Draft' or 
+							po.status = 'To Receive and Bill' """,as_list=1)

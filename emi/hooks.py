@@ -17,7 +17,7 @@ app_license = "INDICTRANS"
 # include js, css files in header of desk.html
 # app_include_css = "/assets/emi/css/c3.css"
 # app_include_js = "/assets/emi/js/c3.min.js"
-
+# app_include_js = "/assets/js/telecom_v7.js"
 # include js, css files in header of web template
 # web_include_css = "/assets/emi/css/emi.css"
 # web_include_js = "/assets/emi/js/emi.js"
@@ -70,6 +70,7 @@ app_license = "INDICTRANS"
 # ---------------
 # Hook on document methods and events
 
+
 doc_events = {
 	"Sales Invoice": {
 		"validate": "emi.emi.custom_methods.validate_delivery_note",
@@ -78,6 +79,15 @@ doc_events = {
 	('Quotation', 'Sales Order'): {
 		"validate": "emi.emi.custom_methods.calulate_consolidated_margin"
 	},
+	"Stock Ledger Entry" :{
+		"before_submit": "emi.emi.custom_methods.get_requested_for"
+	},
+	
+}
+
+doctype_js = {
+    "Quotation":["custom_script/quotation/quotation.js"],
+    "Sales Order" :["custom_script/sales_order/sales_order.js"]  
 }
 
 # Scheduled Tasks

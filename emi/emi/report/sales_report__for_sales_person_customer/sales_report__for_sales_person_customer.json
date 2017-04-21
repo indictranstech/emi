@@ -1,0 +1,18 @@
+{
+ "add_total_row": 1, 
+ "apply_user_permissions": 1, 
+ "creation": "2017-04-17 15:43:58.470708", 
+ "disabled": 0, 
+ "docstatus": 0, 
+ "doctype": "Report", 
+ "idx": 0, 
+ "is_standard": "Yes", 
+ "modified": "2017-04-17 15:44:02.716247", 
+ "modified_by": "Administrator", 
+ "module": "Emi", 
+ "name": "Sales Report  For Sales Person Customer", 
+ "owner": "Administrator", 
+ "ref_doctype": "Sales Order", 
+ "report_name": "Sales Report  For Sales Person Customer", 
+ "report_type": "Script Report"
+}
