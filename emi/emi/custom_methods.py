@@ -16,6 +16,8 @@ def calulate_consolidated_margin(doc, method):
 	price_list_total = 0
 
 	for row in doc.items:
+		if not row.price_list_rate:
+			frappe.throw(("Please Provide Prcie To Item First By Price List"))
 
 		if row.discount_percentage:
 			last_rate = (row.price_list_rate + (row.price_list_rate * 5)/100)
@@ -38,9 +40,8 @@ def calulate_consolidated_margin(doc, method):
 		print "consolidated_margin_percentage",((consolidated_margin)/price_list_total*100)	
 		doc.consolidated_margin_percentage = get_percenage(float(consolidated_margin),float(price_list_total))
 	
-	if doc.doctype ==  "Sales Order" and doc.status =="Draft":
-		pass
-		# sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
+	if doc.doctype ==  "Sales Order" and doc.status =="Submitted":
+		sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 		
 
 

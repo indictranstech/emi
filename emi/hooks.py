@@ -82,6 +82,9 @@ doc_events = {
 	"Stock Ledger Entry" :{
 		"before_submit": "emi.emi.custom_methods.get_requested_for"
 	},
+	"Delivery Note": {
+        "validate": "emi.custom_script.delivery_note.delivery_note.validate",
+    },
 	
 }
 
@@ -122,4 +125,4 @@ doctype_js = {
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "emi.event.get_events"
 # }
-fixtures = ["Web Form","Custom Field","Print Format","Property Setter","Letter Head"]
+fixtures = ["Web Form","Custom Field","Print Format","Property Setter","Letter Head","Report","Custom Script"]

@@ -36,6 +36,7 @@ frappe.ui.form.on('Job Card', {
 });
 
 frappe.ui.form.on('Job Order Detail',{
+	/*To Check completed_job Qty is not greater than Assigned Qty*/
 	completed_job:function(frm, cdt, cdn){
 		var d = locals[cdt][cdn]
 		if(flt(d.job_allocated) < flt(d.completed_job) ){
@@ -44,6 +45,7 @@ frappe.ui.form.on('Job Order Detail',{
 		}
 		
 	},
+	/*To Check Assigned Qty is not greater than Rejected Qty*/
 	rejected_qty:function(frm, cdt, cdn){
 		var d = locals[cdt][cdn]
 		if(flt(d.job_allocated) < flt(d.rejected_qty)){
@@ -51,7 +53,7 @@ frappe.ui.form.on('Job Order Detail',{
 			frappe.throw("Please check the Rejected Quantity not Greater than the Assigned Qty");
 		}
 	},
-
+	/*To Add Details Parent to Child Table  */
 	job_order_detail_add: function(frm, cdt, cdn) {
 		var d = locals[cdt][cdn]
 		d.job_order_id = "Job-"+ d.idx
@@ -61,6 +63,18 @@ frappe.ui.form.on('Job Order Detail',{
 		d.production_order_quantity=frm.doc.quantity
 		d.sales_order=frm.doc.sales_order																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															
 	},
+	/*To Check Final Inspection Process is not greater than one*/
+	process: function(frm, cdt, cdn) {
+	var counter=0;
+	$.each(cur_frm.doc.job_order_detail,function(i,v){
+		if(v.process=='Final Inspection'){
+			counter++;
+			if(counter>1){
+				frappe.throw("Only One Final Inspection Process is Allowed in One Job Card")
+			}
+		}
+	})
+	}
 });
 
 cur_frm.fields_dict.job_order_detail.grid.get_field("production_order").get_query = function(doc) {
@@ -86,3 +100,5 @@ cur_frm.fields_dict["production_order"].get_query = function(doc) {
 	}
 }
 cur_frm.add_fetch('employee_name', 'employee_name', 'employee')
+
+
