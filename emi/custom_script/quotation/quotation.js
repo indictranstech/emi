@@ -16,9 +16,7 @@ cur_frm.cscript.final_margin_type = function(frm){
 
 cur_frm.cscript.final_margin_rate_or_amount = function(frm){
 	if (cur_frm.doc.final_margin_type == "Percentage"){
-		console.log("*********")
 		if (cur_frm.doc.final_margin_rate_or_amount == 0.000 || cur_frm.doc.final_margin_rate_or_amount == 0.0 || cur_frm.doc.final_margin_rate_or_amount == 0.00 ){
-			console.log("___________")
 			frappe.msgprint("You Cant Give Percentage As 0.0%")
 		}
 	
@@ -32,8 +30,7 @@ cur_frm.cscript.final_margin_rate_or_amount = function(frm){
 }
 
 frappe.ui.form.on('Quotation Item',{
-	items_add: function(frm,cdt,cdn){
-		console.log("sahdjhdsakj")	
+	items_add: function(frm,cdt,cdn){	
 		var d  = locals[cdt][cdn]
 		d.margin_type = cur_frm.doc.final_margin_type
 		d.margin_rate_or_amount =cur_frm.doc.final_margin_rate_or_amount
