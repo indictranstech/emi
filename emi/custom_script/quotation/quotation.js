@@ -16,9 +16,9 @@ cur_frm.cscript.final_margin_type = function(frm){
 
 cur_frm.cscript.final_margin_rate_or_amount = function(frm){
 	if (cur_frm.doc.final_margin_type == "Percentage"){
-		if (cur_frm.doc.final_margin_rate_or_amount == 0.000 || cur_frm.doc.final_margin_rate_or_amount == 0.0 || cur_frm.doc.final_margin_rate_or_amount == 0.00 ){
-			frappe.msgprint("You Cant Give Percentage As 0.0%")
-		}
+		// if (cur_frm.doc.final_margin_rate_or_amount == 0.000 || cur_frm.doc.final_margin_rate_or_amount == 0.0 || cur_frm.doc.final_margin_rate_or_amount == 0.00 ){
+		// 	frappe.msgprint("You Cant Give Percentage As 0.0%")
+		// }
 	
 	}
 	$.each(cur_frm.doc.items, function(idx, val){

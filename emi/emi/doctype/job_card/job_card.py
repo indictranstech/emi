@@ -98,8 +98,8 @@ get_query for item shortest report for raw material
 @frappe.whitelist()
 def product_query(doctype, txt, searchfield, start, page_len, filters):
 	data = get_shortage_product_for_raw_material()
-	# return data
-	return frappe.db.sql(" select bin.item_code from tabBin bin,tabItem i where bin.projected_qty <0 and i.item_code =bin.item_code and i.item_group ='Products'",as_list=1)
+	return data
+	# return frappe.db.sql(" select bin.item_code from tabBin bin,tabItem i where bin.projected_qty <0 and i.item_code =bin.item_code and i.item_group ='Products'",as_list=1)
 
 @frappe.whitelist()
 def qty_final(job_order_detail):
@@ -137,12 +137,9 @@ def get_shortage_product_for_raw_material():
 					if float(data1[0][8]) <= 0.0:
 						data.extend(data1)
 						
-	print "\n\nndaata",data
-	for d in data:
-		print "\n\nd",d[0]
-		k=[[""]]
-		k.append(d[0])
-		print "k",k
-		shortage_product.extend(k)
+	for row in data:
+		if row[0] not in shortage_product:
+			shortage_product.append(row[0])
 	print "shortage_product",shortage_product
-	return shortage_product
+	return [[product] for product in shortage_product]
+	
