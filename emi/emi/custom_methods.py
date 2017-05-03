@@ -88,3 +88,7 @@ def sales_order_submit_notification(name,margin):
 		)
 	except Exception,e:
 		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
+
+def produ_order(self):
+	black=frappe.db.get_value("Job Card",{"name":production_order},"black_material")
+	print("Jjjjjjjjjjjjjjjj",black)

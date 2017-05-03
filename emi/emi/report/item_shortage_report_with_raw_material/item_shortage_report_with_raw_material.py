@@ -94,7 +94,7 @@ def get_data(filters):
 												bn.actual_qty,bn.ordered_qty,bn.planned_qty,bn.reserved_qty,bn.projected_qty 
 												from tabBOM bom,`tabBOM Item`bi,tabBin bn,tabBin b1   
 												where bi.parent = bom.name and bom.name = '{0}' and bi.item_code='{1}' 
-												and bn.item_code ='{1}' and b1.item_code=bom.item""".format(default_bom,row.item_code),as_list=1,debug=1)
+												and bn.item_code ='{1}' and b1.item_code=bom.item and bn.projected_qty<0""".format(default_bom,row.item_code),as_list=1,debug=1)
 
 						if data1:
 							print "data1",data1

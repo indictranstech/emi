@@ -36,28 +36,10 @@ class JobCard(Document):
 				si.submit()
 				frappe.db.commit()
 
-	# def stock_entry_through_job_cart_for_pre_gal(self):
-	# 	# Stock Entry For Final Inspected Qty
-	# 	for chld in self.job_order_detail:
-	# 		if chld.process == "Final Inspection":
-	# 			po = frappe.get_doc("Production Order", chld.production_order)
-	# 			si = frappe.get_doc({
-	# 				"doctype": "Stock Entry",
-	# 				"purpose": "Material Transfer",
-	# 				"posting_date": chld.date,
-	# 				"from_warehouse": po.get('fg_warehouse'),
-	# 				"to_warehouse": "Pre Galvanizing(Black) - E",
-	# 				"items": get_order_items(po, chld, po.get('fg_warehouse'), "Pre Galvanizing(Black) - E")
-	# 			})
-	# 			si.flags.ignore_mandatory = True
-	# 			si.save(ignore_permissions=True)
-	# 			si.submit()
-	# 			frappe.db.commit()
-
 #To Check Quantity is not Greater Than Production Order Quantity
 	def final_inspected_qty(self):
 		for chld in self.job_order_detail:
-			if chld.process == 'Final Inspection'  and  flt(self.quantity)<=flt(chld.completed_job):
+			if chld.process == 'Final Inspection'  and  flt(self.quantity)<flt(chld.completed_job):
 				frappe.throw("You Have Not Allowed to entered the Greater Value from Production Order Quantity")
 
 	def check_pro_order(self):
@@ -78,8 +60,6 @@ def get_order_items(po, chld, s_warehouse, t_warehouse):
 			"uom": po.get('stock_uom'),
 		})
 		return items		
-
-
 
 
 @frappe.whitelist()
@@ -106,5 +86,6 @@ def purchase_order_query(doctype, txt, searchfield, start, page_len, filters):
 
 @frappe.whitelist()
 def product_query(doctype, txt, searchfield, start, page_len, filters):
-       return frappe.db.sql("select item_code from tabItem where item_group ='Products'",as_list=1)
+       return frappe.db.sql("""select item.item_code from tabItem item,tabBin bin where item.item_group ='Products'
+       							 and bin.item_code = item.item_code and bin.projected_qty<0""",as_list=1,debug=1)
 

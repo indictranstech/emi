@@ -50,6 +50,23 @@ cur_frm.fields_dict['project'].get_query = function(doc,cdt,cdn) {
 			'customer': doc.customer,
 		}
 	}
+},
+
+/*cur_frm.cscript.customer = function(frm){
+console.log("hiiiiii")
+return{
+		query: "emi.custom_script.quotation.quotation.get_sales_person",
+	}
+	
+}*/
+
+
+
+
+
+cur_frm.fields_dict.lead_owner_name.get_query = function(doc,cdt,cdn) {
+	return{
+		query: "emi.custom_script.quotation.quotation.get_sales_person",
+		filters:{'customer': doc.customer}
 }
-
-
+}

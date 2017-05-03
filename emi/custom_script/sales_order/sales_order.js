@@ -35,3 +35,12 @@ frappe.ui.form.on('Sales Order Item',{
 	}
 });
 
+/*Project Filter on Customer Base*/
+
+cur_frm.fields_dict['project'].get_query = function(doc,cdt,cdn) {
+	return{
+		filters:{ 
+			'customer': doc.customer,
+		}
+	}
+}
