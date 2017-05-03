@@ -41,7 +41,6 @@ def delivery_note_submit_notification(Name,delivery_note,amount,recipients):
 
 # After Submitting Delivery Note Notification will be get sent to Account Manager
 def account_manger_notification(recipients,Name,delivery_note,customer,date,amount):
-	print "\n\n--------",recipients,Name,delivery_note,customer,date,amount
 	try:
 		frappe.sendmail(
 			recipients=recipients,

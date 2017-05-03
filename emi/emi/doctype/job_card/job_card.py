@@ -103,8 +103,10 @@ def purchase_order_query(doctype, txt, searchfield, start, page_len, filters):
 	return frappe.db.sql("""select po.name,po.transaction_date,po.supplier
 							from `tabPurchase Order` po where po.status = 'Draft' or 
 							po.status = 'To Receive and Bill' """,as_list=1)
-
+"""
+get_query for item shortest report for raw material
+"""
 @frappe.whitelist()
 def product_query(doctype, txt, searchfield, start, page_len, filters):
-       return frappe.db.sql("select item_code from tabItem where item_group ='Products'",as_list=1)
+       return frappe.db.sql(" select bin.item_code from tabBin bin,tabItem i where bin.projected_qty <0 and i.item_code =bin.item_code and i.item_group ='Products'",as_list=1)
 
