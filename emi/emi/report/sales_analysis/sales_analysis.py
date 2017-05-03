@@ -57,8 +57,6 @@ def get_data(filters):
 												where
 												{0}	 
 												order by so.name desc""".format(cond),as_dict=1)
-				
-				print "****customer and from_date and to_date"
 
 			else:
 				if filters.from_date and filters.to_date:
@@ -68,12 +66,12 @@ def get_data(filters):
 												where
 												{0}	 
 												order by so.name desc""".format(cond),as_dict=1)
-					print "**from_date and to_date"
+					
 				else:
 					if filters.customer:
 						fltr.update({"customer":filters.customer})
 						sales_oders = get_sales_orders(fltr)
-						print "*****customer"
+						
 						customer_sales_oders = get_sales_orders(fltr)
 						cond = "so_item.parent = so.name and so.customer ='{0}'".format(filters.customer)
 			
@@ -99,7 +97,7 @@ def get_data(filters):
 		 			last_row= get_last_total(last_row,total_row)
 		 			order_wise_data.extend(total_row)
 				filter_data.extend(order_wise_data)
-			print sales_oders				 	
+							 	
 		filter_data.extend(last_row)					
 	 	return filter_data
 	else:

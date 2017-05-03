@@ -7,6 +7,8 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import flt
+from erpnext.manufacturing.doctype.production_order.production_order import make_stock_entry
+from emi.emi.report.item_shortage_report_with_raw_material.item_shortage_report_with_raw_material import get_data
 
 class JobCard(Document):
 
@@ -15,6 +17,8 @@ class JobCard(Document):
 
 	def validate(self):
 		self.final_inspected_qty()
+		f_q=qty_final(self.job_order_detail)
+		make_stock_entry(self.production_order,"Manufacture",f_q)
 		
 
 	# Create Stock Entry For Final Inspection 
@@ -61,6 +65,11 @@ def get_order_items(po, chld, s_warehouse, t_warehouse):
 		})
 		return items		
 
+# def finish_qty_se(self):
+# 	for chld in self.job_order_detail:
+# 		if chld.process=='Final Inspection':
+# 			make_stock_entry.f_qty=chld.completed_job
+# 	return f_qty
 
 @frappe.whitelist()
 def get_info_production(doctype, txt, searchfield, start, page_len, filters):
@@ -86,10 +95,54 @@ def purchase_order_query(doctype, txt, searchfield, start, page_len, filters):
 """
 get_query for item shortest report for raw material
 """
-
 @frappe.whitelist()
 def product_query(doctype, txt, searchfield, start, page_len, filters):
-       return frappe.db.sql(" select bin.item_code from tabBin bin,tabItem i where bin.projected_qty <0 and i.item_code =bin.item_code and i.item_group ='Products'",as_list=1)
+	data = get_shortage_product_for_raw_material()
+	# return data
+	return frappe.db.sql(" select bin.item_code from tabBin bin,tabItem i where bin.projected_qty <0 and i.item_code =bin.item_code and i.item_group ='Products'",as_list=1)
 
+@frappe.whitelist()
+def qty_final(job_order_detail):
+	for chld in job_order_detail:
+		if chld.process=='Final Inspection':
+			return chld.completed_job
 
-
+@frappe.whitelist()
+def get_shortage_product_for_raw_material():
+	shortage_product = []
+	products = frappe.db.sql("select bin.item_code from tabBin bin,tabItem i where bin.projected_qty <0 and i.item_code =bin.item_code and i.item_group ='Products'",as_dict=1)
+	data =[]
+	product_rsrd_qty =0.0;
+	raw_rsrd_qty = 0.0;
+	for product in products:
+		default_bom = frappe.db.get_value("Item",{'item_code':product['item_code']},"default_bom")
+		product_rsrd_qty = frappe.db.sql("""select reserved_qty from tabBin where item_code ='{0}'""".format(product['item_code']),as_list=1)
+		if product_rsrd_qty:
+			if default_bom:
+				bom_doc = frappe.get_doc("BOM",default_bom)
+				items = bom_doc.items
+				for row in items:
+					qty = float(row.qty)
+					raw_rsrd_qty = product_rsrd_qty[0][0] * float(row.qty);
+					data1=[]
+					data1 =[[product['item_code'],product_rsrd_qty,row.item_code,row.qty,0.0, 0.0,0.0,raw_rsrd_qty,0.0]]
+					qty_data = frappe.db.sql(""" select bn.warehouse,bn.item_code,bn.actual_qty,bn.ordered_qty,bn.planned_qty,
+										 bn.reserved_qty,bn.projected_qty from tabBin bn where bn.item_code ='{0}'""".format(row.item_code),as_list=1,debug=1)
+					for qty in qty_data:
+						data1[0][4]=float(data1[0][4])+float(qty[2])   #actual_qty '''
+						data1[0][5]=float(data1[0][5])+float(qty[3])   # ordered_qty"
+						data1[0][6]=float(data1[0][6])+float(qty[4])   #planed_qty" 
+						# data1[0][7]=float(data1[0][7])+float(qty[5])   #reserved_qty"
+						data1[0][8]=float(data1[0][4])-float(data1[0][7])  #projected_qty"
+					if float(data1[0][8]) <= 0.0:
+						data.extend(data1)
+						
+	print "\n\nndaata",data
+	for d in data:
+		print "\n\nd",d[0]
+		k=[[""]]
+		k.append(d[0])
+		print "k",k
+		shortage_product.extend(k)
+	print "shortage_product",shortage_product
+	return shortage_product

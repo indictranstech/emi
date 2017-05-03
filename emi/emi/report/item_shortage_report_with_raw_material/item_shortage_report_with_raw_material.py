@@ -14,7 +14,7 @@ def get_columns(filters):
 	columns =[ 
 			   ("Product") + ":Data:110",
 			   ("Qty To Produce") + ":Data:160",
-			   ("Row Material") + ":Data:110",
+			   ("Raw Material") + ":Data:110",
 			   ("Qty For Per Product") +":Data:130",
 			   ("Actual Qty") + ":Data:110",
 			   ("Ordered Qty") + ":Data:110",
