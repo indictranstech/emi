@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.mapper import get_mapped_doc
 from frappe import _
-# from erpnext.controllers.selling_controller import SellingController
 
 
 

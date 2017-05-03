@@ -14,7 +14,7 @@ def get_columns(filters):
 	columns =[ 
 			   ("Product") + ":Data:110",
 			   ("Qty To Produce") + ":Data:160",
-			   ("Item Code") + ":Data:110",
+			   ("Row Material") + ":Data:110",
 			   ("Qty For Per Product") +":Data:130",
 			   ("Actual Qty") + ":Data:110",
 			   ("Ordered Qty") + ":Data:110",
@@ -47,8 +47,14 @@ def get_data(filters):
 					data1[0][6]=float(data1[0][6])+float(qty[4])   #planed_qty" 
 					# data1[0][7]=float(data1[0][7])+float(qty[5])   #reserved_qty"
 					data1[0][8]=float(data1[0][4])-float(data1[0][7])  #projected_qty"
-					
-				data.extend(data1)
+				if float(data1[0][8]) <= 0.0:
+					data1[0][3] =concat_unit(data1[0][3],row.stock_uom)
+					data1[0][4] =concat_unit(data1[0][4],row.stock_uom)
+					data1[0][5] =concat_unit(data1[0][5],row.stock_uom)
+					data1[0][6] =concat_unit(data1[0][6],row.stock_uom)
+					data1[0][7] =concat_unit(data1[0][7],row.stock_uom)
+					data1[0][8] =concat_unit(data1[0][8],row.stock_uom)
+					data.extend(data1)	
 		return data
 	else:
 		products = frappe.db.sql("select bin.item_code from tabBin bin,tabItem i where bin.projected_qty <0 and i.item_code =bin.item_code and i.item_group ='Products'",as_dict=1)
@@ -75,13 +81,14 @@ def get_data(filters):
 							data1[0][6]=float(data1[0][6])+float(qty[4])   #planed_qty" 
 							# data1[0][7]=float(data1[0][7])+float(qty[5])   #reserved_qty"
 							data1[0][8]=float(data1[0][4])-float(data1[0][7])  #projected_qty"
-						data1[0][3] =concat_unit(data1[0][3],row.stock_uom)
-						data1[0][4] =concat_unit(data1[0][4],row.stock_uom)
-						data1[0][5] =concat_unit(data1[0][5],row.stock_uom)
-						data1[0][6] =concat_unit(data1[0][6],row.stock_uom)
-						data1[0][7] =concat_unit(data1[0][7],row.stock_uom)
-						data1[0][8] =concat_unit(data1[0][8],row.stock_uom)
-						data.extend(data1)
+						if float(data1[0][8]) <= 0.0:
+							data1[0][3] =concat_unit(data1[0][3],row.stock_uom)
+							data1[0][4] =concat_unit(data1[0][4],row.stock_uom)
+							data1[0][5] =concat_unit(data1[0][5],row.stock_uom)
+							data1[0][6] =concat_unit(data1[0][6],row.stock_uom)
+							data1[0][7] =concat_unit(data1[0][7],row.stock_uom)
+							data1[0][8] =concat_unit(data1[0][8],row.stock_uom)
+							data.extend(data1)
 							
 		return data
 

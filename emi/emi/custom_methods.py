@@ -17,7 +17,7 @@ def calulate_consolidated_margin(doc, method):
 
 	for row in doc.items:
 		if not row.price_list_rate:
-			frappe.throw(("Please Provide Prcie To Item First By Price List"))
+			frappe.throw(("First create 'Item Price' for this item."))
 
 		if row.discount_percentage:
 			last_rate = (row.price_list_rate + (row.price_list_rate * 5)/100)

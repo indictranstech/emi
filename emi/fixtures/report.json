@@ -1800,5 +1800,39 @@
   "ref_doctype": "Bin", 
   "report_name": "Item Shortage Report With Raw Material", 
   "report_type": "Script Report"
+ }, 
+ {
+  "add_total_row": 0, 
+  "apply_user_permissions": 1, 
+  "disabled": 0, 
+  "docstatus": 0, 
+  "doctype": "Report", 
+  "is_standard": "No", 
+  "javascript": null, 
+  "json": null, 
+  "modified": "2017-04-30 13:52:19.043223", 
+  "module": "Emi", 
+  "name": "test", 
+  "query": "select \n `tabSales Order`.`name` as \"Sales Order:Link/Sales Order:120\",\n`tabSales Order`.`customer` as \"Customer:Link/Customer:120\",\n `tabSales Order Item`.item_code as \"Item:Link/Item:120\",\n`tabSales Order Item`.item_name as \"Des:Link/Item:120\",\n`tabSales Order Item`.qty as \"Qty:Int:100\",\n `tabSales Order Item`.delivered_qty as \"Delivered Qty:Int:100\",\n (`tabSales Order Item`.qty - ifnull(`tabSales Order Item`.delivered_qty, 0)) as \"Qty to Deliver:Int:140\",\n`tabSales Order`.transaction_date as \"Sch date:Date:100\",\nifnull(SUM(CASE WHEN `tabSales Order`.`name` = `tabProduction Order`.`sales_order` and `tabSales Order Item`.`item_code` = `tabProduction Order`.`production_item`\n         THEN `tabProduction Order`.`qty`\n    END),0) as \"Issued:Int:80\",\nSUM(CASE WHEN `tabSales Order`.`name` = `tabProduction Order`.`sales_order` and `tabSales Order Item`.`item_code` = `tabProduction Order`.`production_item`\n         THEN `tabProduction Order`.`produced_qty`\n    END) as \"Cut:Int:80\",\n(`tabSales Order Item`.qty - ifnull(SUM(CASE WHEN `tabSales Order`.`name` = `tabProduction Order`.`sales_order` and `tabSales Order Item`.`item_code` = `tabProduction Order`.`production_item`\n         THEN `tabProduction Order`.`qty`\n    END),0)) as \"To be issued:Int:80\"\n\nfrom\n `tabSales Order` \nLEFT JOIN `tabSales Order Item` ON ( `tabSales Order Item`.`parent` = `tabSales Order`.`name`\n and `tabSales Order`.docstatus = 1 )\n\nLEFT JOIN `tabProduction Order` ON (`tabSales Order Item`.`item_code` = `tabProduction Order`.`production_item` and `tabSales Order`.`name` = `tabProduction Order`.`sales_order`)\n\nwhere\n`tabSales Order`.status  not in (\"Stopped\", \"Closed\", \"Completed\") and ifnull(`tabSales Order Item`.delivered_qty,0) < ifnull(`tabSales Order Item`.qty,0)\n\n\nGROUP BY `tabSales Order`.`name` having (`tabSales Order Item`.qty - SUM(CASE WHEN `tabSales Order`.`name` = `tabProduction Order`.`sales_order` and `tabSales Order Item`.`item_code` = `tabProduction Order`.`production_item`\n         THEN `tabProduction Order`.`qty`\n    END)) > 0 or (`tabSales Order Item`.qty - SUM(CASE WHEN `tabSales Order`.`name` = `tabProduction Order`.`sales_order` and `tabSales Order Item`.`item_code` = `tabProduction Order`.`production_item`\n         THEN `tabProduction Order`.`qty`\n    END))is NULL;\n\n\n", 
+  "ref_doctype": "Production Order", 
+  "report_name": "test", 
+  "report_type": "Query Report"
+ }, 
+ {
+  "add_total_row": 0, 
+  "apply_user_permissions": 1, 
+  "disabled": 0, 
+  "docstatus": 0, 
+  "doctype": "Report", 
+  "is_standard": "No", 
+  "javascript": null, 
+  "json": null, 
+  "modified": "2017-05-03 10:11:37.352917", 
+  "module": "Emi", 
+  "name": "Item BOM Details", 
+  "query": "select item_code as  \"Item Code:Data:120\",\nitem_name as \"Item Name:Data:120\",\nitem_group as \"Item Group:Data:120\",stock_uom as \"UOM:Data:120\",\ndefault_warehouse as\"Warehouse:Data:120\" \nfrom \n`tabItem` \nwhere \ndefault_bom IS NULL;", 
+  "ref_doctype": "Item", 
+  "report_name": "Item BOM Details", 
+  "report_type": "Query Report"
  }
 ]
