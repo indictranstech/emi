@@ -30,6 +30,7 @@ def get_data(filters):
 		data=[];
 		product_rsrd_qty =0.0;
 		raw_rsrd_qty = 0.0;
+		flag = 0
 		default_bom = frappe.db.get_value("Item",{'item_code':filters.item_code},"default_bom")
 		product_rsrd_qty = frappe.db.sql("""select reserved_qty from tabBin where item_code ='{0}'""".format(filters.item_code),as_list=1)
 		if default_bom:
@@ -47,8 +48,10 @@ def get_data(filters):
 					data1[0][6]=float(data1[0][6])+float(qty[4])   #planed_qty" 
 					# data1[0][7]=float(data1[0][7])+float(qty[5])   #reserved_qty"
 					data1[0][8]=float(data1[0][4])-float(data1[0][7])  #projected_qty"
-					
-				data.extend(data1)
+				
+				if float(data1[0][8]) <= 0.0:
+				print "-knndvmkv"	
+					data.extend(data1)
 		return data
 	else:
 		products = frappe.db.sql("select bin.item_code from tabBin bin,tabItem i where bin.projected_qty <0 and i.item_code =bin.item_code and i.item_group ='Products'",as_dict=1)
@@ -75,13 +78,17 @@ def get_data(filters):
 							data1[0][6]=float(data1[0][6])+float(qty[4])   #planed_qty" 
 							# data1[0][7]=float(data1[0][7])+float(qty[5])   #reserved_qty"
 							data1[0][8]=float(data1[0][4])-float(data1[0][7])  #projected_qty"
-						data1[0][3] =concat_unit(data1[0][3],row.stock_uom)
-						data1[0][4] =concat_unit(data1[0][4],row.stock_uom)
-						data1[0][5] =concat_unit(data1[0][5],row.stock_uom)
-						data1[0][6] =concat_unit(data1[0][6],row.stock_uom)
-						data1[0][7] =concat_unit(data1[0][7],row.stock_uom)
-						data1[0][8] =concat_unit(data1[0][8],row.stock_uom)
-						data.extend(data1)
+							print "data1[0][8]",data1[0][8]
+						print "float(data1[0][8])",float(data1[0][8]) 
+						if float(data1[0][8]) < 0.0:
+							data1[0][3] =concat_unit(data1[0][3],row.stock_uom)
+							data1[0][4] =concat_unit(data1[0][4],row.stock_uom)
+							data1[0][5] =concat_unit(data1[0][5],row.stock_uom)
+							data1[0][6] =concat_unit(data1[0][6],row.stock_uom)
+							data1[0][7] =concat_unit(data1[0][7],row.stock_uom)
+							data1[0][8] =concat_unit(data1[0][8],row.stock_uom)
+							print "-knndvmkv"	
+							data.extend(data1)
 							
 		return data
 
