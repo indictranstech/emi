@@ -21,7 +21,7 @@ class JobCard(Document):
 		f_q=qty_final(self.job_order_detail)
 		print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",f_q)
 		make_stock_entry(self.production_order,"Manufacture",f_q,self.name)
-		self.stock_entry_through_job_cart()
+		self.check_pro_order()
 		
 	# Create Stock Entry For Final Inspection 
 	def stock_entry_through_job_cart(self):
@@ -51,10 +51,10 @@ class JobCard(Document):
 				frappe.throw("You Have Not Allowed to entered the Greater Value from Production Order Quantity")
 
 	def check_pro_order(self):
-		po_status= frappe.db.get_value("Production Order",{"name":self.production_order},"status")
-		# if po_status =='In Process':
-		# 	frappe.throw("Please First Submit The Production Order")
-		# else:
+		# po_status= frappe.db.get_value("Production Order",{"name":self.production_order},"status")
+		for chld1 in self.job_order_detail:
+			if chld1.process=="Final Inspection":
+				self.stock_entry_through_job_cart()
 		
 
 def get_order_items(po, chld, s_warehouse, t_warehouse):
@@ -69,11 +69,6 @@ def get_order_items(po, chld, s_warehouse, t_warehouse):
 		})
 		return items		
 
-# def finish_qty_se(self):
-# 	for chld in self.job_order_detail:
-# 		if chld.process=='Final Inspection':
-# 			make_stock_entry.f_qty=chld.completed_job
-# 	return f_qty
 
 @frappe.whitelist()
 def get_info_production(doctype, txt, searchfield, start, page_len, filters):
