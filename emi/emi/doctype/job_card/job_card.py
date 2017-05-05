@@ -12,17 +12,20 @@ from emi.emi.report.item_shortage_report_with_raw_material.item_shortage_report_
 
 class JobCard(Document):
 
-	def on_submit(self):
-		self.check_pro_order()
+	# def on_submit(self):
+	# 	#self.check_pro_order()
+
 
 	def validate(self):
 		self.final_inspected_qty()
 		f_q=qty_final(self.job_order_detail)
-		make_stock_entry(self.production_order,"Manufacture",f_q)
+		print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",f_q)
+		make_stock_entry(self.production_order,"Manufacture",f_q,self.name)
+		self.stock_entry_through_job_cart()
 		
-
 	# Create Stock Entry For Final Inspection 
 	def stock_entry_through_job_cart(self):
+		print("hiiiiiiiiiiiiiiiiiiii ##################################### Job Card Final")
 		# Stock Entry For Final Inspected Qty
 		for chld in self.job_order_detail:
 			if chld.process == "Final Inspection":
@@ -42,16 +45,17 @@ class JobCard(Document):
 
 #To Check Quantity is not Greater Than Production Order Quantity
 	def final_inspected_qty(self):
+		print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Final final_inspected_qty")
 		for chld in self.job_order_detail:
 			if chld.process == 'Final Inspection'  and  flt(self.quantity)<flt(chld.completed_job):
 				frappe.throw("You Have Not Allowed to entered the Greater Value from Production Order Quantity")
 
 	def check_pro_order(self):
 		po_status= frappe.db.get_value("Production Order",{"name":self.production_order},"status")
-		if po_status =='In Process':
-			frappe.throw("Please First Submit The Production Order")
-		else:
-			self.stock_entry_through_job_cart()
+		# if po_status =='In Process':
+		# 	frappe.throw("Please First Submit The Production Order")
+		# else:
+		
 
 def get_order_items(po, chld, s_warehouse, t_warehouse):
 	 	# Items from Production Order
@@ -101,6 +105,7 @@ def product_query(doctype, txt, searchfield, start, page_len, filters):
 	return data
 	# return frappe.db.sql(" select bin.item_code from tabBin bin,tabItem i where bin.projected_qty <0 and i.item_code =bin.item_code and i.item_group ='Products'",as_list=1)
 
+#added the Qty in Final Inspection Process
 @frappe.whitelist()
 def qty_final(job_order_detail):
 	for chld in job_order_detail:
