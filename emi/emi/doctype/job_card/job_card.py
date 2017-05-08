@@ -12,16 +12,16 @@ from emi.emi.report.item_shortage_report_with_raw_material.item_shortage_report_
 
 class JobCard(Document):
 
-	# def on_submit(self):
-	# 	#self.check_pro_order()
-
-
-	def validate(self):
-		self.final_inspected_qty()
+	def on_submit(self):
 		f_q=qty_final(self.job_order_detail)
 		print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",f_q)
 		make_stock_entry(self.production_order,"Manufacture",f_q,self.name)
 		self.check_pro_order()
+
+
+	def validate(self):
+		self.final_inspected_qty()
+		
 		
 	# Create Stock Entry For Final Inspection 
 	def stock_entry_through_job_cart(self):
@@ -30,6 +30,7 @@ class JobCard(Document):
 		for chld in self.job_order_detail:
 			if chld.process == "Final Inspection":
 				po = frappe.get_doc("Production Order", chld.production_order)
+				print 
 				si = frappe.get_doc({
 					"doctype": "Stock Entry",
 					"purpose": "Material Transfer",
@@ -38,6 +39,8 @@ class JobCard(Document):
 					"to_warehouse": "Stores - E",
 					"items": get_order_items(po, chld, po.get('fg_warehouse'), "Stores - E")
 				})
+				for i in si.items:
+					print i.__dict__, "000000000000000000000000000000000000000000000000000000"
 				si.flags.ignore_mandatory = True
 				si.save(ignore_permissions=True)
 				si.submit()
@@ -78,6 +81,7 @@ def get_info_production(doctype, txt, searchfield, start, page_len, filters):
 """
 get_query for Pending Sales order report
 """
+
 @frappe.whitelist()
 def sales_order_query(doctype, txt, searchfield, start, page_len, filters):
 	return frappe.db.sql("""select name from `tabSales Order`
@@ -86,6 +90,7 @@ def sales_order_query(doctype, txt, searchfield, start, page_len, filters):
 """
 get_query for Pending Purchase order report
 """
+
 @frappe.whitelist()
 def purchase_order_query(doctype, txt, searchfield, start, page_len, filters):
 	return frappe.db.sql("""select po.name,po.transaction_date,po.supplier
@@ -94,6 +99,7 @@ def purchase_order_query(doctype, txt, searchfield, start, page_len, filters):
 """
 get_query for item shortest report for raw material
 """
+
 @frappe.whitelist()
 def product_query(doctype, txt, searchfield, start, page_len, filters):
 	data = get_shortage_product_for_raw_material()
