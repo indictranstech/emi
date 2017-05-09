@@ -12,7 +12,7 @@ frappe.ui.form.on('Job Card', {
 	validate: function(frm) {
 		var emp_mandatory_for = []
 		var supplier_mandotory = []
-		emp_processes = ["Punching", "Cutting", "Welding","Shearing","Cleaning","Final Inspection"]
+		emp_processes = ["Pre Galvanize","Punching", "Cutting", "Welding","Shearing","Cleaning","Final Inspection"]
 		supp_processes = ["Powder Coating", "Hot Dip Galvanizing", "Wet Coating"]
 		$.each(frm.doc.job_order_detail, function(idx, row) {
 			if (inList(emp_processes, row.process) && 
