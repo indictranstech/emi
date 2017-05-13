@@ -9,7 +9,6 @@ def validate(self, method=None):
 		store_managers = frappe.db.sql(" select parent from tabUserRole where  role = 'Emi Store Manager' and parent <> 'Administrator'",as_list=True)
 		if store_managers:
 			for manager in store_managers[0]:
-				print manager,type(manager)
 				name = frappe.db.get_value("User",{"name":manager},"first_name")
 				stock_entry_submit_notification(self.name,manager,name,self.purpose,self.items)
 	

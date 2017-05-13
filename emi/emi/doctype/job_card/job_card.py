@@ -18,13 +18,10 @@ class JobCard(Document):
 		self.validate_final_inspected_qty()
 	
 	def validate_final_inspected_qty(self):
-		#To Check Quantity is not Greater Than Production Order quantity
-		for chld in self.job_order_detail:
-			if chld.process == 'Final Inspection' and flt(self.quantity) < flt(chld.completed_job):
-				frappe.throw("You Have Not Allowed to entered the Greater Value from Production Order Quantity")
+		pass
 
 
-	def on_submit(self):
+	def before_submit(self):
 		abbr = self.validate_for_default_company()
 		self.init_inspection_processes(abbr)
 
@@ -35,10 +32,38 @@ class JobCard(Document):
 			frappe.throw(_("Please set default company in Global Defaults."))
 		return frappe.db.get_value("Company", company, "abbr")
 
+	
+	def validate_inspected_qty(self, final_insp_dict, final_insp_warehouse):
+		""" validate if total inspected qty is not greater than 
+			total manufactured qty of particular production order.
+			Formula : 
+			production_qty = already inspected qty (from submiited job card) + current job-card inspected qty """
+
+		prod_dict = defaultdict(float)
+		for row in self.job_order_detail:
+			if row.process == "Final Inspection":
+				prod_dict[row.production_order] += flt(row.completed_job)
+
+		for prod_order, qty in final_insp_dict.iteritems():
+			if qty:
+				warehouse = prod_order[1] or final_insp_warehouse
+				po = frappe.get_doc("Production Order", prod_order[0]) 
+				actual_qty = frappe.db.get_value("Bin", {"warehouse":warehouse, "item_code":po.production_item}, "actual_qty")
+				if po.qty < po.inspected_qty + prod_dict.get(po.name, 0):
+					additional_qty = po.inspected_qty + prod_dict.get(po.name, 0) - po.qty 	
+					frappe.throw(_("Final Inspection qty exceeds total Manufactured \
+						qty for production Order <b>{0}</b>.<br>Please substract <b>{1}</b> qty from \
+						job card.".format(prod_order[0], additional_qty)))
+				if qty > actual_qty:
+					frappe.throw(_("Unable to process final inspection of {0}.\
+						</br>Warehouse <b>{1}</b> has only <b>{2}</b> quantity for item <b>{3}</b>."
+						.format(po.name, warehouse, flt(actual_qty), po.production_item)))
+				
 
 	def init_inspection_processes(self, abbr):
 		galvanize_dict, final_insp_dict = self.get_process_wise_dict()
 		final_insp_warehouse = "Factory Store Polish - " + abbr
+		self.validate_inspected_qty(final_insp_dict, final_insp_warehouse)
 		
 		# Initiate Pre-galvanize inspection (Manufacture) process.
 		for prod_order, manuf_qty in galvanize_dict.iteritems():
@@ -85,8 +110,18 @@ class JobCard(Document):
 	def init_stock_entry_for_final_inspection(self, po, frm_warehouse, qty, abbr):
 		"Final inspection stock entry (Material Transfer)"
 		po_doc = frappe.get_doc("Production Order", po)
+
 		self.make_stock_entry(po_doc, "Stores - " + abbr, qty, frm_warehouse)
-		
+		insp_qty = po_doc.inspected_qty + qty
+		frappe.db.set_value("Production Order", po, "inspected_qty", insp_qty)
+		if insp_qty == po_doc.qty:
+			frappe.db.set_value("Production Order", po, "status", "Inspection Finished")
+		elif insp_qty < po_doc.qty and po_doc.status != "Inspection In Progress":
+			frappe.db.set_value("Production Order", po, "status", "Inspection In Progress")
+	
+	def get_already_inspected_qty(self, po):
+		return frappe.db.get_value("Job Order Detail", {"docstatus":1, \
+			"production_order":po, "Process":"Final Inspection"}, "sum(completed_job)") or 0
 	
 	def make_stock_entry(self, po, tg_warehouse, qty, frm_warehouse=None):
 		"Make material transfer stock entry"

@@ -101,11 +101,11 @@ def get_percenage(value1,value2):
 def sales_order_submit_notification(name,margin):
 	try:
 		frappe.sendmail(
-			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			#recipients=["sagar.s@indictranstech.com","sukrut.j@indictranstech.com"],
+			# recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
+			recipients=["sagar.s@indictranstech.com","sukrut.j@indictranstech.com"],
 			expose_recipients="header",
-			sender=frappe.session.user,
-			reply_to=None,
+			# sender=frappe.session.user,
+			# reply_to=None,
 			subject="Sales Order Submit Notifications",
 			content=None,
 			reference_doctype=None,
@@ -149,7 +149,6 @@ def produ_order(self):
 
 @frappe.whitelist()
 def make_stock_entry(production_order_id, purpose, qty=None, name=None, via_job_card=False):
-	print "in custom make stock entry_________________________"
 	production_order = frappe.get_doc("Production Order", production_order_id)
 
 	stock_entry = frappe.new_doc("Stock Entry")
