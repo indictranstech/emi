@@ -6,69 +6,113 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import flt
-from erpnext.manufacturing.doctype.production_order.production_order import make_stock_entry
+from frappe.utils import flt, cint
+from emi.emi.custom_methods import make_stock_entry
 from emi.emi.report.item_shortage_report_with_raw_material.item_shortage_report_with_raw_material import get_data
+from collections import defaultdict, OrderedDict
+
 
 class JobCard(Document):
 
-	def on_submit(self):
-		f_q=qty_final(self.job_order_detail)
-		print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",f_q)
-		make_stock_entry(self.production_order,"Manufacture",f_q,self.name)
-		self.check_pro_order()
-
-
 	def validate(self):
-		self.final_inspected_qty()
-		
-		
-	# Create Stock Entry For Final Inspection 
-	def stock_entry_through_job_cart(self):
-		print("hiiiiiiiiiiiiiiiiiiii ##################################### Job Card Final")
-		# Stock Entry For Final Inspected Qty
+		self.validate_final_inspected_qty()
+	
+	def validate_final_inspected_qty(self):
+		#To Check Quantity is not Greater Than Production Order quantity
 		for chld in self.job_order_detail:
-			if chld.process == "Final Inspection":
-				po = frappe.get_doc("Production Order", chld.production_order)
-				print 
-				si = frappe.get_doc({
-					"doctype": "Stock Entry",
-					"purpose": "Material Transfer",
-					"posting_date": chld.date,
-					"from_warehouse": po.get('fg_warehouse'),
-					"to_warehouse": "Stores - E",
-					"items": get_order_items(po, chld, po.get('fg_warehouse'), "Stores - E")
-				})
-				for i in si.items:
-					print i.__dict__, "000000000000000000000000000000000000000000000000000000"
-				si.flags.ignore_mandatory = True
-				si.save(ignore_permissions=True)
-				si.submit()
-				frappe.db.commit()
-
-#To Check Quantity is not Greater Than Production Order Quantity
-	def final_inspected_qty(self):
-		print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Final final_inspected_qty")
-		for chld in self.job_order_detail:
-			if chld.process == 'Final Inspection'  and  flt(self.quantity)<flt(chld.completed_job):
+			if chld.process == 'Final Inspection' and flt(self.quantity) < flt(chld.completed_job):
 				frappe.throw("You Have Not Allowed to entered the Greater Value from Production Order Quantity")
 
-	def check_pro_order(self):
-		# po_status= frappe.db.get_value("Production Order",{"name":self.production_order},"status")
-		for chld1 in self.job_order_detail:
-			if chld1.process=="Final Inspection":
-				self.stock_entry_through_job_cart()
+
+	def on_submit(self):
+		abbr = self.validate_for_default_company()
+		self.init_inspection_processes(abbr)
+
+	
+	def validate_for_default_company(self):
+		company = frappe.db.get_value("Global Defaults", None, "default_company")
+		if not company:
+			frappe.throw(_("Please set default company in Global Defaults."))
+		return frappe.db.get_value("Company", company, "abbr")
+
+
+	def init_inspection_processes(self, abbr):
+		galvanize_dict, final_insp_dict = self.get_process_wise_dict()
+		final_insp_warehouse = "Factory Store Polish - " + abbr
+		
+		# Initiate Pre-galvanize inspection (Manufacture) process.
+		for prod_order, manuf_qty in galvanize_dict.iteritems():
+			if isinstance(prod_order, unicode) and manuf_qty:
+				black_qty = galvanize_dict.get(tuple([prod_order, "black_qty"]), 0)
+				self.init_stock_entry_for_pre_galvanize(prod_order, manuf_qty, black_qty, abbr)
+		
+		# Initaie Final Inspection (material Transfer to Stores) process.		
+		for prod_order, qty in final_insp_dict.iteritems():
+			if qty:
+				frm_warehouse = prod_order[1] or final_insp_warehouse
+				self.init_stock_entry_for_final_inspection(prod_order[0], frm_warehouse, qty, abbr)
+
+	
+	def get_process_wise_dict(self):
+		""" According to production order,Get Pre-galvanize process dict 
+			containing black & non-black qty & Final-Inspection dict """
+
+		galvanize_dict = defaultdict(float)
+		final_insp_dict = defaultdict(float)
+
+		for row in self.job_order_detail:
+			if row.process == "Pre Gal Insp":
+				galvanize_dict[row.production_order] += flt(row.completed_job)
+				if row.black_material == "Yes":
+					galvanize_dict[tuple([row.production_order, "black_qty"])] += flt(row.completed_job)
+				else:
+					galvanize_dict[tuple([row.production_order, "non_black_qty"])] += flt(row.completed_job)
+			if row.process == "Final Inspection":
+				final_insp_dict[tuple([row.production_order, row.inspection_warehouse])] += flt(row.completed_job)
+		return galvanize_dict, final_insp_dict
+
+
+	def init_stock_entry_for_pre_galvanize(self, prod_order, manuf_qty, black_qty, abbr):
+		"""Make Manufacture stock entry according to qty & 
+			make material transfer entry if black material exists"""
+	
+		po_doc = make_stock_entry(prod_order, "Manufacture", manuf_qty, via_job_card=True)
+		black_warehouse = "Factory Store Black - " + abbr
+		if black_qty:
+			self.make_stock_entry(po_doc, black_warehouse, black_qty)
+	
+
+	def init_stock_entry_for_final_inspection(self, po, frm_warehouse, qty, abbr):
+		"Final inspection stock entry (Material Transfer)"
+		po_doc = frappe.get_doc("Production Order", po)
+		self.make_stock_entry(po_doc, "Stores - " + abbr, qty, frm_warehouse)
+		
+	
+	def make_stock_entry(self, po, tg_warehouse, qty, frm_warehouse=None):
+		"Make material transfer stock entry"
+		doc = frappe.get_doc({
+			"doctype":"Stock Entry",
+			"purpose":"Material Transfer",
+			"company":po.company,
+			"from_warehouse": frm_warehouse or po.get('fg_warehouse'),
+			"to_warehouse": tg_warehouse,
+			"items": self.get_se_items(po, qty, frm_warehouse or po.get('fg_warehouse'), tg_warehouse)
+		})
+		doc.save(ignore_permissions=True)
+		doc.submit()
 		
 
-def get_order_items(po, chld, s_warehouse, t_warehouse):
-	 	# Items from Production Order
-	 	items = []
-	 	items.append({
-			"s_warehouse": s_warehouse,
-			"t_warehouse": t_warehouse,
-			"item_code": po.get('production_item'),
-			"qty": float(chld.completed_job),
-			"uom": po.get('stock_uom'),
+	def get_se_items(self, po, qty, s_warehouse, t_warehouse):
+		# Items from Production Order
+		items = []
+		items.append({
+			"s_warehouse":s_warehouse,
+			"t_warehouse":t_warehouse,
+			"item_code":po.get('production_item'),
+			"item_name":po.get("production_item"),
+			"description":po.get("description"),
+			"qty":qty,
+			"uom":po.get('stock_uom')
 		})
 		return items		
 

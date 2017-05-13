@@ -6,7 +6,7 @@ from frappe import _
 
 def validate(self, method=None):
 	#if self.status == "Completed":
-	account_manager= frappe.db.sql(" select parent from tabUserRole where  role = 'Accounts Manager' and parent <> 'Administrator'",as_list=True)
+	account_manager= frappe.db.sql(" select parent from tabUserRole where  role = 'Emi Account Manager' and parent <> 'Administrator'",as_list=True)
 	if account_manager:
 		for manager in account_manager[0]:
 			print manager,type(manager)

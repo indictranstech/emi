@@ -5,7 +5,7 @@
   "docstatus": 0, 
   "doctype": "Letter Head", 
   "footer": null, 
-  "is_default": 1, 
+  "is_default": 0, 
   "letter_head_name": "Everest", 
   "modified": "2017-03-15 12:11:09.321490", 
   "name": "Everest"
@@ -16,9 +16,9 @@
   "docstatus": 0, 
   "doctype": "Letter Head", 
   "footer": "<img src=\"/files/EMI L.Head address.png\">", 
-  "is_default": 0, 
+  "is_default": 1, 
   "letter_head_name": "EMI With Logo andName", 
-  "modified": "2017-04-12 11:16:57.644827", 
+  "modified": "2017-05-12 13:17:32.300577", 
   "name": "EMI With Logo andName"
  }, 
  {

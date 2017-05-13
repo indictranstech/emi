@@ -12,16 +12,37 @@ def execute(filters=None):
 
 def get_data(filters):
 	if filters:
-
-		data= frappe.db.sql("""select so.name,so.customer,so.transaction_date,so.delivery_date,so.grand_total,
+		if filters.sale_person and not filters.customer:
+			data= frappe.db.sql("""select so.name,so.customer,so.transaction_date,so.delivery_date,so.grand_total,
+					st.sales_person,st.contact_no,st.allocated_percentage,st.allocated_amount,
+					st.incentives
+					from
+  						`tabSales Order` so, `tabSales Team` st
+					where
+ 							st.parent =so.name and st.sales_person='{0}'
+					order by so.name desc""".format(filters.sale_person),debug=1)
+			return data
+		if filters.customer and not filters.sale_person :
+			data= frappe.db.sql("""select so.name,so.customer,so.transaction_date,so.delivery_date,so.grand_total,
+					st.sales_person,st.contact_no,st.allocated_percentage,st.allocated_amount,
+					st.incentives
+					from
+  						`tabSales Order` so, `tabSales Team` st
+					where
+ 							st.parent =so.name and so.customer ='{0}'
+					order by so.name desc""".format(filters.customer),debug=1)
+			return data
+		if filters.customer and  filters.sale_person :
+			data= frappe.db.sql("""select so.name,so.customer,so.transaction_date,so.delivery_date,so.grand_total,
 					st.sales_person,st.contact_no,st.allocated_percentage,st.allocated_amount,
 					st.incentives
 					from
   						`tabSales Order` so, `tabSales Team` st
 					where
  							st.parent =so.name and st.sales_person='{0}' and so.customer ='{1}'
-					order by so.name desc""".format(filters.sale_person,filters.customer))
-		return data
+					order by so.name desc""".format(filters.sale_person,filters.customer),debug=1)
+			return data
+
 	
 
 	else:

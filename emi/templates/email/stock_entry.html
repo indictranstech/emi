@@ -1,0 +1,25 @@
+Hello {{Name}},<br><br>
+
+Stock Entry for {{purpose}} purpose has been Submitted on {{date}} 
+<br><br>
+<table cellspacing = "0" border = "1" cellpadding="3">
+	<tr>
+		<th>SR</th>
+		<th>Source Warehouse</th> 
+		<th>Item</th>
+		<th>Qty</th>
+		<th>Target Warehouse</th>
+	</tr>
+{%- for row in items -%}
+	<tr>
+		<td>{{row.idx}}</td>
+		<td>{{row.s_warehouse}}</td>
+		<td>{{row.item_code}}</td>
+		<td>{{row.qty}}</td>
+		<td>{{row.t_warehouse}}</td>
+	</tr>
+{%- endfor -%}
+</table>
+<br>
+Thank You,<br>
+EMI <br>

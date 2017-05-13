@@ -34,7 +34,6 @@ def get_data(filters):
 											po.status = 'To Receive and Bill' """,as_dict=1) 
 
 		for order in purchase_orders:
-			print "orders",order
 			data1 = []
 			data1 = frappe.db.sql("""select po.name,po.type,po.supplier,po.company,po.transaction_date,po.is_subcontracted,po.supplier_address,po.customer_purchase_order_no,po.grand_total,
 	 							po_item.item_name,po_item.item_group,
@@ -47,8 +46,6 @@ def get_data(filters):
 								where
 									po.name = '{0}' and po_item.parent ='{1}' and (po.status ='Draft' or po.status = 'To Receive and Bill')
 									""".format(order['name'],order['name']),as_list=1)
-			print "data1",data1
-			print "\n\n\_______________________"
 			total_row = get_total_sales_amount(data1)
 			last_row  = get_last_total(last_row,total_row)   
 			data.extend(data1)

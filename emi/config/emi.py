@@ -169,6 +169,83 @@ def get_data():
 			"label": _("Quality Inspect Report"),
 			"description": _("Quality Inspect Report"),
 			"doctype":"Quality Report"
+		},
+		{
+			"type": "report",
+			"name": "Sales Analysis",
+			"is_query_report": True,
+			"label": _("Sales Analysis"),
+			"description": _("Sales Analysis"),
+			"doctype":"Sales Order"
+		},
+		{
+			"type": "report",
+			"name": "Sales Report For Sales Person Customer",
+			"is_query_report": True,
+			"label": _("Sales Report For Sales Person Customer"),
+			"description": _("Sales Report For Sales Person Customer"),
+			"doctype":"Sales Order"
+		},
+			{
+			"type": "report",
+			"name": "EMI Stock Balance",
+			"is_query_report": True,
+			"label": _("EMI Stock Balance"),
+			"description": _("EMI Stock Balance"),
+			"doctype":"Stock Ledger Entry"
+		},
+		]
+	},
+	{
+	"label": _("Other Report"),
+	"icon": "icon-star",
+	"items": [
+		{
+			"type": "report",
+			"name": "Item Shortage Report With Raw Material",
+			"is_query_report": True,
+			"label": _("Item Shortage Report With Raw Material"),
+			"description": _("Item Shortage Report With Raw Material"),
+			"doctype":"Bin"
+		},
+		{
+			"type": "report",
+			"name": "Item%20BOM%20Details",
+			"is_query_report": True,
+			"label": _("BOM Details Item Wise"),
+			"description": _("BOM Details Item Wise"),
+			"doctype":"Item"
+			
+		},
+		{
+			"type": "report",
+			"name": "Quality Inspect Report",
+			"label": _("Quality Inspect Report"),
+			"description": _("Quality Inspect Report"),
+			"doctype":"Quality Report"
+		},
+		{
+			"type": "report",
+			"name": "Pending%20Purchase%20Order",
+			"is_query_report": True,
+			"label": _("Pending Purchase Report"),
+			"description": _("Pending Purchase Report"),
+			"doctype":"Purchase Order"
+		},
+		{
+			"type": "report",
+			"name": "Pending%20Sales%20Order",
+			"is_query_report": True,
+			"label": _("Pending Sales Report"),
+			"description": _("Pending Sales Report"),
+			"doctype":"Sales Order"
+		},
+		{
+			"type": "report",
+			"name": "Margin%20per%20Sales%20Order",
+			"label": _("Margin per Sales Order"),
+			"description": _("Margin per Sales Order"),
+			"doctype":"Sales Order"
 		}
 		]
 	}

@@ -24,15 +24,11 @@ def get_data(filters):
 									so.name = '{0}' and so_item.parent ='{1}' and (so.status ='Draft' or so.status = 'To Deliver and Bill')
 								order by so.name desc""".format(filters.name,filters.name),as_list=1)
 	else:
-		# sales_ordres = frappe.db.sql("""select so.name from `tabSales Order` so where so.status = 'Draft' or 
-		# 		so.status = 'To Deliver and Bill'""",as_dict=1)
-		# print "sales_ordres",sales_ordres
 		data=[]
 		total_row = [[u'', u'', u'', '','', u'', u'', u'',0.0, u'', u'', u'', u'',0.0,0.0,0.0,0.0, 0.0,0.0]]
 		last_row = [[u'', u'', u'', '','', u'', u'', u'',0.0, u'', u'', u'', u'',0.0,0.0,0.0,0.0, 0.0,0.0]]
 		sales_orders = frappe.db.sql("select so.name from `tabSales Order` so where so.status = 'Draft' or so.status = 'To Deliver and Bill'""",as_dict=1)
 		for order in sales_orders:
-			print "orders",order
 			data1 = []
 			data1 = frappe.db.sql("""select so.name,so.customer,so.company,so.transaction_date,so.delivery_date,so.contact_person,so.customer_address,
 	 							so.po_no,so.grand_total,so_item.item_name,so_item.item_group,
@@ -45,20 +41,13 @@ def get_data(filters):
 								where
 									so.name = '{0}' and so_item.parent ='{1}' and (so.status ='Draft' or so.status = 'To Deliver and Bill')
 								order by so.name desc""".format(order['name'],order['name']),as_list=1)
-			print "data1",data1
-			print "\n\n\_______________________"
 			data.extend(data1)
 			total_row = get_total_sales_amount(data1)
 			last_row  = get_last_total(last_row,total_row)   
 			data.extend(total_row)
 		data.extend(last_row)
 		return data
-		# print "____________data",data
-		# return frappe.db.sql("""select so.name,so.customer,so.company,so.transaction_date,so.delivery_date,so.contact_person,so.customer_address,so.po_no,
-		# 		so.grand_total from `tabSales Order` so where so.status = 'Draft' or 
-		# 		so.status = 'To Deliver and Bill'""",as_list=1) 
-
-
+		
 def get_colums(filters):
 	columns =[ ("Sales Order") + ":Link/Sales Order:100",
 				   ("Party") + ":Data:150",

@@ -33,7 +33,6 @@ def get_data(filters):
 					where
  							st.parent =so.name 
 					order by so.name desc""")
-		print "***data",data
 		return data 
 
 def get_colums(filters):

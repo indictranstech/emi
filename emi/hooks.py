@@ -46,7 +46,7 @@ app_license = "INDICTRANS"
 # ------------
 
 # before_install = "emi.install.before_install"
-# after_install = "emi.install.after_install"
+#after_install = "emi.install.after_install"
 
 # Desk Notifications
 # ------------------
@@ -85,6 +85,9 @@ doc_events = {
 	"Delivery Note": {
         "validate": "emi.custom_script.delivery_note.delivery_note.validate",
     },
+    "Stock Entry":{
+    	 "validate": "emi.custom_script.stock_entry.stock_entry.validate",
+    },
 	
 }
 
@@ -122,7 +125,7 @@ doctype_js = {
 # Overriding Whitelisted Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "emi.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.manufacturing.doctype.production_order.production_order.make_stock_entry": "emi.emi.custom_methods.make_stock_entry"
+}
 fixtures = ["Web Form","Custom Field","Print Format","Property Setter","Letter Head","Report","Custom Script"]
