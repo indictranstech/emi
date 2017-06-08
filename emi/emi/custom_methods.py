@@ -22,10 +22,8 @@ def calulate_consolidated_margin(doc, method):
 	for row in doc.items:
 		if not row.price_list_rate:
 			frappe.throw(("First create 'Item Price' for this item."))
-
-		if doc.discount_amount>doc.consolidated_margin:
-			frappe.throw(("You Can't Give " +str(doc.additional_discount_percentage)+" % Discount "))
-
+		
+		
 
 		# # if row.discount_percentage:
 		# # 	if row.margin_type == "Amount":	
@@ -58,7 +56,6 @@ def calulate_consolidated_margin(doc, method):
 	
 	doc.consolidated_margin = consolidated_margin
 	if consolidated_margin != 0: 
-		print "consolidated_margin_percentage",((consolidated_margin)/price_list_total*100)	
 		doc.consolidated_margin_percentage = get_percenage(float(consolidated_margin),float(price_list_total))
 	
 	if doc.doctype == "Sales Order" and doc.status =="To Deliver and Bill":
@@ -70,6 +67,15 @@ def calulate_consolidated_margin(doc, method):
 			for executive in sales_executives[0]:
 				name = frappe.db.get_value("User",{"name":executive},"first_name")
 				quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,executive,name,doc.customer)	
+		if doc.employee:
+			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
+			quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,email_id,doc.lead_owner_name,doc.customer)
+
+
+	if doc.consolidated_margin:
+		if doc.discount_amount>doc.consolidated_margin:
+			frappe.throw(("Discount Amount Should Be Less Than Consolidated Margin"))
+
 
 
 
@@ -101,8 +107,8 @@ def get_percenage(value1,value2):
 def sales_order_submit_notification(name,margin):
 	try:
 		frappe.sendmail(
-			# recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			recipients=["sagar.s@indictranstech.com","sukrut.j@indictranstech.com"],
+			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
+			#recipients=["sagar.s@indictranstech.com","sukrut.j@indictranstech.com"],
 			expose_recipients="header",
 			# sender=frappe.session.user,
 			# reply_to=None,
@@ -138,7 +144,6 @@ def quotation_submit_notification(name,margin,recp,recp_name,customer):
 		)
 	except Exception,e:
 		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
-
 
 
 

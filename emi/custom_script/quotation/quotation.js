@@ -7,7 +7,8 @@
 // 		})
 // 	refresh_field("items") 
 // }
-
+cur_frm.add_fetch("employee", "cell_number", "mobile_no");
+cur_frm.add_fetch("employee", "employee_name", "lead_owner_name");
 
 cur_frm.cscript.final_margin_type = function(frm){
 	cur_frm.set_value("final_margin_rate_or_amount", 0.0)
@@ -58,12 +59,19 @@ return{
 }*/
 
 
+cur_frm.fields_dict['employee'].get_query = function(doc,cdt,cdn) {
+	return{
+			query: "emi.custom_script.quotation.quotation.get_sales_person",
+			filters:{'customer': doc.customer}
+	}
+},
+
 
 
 
 cur_frm.fields_dict.lead_owner_name.get_query = function(doc,cdt,cdn) {
 	return{
-		query: "emi.custom_script.quotation.quotation.get_sales_person",
+		//query: "emi.custom_script.quotation.quotation.get_sales_person",
 		filters:{'customer': doc.customer}
 }
 }

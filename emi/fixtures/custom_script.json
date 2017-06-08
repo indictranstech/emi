@@ -7,14 +7,5 @@
   "name": "Purchase Order-Client", 
   "script": "cur_frm.add_fetch('supplier', 'payment_terms', 'payment_terms')", 
   "script_type": "Client"
- }, 
- {
-  "docstatus": 0, 
-  "doctype": "Custom Script", 
-  "dt": "Quotation", 
-  "modified": "2017-03-21 10:51:02.317505", 
-  "name": "Quotation-Client", 
-  "script": "cur_frm.add_fetch(\"lead_owner_name\", \"cell_number\", \"mobile_no\");", 
-  "script_type": "Client"
  }
 ]
