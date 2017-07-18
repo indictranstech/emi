@@ -13,7 +13,7 @@ frappe.ui.form.on('Job Card', {
 	validate: function(frm) {
 		var emp_mandatory_for = []
 		var supplier_mandotory = []
-		emp_processes = ["Pre Galvanize","Punching", "Cutting", "Welding","Shearing","Cleaning","Final Inspection"]
+		emp_processes = ["Pre Gal Insp","Punching","Bending", "Cutting", "Welding","Shearing","Cleaning","Final Inspection"]
 		supp_processes = ["Powder Coating", "Hot Dip Galvanizing", "Wet Coating"]
 		$.each(frm.doc.job_order_detail, function(idx, row) {
 			if (inList(emp_processes, row.process) && 
@@ -64,18 +64,7 @@ frappe.ui.form.on('Job Order Detail',{
 		d.production_order_quantity = frm.doc.quantity
 		d.sales_order = frm.doc.sales_order																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															
 	},
-	/*To Check Final Inspection Process is not greater than one*/
-	process: function(frm, cdt, cdn) {
-	// var counter=0;
-	// $.each(cur_frm.doc.job_order_detail,function(i,v){
-	// 	if(v.process=='Final Inspection'){
-	// 		counter++;
-	// 		if(counter>1){
-	// 			frappe.throw("Only One Final Inspection Process is Allowed in One Job Card")
-	// 		}
-	// 	}
-	// })
-	}
+	
 });
 
 cur_frm.fields_dict.job_order_detail.grid.get_field("production_order").get_query = function(doc) {
@@ -87,11 +76,7 @@ cur_frm.fields_dict.job_order_detail.grid.get_field("production_order").get_quer
 }
 cur_frm.fields_dict.job_order_detail.grid.get_field("machine_no").get_query = function(doc, cdt, cdn) {
 	var d = locals[cdt][cdn];
-	return {
-		filters: {
-			"machine_no": d.process
-		}
-	}
+	return {filters:{"process":d.process }}
 }
 cur_frm.fields_dict["production_order"].get_query = function(doc) {
 	return {
