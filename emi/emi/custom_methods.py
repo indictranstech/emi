@@ -95,20 +95,11 @@ def add_margin_price(items,final_margin_type,final_margin_rate_or_amount):
 def get_percenage(value1,value2):
 	return (value1/value2*100)
 
-# @frappe.whitelist()
-# def less_margin_notification(doctype,name,margin,margin_type,discount_percentage):
-# 	frappe.sendmail(
-# 				recipients="sagar.s@indictranstech.com",
-# 				sender=frappe.session.user,
-# 				subject="Low Magin",
-# 				message=frappe.render_template("templates/email/less_margin_notification.html", {"Name":"Sagar","doctype": doctype,"name":name,"margin":margin,"type":margin_type,"discount":discount_percentage}) 
-# 		)
-
 def sales_order_submit_notification(name,margin):
 	try:
 		frappe.sendmail(
 			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			#recipients=["sagar.s@indictranstech.com","sukrut.j@indictranstech.com"],
+			# recipients=["onkar.m@indictranstech.com","khushal.t@indictranstech.com"],
 			expose_recipients="header",
 			# sender=frappe.session.user,
 			# reply_to=None,
@@ -116,7 +107,7 @@ def sales_order_submit_notification(name,margin):
 			content=None,
 			reference_doctype=None,
 			reference_name=None,
-			message = frappe.render_template("templates/email/sales_order_sunmit_notification.html", {"Name":"Sagar","name":name,"margin":margin}),
+			message = frappe.render_template("templates/email/sales_order_sunmit_notification.html", {"name":name,"margin":margin}),
 			message_id=None,
 			unsubscribe_message=None,
 			delayed=False,
@@ -149,7 +140,6 @@ def quotation_submit_notification(name,margin,recp,recp_name,customer):
 
 def produ_order(self):
 	black=frappe.db.get_value("Job Card",{"name":production_order},"black_material")
-	print("Jjjjjjjjjjjjjjjj",black)
 
 
 @frappe.whitelist()
