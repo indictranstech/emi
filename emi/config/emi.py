@@ -151,7 +151,7 @@ def get_data():
 		{
 			"type": "report",
 			"is_query_report": True,
-			"name": "Process%20wise%20Production%20Report",
+			"name": "Production%20Report%20(Process%20Wise)",
 			"label": _("Production Report (Process Wise)"),
 			"description": _("Production Report (Process Wise)"),
 			"doctype":"Job Card"
