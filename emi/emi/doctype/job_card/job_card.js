@@ -70,7 +70,7 @@ frappe.ui.form.on('Job Order Detail',{
 cur_frm.fields_dict.job_order_detail.grid.get_field("production_order").get_query = function(doc) {
 	return {
 		filters: {
-			"status": ["in", ['In Process', 'Inspection In Progress']]
+			"status": ["in", ['In Process','Completed','Inspection In Progress']]
 		}
 	}
 }
@@ -84,7 +84,7 @@ cur_frm.fields_dict.job_order_detail.grid.get_field("machine_no").get_query = fu
 cur_frm.fields_dict["production_order"].get_query = function(doc) {
 	return {
 		filters: {
-			"status": ["in", ['In Process','Inspection In Progress']]
+			"status": ["in", ['In Process','Completed','Inspection In Progress']]
 		}
 	}
 }
