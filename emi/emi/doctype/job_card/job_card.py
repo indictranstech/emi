@@ -227,4 +227,10 @@ def get_shortage_product_for_raw_material():
 			shortage_product.append(row[0])
 	print "shortage_product",shortage_product
 	return [[product] for product in shortage_product]
-	
+
+@frappe.whitelist()
+def get_machine(doctype, txt, searchfield, start, page_len, filters):
+	# return frappe.db.sql("""select distinct m.name from `tabMachine` m, `tabMachine Process` mp 
+	# 	where mp.process = '%s' and m.name = mp.parent"""%(filters.get('process')))
+	return frappe.db.sql("""select parent from `tabMachine Process` where process = '%s'
+		"""%(filters.get('process')))

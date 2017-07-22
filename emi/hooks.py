@@ -83,12 +83,14 @@ doc_events = {
 		"before_submit": "emi.emi.custom_methods.get_requested_for"
 	},
 	"Delivery Note": {
-        "validate": "emi.custom_script.delivery_note.delivery_note.validate",
+        "on_submit": "emi.custom_script.delivery_note.delivery_note.on_submit",
     },
     "Stock Entry":{
-    	 "validate": "emi.custom_script.stock_entry.stock_entry.validate",
+    	 "on_submit": "emi.custom_script.stock_entry.stock_entry.on_submit",
     },
-	
+	"Purchase Receipt":{
+    	 "on_submit": "emi.custom_script.purchase_receipt.purchase_receipt.on_submit",
+    }
 }
 
 doctype_js = {

@@ -1,0 +1,23 @@
+Hello {{Name}},<br><br>
+
+Following Items has been <b>received</b> from <b>{{supplier}}</b> on {{date}}.
+<br><br>
+<table cellspacing = "0" border = "1" cellpadding="3">
+	<tr>
+		<th>SR</th>
+		<th>Item</th>
+		<th>Qty</th>
+		<th>Accepted Warehouse</th>
+	</tr>
+{%- for row in items -%}
+	<tr>
+		<td>{{row.idx}}</td>
+		<td>{{row.item_code}}</td>
+		<td>{{row.qty}}</td>
+		<td>{{row.warehouse}}</td>
+	</tr>
+{%- endfor -%}
+</table>
+<br>
+Thank You,<br>
+EMI <br>

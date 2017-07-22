@@ -76,7 +76,10 @@ cur_frm.fields_dict.job_order_detail.grid.get_field("production_order").get_quer
 }
 cur_frm.fields_dict.job_order_detail.grid.get_field("machine_no").get_query = function(doc, cdt, cdn) {
 	var d = locals[cdt][cdn];
-	return {filters:{"process":d.process }}
+	return {
+		query: "emi.emi.doctype.job_card.job_card.get_machine",
+		"filters": {'process': d.process}
+	}
 }
 cur_frm.fields_dict["production_order"].get_query = function(doc) {
 	return {
