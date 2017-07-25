@@ -1,6 +1,6 @@
 {
  "allow_copy": 0, 
- "allow_import": 0, 
+ "allow_import": 1, 
  "allow_rename": 0, 
  "autoname": "field:sub_category", 
  "beta": 0, 
@@ -79,7 +79,7 @@
  "issingle": 0, 
  "istable": 0, 
  "max_attachments": 0, 
- "modified": "2017-05-09 09:18:56.162945", 
+ "modified": "2017-07-25 13:55:42.828970", 
  "modified_by": "Administrator", 
  "module": "Emi", 
  "name": "Sub Category", 
