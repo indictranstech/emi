@@ -56,7 +56,7 @@ def get_colums(filters):
 				   ("Delivery Date") + ":Date:100",
 				   ("Contact Person")+ " :Data:140",
 				   ("Address")+":Data:180",
-				   ("Ref No") + ":Data:140",
+				   ("Customer PO NO") + ":Data:140",
 				   ("Amount") + ":Currency:120",
 				   ("Item Name") + ":Data:100" ,
 				   ("item_group") + ":Data:100",
