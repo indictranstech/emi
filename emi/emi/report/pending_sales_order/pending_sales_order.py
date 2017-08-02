@@ -15,7 +15,8 @@ def get_data(filters):
 	 	return frappe.db.sql("""select so.name,so.customer,so.company,so.transaction_date,so.delivery_date,so.contact_person,so.customer_address,
 	 							so.po_no,so.grand_total,so_item.item_name,so_item.item_group,
   								so_item.description,so_item.stock_uom,
-  								so_item.qty,so_item.qty,
+  								so_item.qty,so_item.delivered_qty,
+  								format((so_item.qty - so_item.delivered_qty),2),
   								so_item.rate,so_item.base_net_rate,	
   								so_item.amount,so_item.base_net_amount  
 								from
@@ -25,7 +26,7 @@ def get_data(filters):
 								order by so.name desc""".format(filters.name,filters.name),as_list=1)
 	else:
 		data=[]
-		total_row = [[u'', u'', u'', '','', u'', u'', u'',0.0, u'', u'', u'', u'',0.0,0.0,0.0,0.0, 0.0,0.0]]
+		total_row = [[u'Total', u'', u'', '','', u'', u'', u'',0.0, u'', u'', u'', u'',0.0,0.0,0.0,0.0, 0.0,0.0]]
 		last_row = [[u'', u'', u'', '','', u'', u'', u'',0.0, u'', u'', u'', u'',0.0,0.0,0.0,0.0, 0.0,0.0]]
 		sales_orders = frappe.db.sql("select so.name from `tabSales Order` so where so.status = 'Draft' or so.status = 'To Deliver and Bill'""",as_dict=1)
 		for order in sales_orders:
@@ -33,7 +34,8 @@ def get_data(filters):
 			data1 = frappe.db.sql("""select so.name,so.customer,so.company,so.transaction_date,so.delivery_date,so.contact_person,so.customer_address,
 	 							so.po_no,so.grand_total,so_item.item_name,so_item.item_group,
   								so_item.description,so_item.stock_uom,
-  								so_item.qty,so_item.qty,
+  								so_item.qty,so_item.delivered_qty,
+  								format((so_item.qty - so_item.delivered_qty),2),
   								so_item.rate,so_item.base_net_rate,	
   								so_item.amount,so_item.base_net_amount  
 								from
@@ -59,11 +61,12 @@ def get_colums(filters):
 				   ("Customer PO NO") + ":Data:140",
 				   ("Amount") + ":Currency:120",
 				   ("Item Name") + ":Data:100" ,
-				   ("item_group") + ":Data:100",
+				   ("Item_group") + ":Data:100",
 				   ("Description") + ":Data:100",
 				   ("UOM") + ":Data:50",
 				   ("Qty") + ":Float:50" , 
-				   ("Pending") + ":Float:60",
+				   ("Delivered Qty") +":Float:50",
+				   ("Pending Qty") + ":Float:60",
 				   ("Rate") + ":Currency:120",
 				   ("Net Rate") + ":Currency:120", 
 		  		   ("Amount") + ":Currency:80",
@@ -89,7 +92,7 @@ def get_total_sales_amount(item_list):
 		amount1 =amount1 + float(item[17])
 		net_amount = net_amount + float (item[18])
 		
-	return [[u'', u'', u'', '','', u'', u'', u'',amount, u'', u'', u'', u'',qty,pending_qty,rate,net_rate, amount1, net_amount]]
+	return [[u'Total', u'', u'', '','', u'', u'', u'',amount, u'', u'', u'', u'',qty,pending_qty,rate,net_rate, amount1, net_amount]]
 
 def get_last_total(last_row,item_list):
 	
@@ -111,4 +114,4 @@ def get_last_total(last_row,item_list):
 		amount1 =amount1 + float(item[17])
 		net_amount = net_amount + float (item[18])
 		
-	return [[u'', u'', u'', '','', u'', u'', u'',amount, u'', u'', u'', u'',qty,pending_qty,rate,net_rate, amount1, net_amount]]
+	return [[u'Final Total', u'', u'', '','', u'', u'', u'',amount, u'', u'', u'', u'',qty,pending_qty,rate,net_rate, amount1, net_amount]]

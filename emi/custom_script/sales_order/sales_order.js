@@ -1,3 +1,6 @@
+
+cur_frm.add_fetch("employee", "cell_number", "mobile_no");
+cur_frm.add_fetch("employee", "employee_name", "lead_owner_name");
 cur_frm.cscript.final_margin_type = function(frm){
 	cur_frm.set_value("final_margin_rate_or_amount", 0.0)
 	refresh_field("final_margin_rate_or_amount")

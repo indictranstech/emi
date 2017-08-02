@@ -86,7 +86,7 @@ class JobCard(Document):
 		final_insp_dict = defaultdict(float)
 
 		for row in self.job_order_detail:
-			if row.process == "Pre Gal Insp":
+			if row.process == "Pre Inspection":
 				galvanize_dict[row.production_order] += flt(row.completed_job)
 				if row.black_material == "Yes":
 					galvanize_dict[tuple([row.production_order, "black_qty"])] += flt(row.completed_job)

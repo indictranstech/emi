@@ -1,0 +1,33 @@
+<div style="margin-bottom: 7px;" class="text-center">
+	{%= frappe.boot.letter_heads[filters.letter_head ||  frappe.defaults.get_default("letter_head")] %}
+</div>
+<h2 class="text-center">Pending Sales Order</h2>
+<table class="table table-bordered">
+	<tr>
+		<th>Sr</th>
+		<th>Sales Order</th>
+		<th>Party</th> 
+		<th>Item Name</th>
+		<th>Description</th>
+		<th>UOM</th>
+		<th>Ordered Qty</th>
+		<th>Delivered Qty</th>
+		<th>Balanced Qty</th>
+		<th>Rate</th>
+	</tr>
+	{% for(var i=0, l=data.length; i<l; i++) { %}
+	
+		<tr>
+			<td>{%= i+1 %}</td>
+			<td>{%= data[i][__("Sales Order")]  %}</td>
+			<td>{%= data[i][__("Party")]  %}</td> 
+			<td>{%= data[i][__("Item Name")]  %}</td>
+			<td>{%= data[i][__("Description")]  %}</td>
+			<td>{%= data[i][__("UOM")]  %}</td>
+			<td>{%= data[i][__("Qty")]  %}</td>
+			<td>{%= data[i][__("Delivered Qty")]  %}</td>
+			<td>{%= data[i][__("Pending Qty")]  %}</td>
+			<td>{%= data[i][__("Rate")]  %}</td>
+		</tr>
+	{% } %}
+</table> 
