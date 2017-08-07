@@ -16,5 +16,14 @@
   "name": "Sales Invoice-Client", 
   "script": "cur_frm.add_fetch(\"employee\", \"employee_name\", \"lead_owner_name\");\n", 
   "script_type": "Client"
+ }, 
+ {
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Stock Entry", 
+  "modified": "2017-08-07 12:42:56.469188", 
+  "name": "Stock Entry-Client", 
+  "script": "cur_frm.add_fetch(\"to_warehouse\", \"address_line_1\", \"address_line_1\");\ncur_frm.add_fetch(\"to_warehouse\", \"address_line_2\", \"address_line_2\");\ncur_frm.add_fetch(\"to_warehouse\", \"state\", \"state\");\ncur_frm.add_fetch(\"to_warehouse\", \"city\", \"city\");\ncur_frm.add_fetch(\"to_warehouse\", \"pin\", \"pin\");\ncur_frm.add_fetch(\"to_warehouse\", \"mobile_no\", \"mobile_no\");\n", 
+  "script_type": "Client"
  }
 ]
