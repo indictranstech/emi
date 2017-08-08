@@ -3,6 +3,7 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe.utils import flt, cint, nowdate,get_datetime
 
 def execute(filters=None):
 	columns, data = [], []
@@ -84,10 +85,11 @@ def get_total_sales_amount(item_list):
 	amount1 = 0.0
 	net_amount =0.0
 	for item in item_list:
+		print "\nitem",item
 		amount = amount +float(item[8])
 		qty = qty + float(item[13])
 		pending_qty = pending_qty + float(item[14])
-		rate = rate + float(item[15])
+		rate = rate + flt(item[15])
 		net_rate = net_rate + float(item[16])
 		amount1 =amount1 + float(item[17])
 		net_amount = net_amount + float (item[18])
