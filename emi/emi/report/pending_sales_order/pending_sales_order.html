@@ -7,7 +7,7 @@
 		<th>Sr</th>
 		<th>Sales Order</th>
 		<th>Party</th>
-		<th>Customer PO NO<th> 
+		<th>Customer PO NO</th> 
 		<th>Item Name</th>
 		<th>Description</th>
 		<th>UOM</th>
@@ -15,20 +15,22 @@
 		<th>Delivered Qty</th>
 		<th>Balanced Qty</th>
 		<th>Rate</th>
+		<th>Net Amount </th>
 	</tr>
 	{% for(var i=0, l=data.length; i<l; i++) { %}
 		<tr>
-			<td>{%= i+1 %}</td>
-			<td>{%= data[i][__("Sales Order")]  %}</td>
-			<td>{%= data[i][__("Party")]  %}</td>
-			<td>{%= data[i][__("Customer PO NO")]  %} </td> 
-			<td>{%= data[i][__("Item Name")]  %}</td>
-			<td>{%= data[i][__("Description")]  %}</td>
-			<td>{%= data[i][__("UOM")]  %}</td>
-			<td>{%= data[i][__("Qty")]  %}</td>
-			<td>{%= data[i][__("Delivered Qty")]  %}</td>
-			<td>{%= data[i][__("Pending Qty")]  %}</td>
-			<td>{%= data[i][__("Rate")]  %}</td>
+			<td> {%= i+1 %} </td>
+			<td> {%= data[i][__("Sales Order")]  %} </td>
+			<td> {%= data[i][__("Party")]  %} </td>
+			<td> {%= data[i][__("Customer PO NO")] %} </td> 
+			<td> {%= data[i][__("Item Name")]  %} </td>
+			<td> {%= data[i][__("Description")]  %} </td>
+			<td> {%= data[i][__("UOM")]  %} </td>
+			<td> {%= data[i][__("Qty")]  %} </td>
+			<td> {%= data[i][__("Delivered Qty")]  %} </td>
+			<td> {%= data[i][__("Pending Qty")]  %} </td>
+			<td> {%= data[i][__("Rate")]  %} </td>
+			<td> {%= data[i][__("Net Amount")] %} </td>
 		</tr>
 	{% } %}
 </table> 
