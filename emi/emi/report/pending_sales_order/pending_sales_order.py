@@ -86,34 +86,34 @@ def get_total_sales_amount(item_list):
 	net_amount =0.0
 	for item in item_list:
 		print "\nitem",item
-		amount = amount +float(item[8])
-		qty = qty + float(item[13])
-		pending_qty = pending_qty + float(item[14])
+		amount = amount +flt(item[8])
+		qty = qty + flt(item[13])
+		pending_qty = pending_qty + flt(item[14])
 		rate = rate + flt(item[15])
-		net_rate = net_rate + float(item[16])
-		amount1 =amount1 + float(item[17])
-		net_amount = net_amount + float (item[18])
+		net_rate = net_rate + flt(item[16])
+		amount1 =amount1 + flt(item[17])
+		net_amount = net_amount + flt (item[18])
 		
 	return [[u'Total', u'', u'', '','', u'', u'', u'',amount, u'', u'', u'', u'',qty,pending_qty,rate,net_rate, amount1, net_amount]]
 
 def get_last_total(last_row,item_list):
 	
-	amount = float(last_row[0][8])
-	qty = float(last_row[0][13])
-	pending_qty = float(last_row[0][14])
-	rate = float(last_row[0][15])
-	net_rate = float(last_row[0][16])
-	amount1 = float(last_row[0][17])
-	net_amount = float(last_row[0][18])
+	amount = flt(last_row[0][8])
+	qty = flt(last_row[0][13])
+	pending_qty = flt(last_row[0][14])
+	rate = flt(last_row[0][15])
+	net_rate = flt(last_row[0][16])
+	amount1 = flt(last_row[0][17])
+	net_amount = flt(last_row[0][18])
 
 
 	for item in item_list:
-		amount = amount +float(item[8])
-		qty = qty + float(item[13])
-		pending_qty = pending_qty + float(item[14])
-		rate = rate + float(item[15])
-		net_rate = net_rate + float(item[16])
-		amount1 =amount1 + float(item[17])
-		net_amount = net_amount + float (item[18])
+		amount = amount +flt(item[8])
+		qty = qty + flt(item[13])
+		pending_qty = pending_qty + flt(item[14])
+		rate = rate + flt(item[15])
+		net_rate = net_rate + flt(item[16])
+		amount1 =amount1 + flt(item[17])
+		net_amount = net_amount + flt (item[18])
 		
 	return [[u'Final Total', u'', u'', '','', u'', u'', u'',amount, u'', u'', u'', u'',qty,pending_qty,rate,net_rate, amount1, net_amount]]
