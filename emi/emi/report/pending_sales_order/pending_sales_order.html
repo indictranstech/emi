@@ -6,7 +6,8 @@
 	<tr>
 		<th>Sr</th>
 		<th>Sales Order</th>
-		<th>Party</th> 
+		<th>Party</th>
+		<th>Customer PO NO<th> 
 		<th>Item Name</th>
 		<th>Description</th>
 		<th>UOM</th>
@@ -16,11 +17,11 @@
 		<th>Rate</th>
 	</tr>
 	{% for(var i=0, l=data.length; i<l; i++) { %}
-	
 		<tr>
 			<td>{%= i+1 %}</td>
 			<td>{%= data[i][__("Sales Order")]  %}</td>
-			<td>{%= data[i][__("Party")]  %}</td> 
+			<td>{%= data[i][__("Party")]  %}</td>
+			<td>{%= data[i][__("Customer PO NO")]  %} </td> 
 			<td>{%= data[i][__("Item Name")]  %}</td>
 			<td>{%= data[i][__("Description")]  %}</td>
 			<td>{%= data[i][__("UOM")]  %}</td>
