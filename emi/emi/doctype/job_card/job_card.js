@@ -42,7 +42,7 @@ frappe.ui.form.on('Job Order Detail',{
 		var d = locals[cdt][cdn]
 		if(flt(d.job_allocated) < flt(d.completed_job) ){
 			d.completed_job=""
-			frappe.throw("Please check the Completed Quantity not Greater than the Assigned Qty");
+			frappe.throw("Please check the Completed Quantity not Greater than the Assigned Qty to assign");
 		}
 		
 	},
@@ -52,6 +52,11 @@ frappe.ui.form.on('Job Order Detail',{
 		if(flt(d.job_allocated) < flt(d.rejected_qty)){
 			d.rejected_qty=""
 			frappe.throw("Please check the Rejected Quantity not Greater than the Assigned Qty");
+		}
+		a=flt(d.job_allocated) - flt(d.completed_job)
+		if(a < flt(d.rejected_qty) ){
+			d.rejected_qty=""
+			frappe.throw("Please check the Completed Quantity are equal to the Assigned Qty");
 		}
 	},
 	/*To Add Details Parent to Child Table  */
