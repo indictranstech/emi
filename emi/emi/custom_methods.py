@@ -99,7 +99,7 @@ def sales_order_submit_notification(name,margin):
 	try:
 		frappe.sendmail(
 			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			# recipients=["onkar.m@indictranstech.com","khushal.t@indictranstech.com"],
+			#recipients=["onkar.m@indictranstech.com","khushal.t@indictranstech.com"],
 			expose_recipients="header",
 			# sender=frappe.session.user,
 			# reply_to=None,
@@ -174,3 +174,24 @@ def make_stock_entry(production_order_id, purpose, qty=None, name=None, via_job_
 		if via_job_card:
 			return production_order
 	return stock_entry.as_dict()
+
+def after_install_process_add():
+	processes = ["Pre Inspection","Punching","Bending", "Cutting", "Welding","Shearing","Cleaning","Final Inspection","Programming","Custom 1","Custom 2","Reduced Bending","Drilling","Tapping","Rolling","Assembly","Powder Coating", "Hot Dip Galvanizing", "Wet Coating"]
+	process = frappe.new_doc("Process")
+	for p in processes: 
+		if not frappe.db.exists("Process", p):
+  			process.process = p
+  			process.insert()
+
+def after_install_warehouse_add():
+	default_comp = frappe.defaults.get_defaults().get("company")
+	if default_comp:
+		default_abbr = frappe.db.get_value("Company",{"name":default_comp}, ["abbr"])
+		warehouses = ["EMI","Factory Store Black","Factory Store Polish","Final Inspected Warehouse"]
+	warehouse = frappe.new_doc("Warehouse")
+ 	for row in warehouses: 
+		if not frappe.db.get_value("Warehouse",{"name": row + " - " + default_abbr}, "name"):
+  			warehouse.warehouse_name = row
+  			warehouse.parent_warehouse ="All Warehouses - " + default_abbr
+  			warehouse.ignore_mandatory=True
+  			warehouse.insert()

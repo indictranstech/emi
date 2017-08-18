@@ -46,7 +46,7 @@ app_license = "INDICTRANS"
 # ------------
 
 # before_install = "emi.install.before_install"
-#after_install = "emi.install.after_install"
+after_install = ["emi.emi.custom_methods.after_install_process_add","emi.emi.custom_methods.after_install_warehouse_add"]
 
 # Desk Notifications
 # ------------------
