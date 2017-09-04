@@ -45,6 +45,7 @@ def calulate_consolidated_margin(doc, method):
 		# 	if current_rate < last_rate:
 		# 		less_margin_notification(doc.doctype,doc.name,row.margin_rate_or_amount,row.margin_type,row.discount_percentage)
 
+
 		if row.margin_rate_or_amount:
 			if row.margin_type == "Percentage":
 				margin_amt = ((row.price_list_rate * row.margin_rate_or_amount)/100) * row.qty
@@ -58,15 +59,21 @@ def calulate_consolidated_margin(doc, method):
 	if consolidated_margin != 0: 
 		doc.consolidated_margin_percentage = get_percenage(float(consolidated_margin),float(price_list_total))
 	
+	if doc.apply_discount_on == "Net Total" and doc.additional_discount_percentage and doc.discount_amount:
+		if doc.consolidated_margin != 0:
+			doc.consolidated_margin = doc.consolidated_margin - doc.discount_amount
+			doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
+		
+
 	if doc.doctype == "Sales Order" and doc.status =="To Deliver and Bill":
 		sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 	
 	if doc.doctype == "Quotation" and doc.status == "Submitted":
-		sales_executives= frappe.db.sql(" select parent from tabUserRole where  role = 'Emi Sales Executive' and parent <> 'Administrator'",as_list=True)
-		if sales_executives:
-			for executive in sales_executives[0]:
-				name = frappe.db.get_value("User",{"name":executive},"first_name")
-				quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,executive,name,doc.customer)	
+		# sales_executives= frappe.db.sql(" select parent from tabUserRole where  role = 'Emi Sales Executive' and parent <> 'Administrator'",as_list=True)
+		# if sales_executives:
+		# 	for executive in sales_executives[0]:
+		# 		name = frappe.db.get_value("User",{"name":executive},"first_name")
+		# 		quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,executive,name,doc.customer)	
 		if doc.employee:
 			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
 			quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,email_id,doc.lead_owner_name,doc.customer)

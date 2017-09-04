@@ -53,26 +53,26 @@ def get_data(filters):
 		return data
 		
 def get_colums(filters):
-	columns =[ ("Sales Order") + ":Link/Sales Order:100",
-				   ("Party") + ":Data:150",
-				   ("Company") + ":Data:120",
-				   ("Date") + ":Date:100",
+	columns =[ ("Sales Order") + ":Link/Sales Order:70",
+				   ("Party") + ":Data:70",
+				   ("Company") + ":Data:70",
+				   ("Date") + ":Date:90",
 				   ("Delivery Date") + ":Date:100",
 				   ("Contact Person")+ " :Data:140",
 				   ("Address")+":Data:180",
 				   ("Customer PO NO") + ":Data:70",
 				   ("Amount") + ":Currency:120",
-				   ("Item Name") + ":Data:100" ,
-				   ("Item_group") + ":Data:100",
+				   ("Item Name") + ":Data:70" ,
+				   ("Item Group") + ":Data:70",
 				   ("Description") + ":Data:100",
 				   ("UOM") + ":Data:50",
 				   ("Qty") + ":Float:50" , 
 				   ("Delivered Qty") +":Float:50",
 				   ("Pending Qty") + ":Float:50",
-				   ("Rate") + ":Currency:50",
-				   ("Net Rate") + ":Currency:120", 
+				   ("Rate") + ":Currency:10",
+				   ("Net Rate") + ":Currency:50", 
 		  		   ("Amount") + ":Currency:50",
-		  		   ("Net Amount") + ":Currency:80" 
+		  		   ("Net Amount") + ":Currency:10" 
 			 ]
 				  	
 	return columns
