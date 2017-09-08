@@ -28,8 +28,8 @@ def get_data(filters):
 	else:
 		data=[]
 		
-		total_row = [['Sub Total', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0]]
-		last_row = [['', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0]]
+		total_row = [['Sub Total', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
+		last_row = [['', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
 		sales_orders = frappe.db.sql("select so.name from `tabSales Order` so where so.status = 'Draft' or so.status = 'To Deliver and Bill'""",as_dict=1)
 		for order in sales_orders:
 			data1 = []
@@ -85,6 +85,7 @@ def get_total_sales_amount(item_list):
 	net_rate = 0.0
 	amount1 = 0.0
 	net_amount =0.0
+	base_net_amount = 0.0
 	for item in item_list:
 		print "\nitem",item
 		amount = amount +flt(item[8])
@@ -94,8 +95,9 @@ def get_total_sales_amount(item_list):
 		net_rate = net_rate + flt(item[16])
 		amount1 =amount1 + flt(item[17])
 		net_amount = net_amount + flt (item[18])
+		base_net_amount = base_net_amount + flt (item[19])
 	
-	return [['Sub Total','', '', '','', '', '', '',amount, '', '', '', '',qty,pending_qty,rate,net_rate, amount1, net_amount]]
+	return [['Sub Total','', '', '','', '', '', '',amount, '', '', '', '',qty,pending_qty,rate,net_rate, amount1, net_amount,base_net_amount]]
 	
 def get_last_total(last_row,item_list):
 	
@@ -106,7 +108,7 @@ def get_last_total(last_row,item_list):
 	net_rate = flt(last_row[0][16])
 	amount1 = flt(last_row[0][17])
 	net_amount = flt(last_row[0][18])
-
+	base_net_amount = flt(last_row[0][19])
 
 	for item in item_list:
 		amount = amount +flt(item[8])
@@ -116,7 +118,8 @@ def get_last_total(last_row,item_list):
 		net_rate = net_rate + flt(item[16])
 		amount1 =amount1 + flt(item[17])
 		net_amount = net_amount + flt(item[18])
+		base_net_amount = base_net_amount + flt(item[19])
 	
-	return [['Grand Total', '', '', '','', '', '', '',amount,'', '', '', '',qty,pending_qty,rate,net_rate, amount1, net_amount]]
+	return [['Grand Total', '', '', '','', '', '', '',amount,'', '', '', '',qty,pending_qty,rate,net_rate, amount1, net_amount,base_net_amount]]
 		
 	

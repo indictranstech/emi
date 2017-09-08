@@ -36,6 +36,13 @@ frappe.ui.form.on('Quotation Item',{
 		d.margin_type = cur_frm.doc.final_margin_type
 		d.margin_rate_or_amount =cur_frm.doc.final_margin_rate_or_amount
 		refresh_field("items")
+	},
+	qty: function(frm, cdt, cdn) {
+		$.each(cur_frm.doc.items, function(idx, val) {
+			frappe.model.set_value(val.doctype, val.name, "margin_type",cur_frm.doc.final_margin_type);
+			frappe.model.set_value(val.doctype, val.name, "margin_rate_or_amount",cur_frm.doc.final_margin_rate_or_amount);
+		})
+		refresh_field("items") 
 	}
 });
 
@@ -58,7 +65,6 @@ return{
 	
 }*/
 
-
 cur_frm.fields_dict['employee'].get_query = function(doc,cdt,cdn) {
 	return{
 			query: "emi.custom_script.quotation.quotation.get_sales_person",
@@ -66,12 +72,18 @@ cur_frm.fields_dict['employee'].get_query = function(doc,cdt,cdn) {
 	}
 },
 
-
-
-
 cur_frm.fields_dict.lead_owner_name.get_query = function(doc,cdt,cdn) {
 	return{
 		//query: "emi.custom_script.quotation.quotation.get_sales_person",
 		filters:{'customer': doc.customer}
 }
 }
+
+frappe.ui.form.on('Quotation', {
+	onload: function(frm) {
+		if(cur_frm.doc.__islocal)
+		{
+			frm.set_value("employee","")
+		}
+	},
+})
