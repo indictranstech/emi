@@ -65,7 +65,7 @@ def calulate_consolidated_margin(doc, method):
 			doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
 		
 
-	if doc.doctype == "Sales Order" and doc.status =="To Deliver and Bill":
+	if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
 		sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 	
 	if doc.doctype == "Quotation" and doc.status == "Submitted":
@@ -82,9 +82,6 @@ def calulate_consolidated_margin(doc, method):
 	if doc.consolidated_margin:
 		if doc.discount_amount>doc.consolidated_margin:
 			frappe.throw(("Discount Amount Should Be Less Than Consolidated Margin"))
-
-
-
 
 
 """Get requested_for field when update_stock is 1"""
@@ -106,7 +103,7 @@ def sales_order_submit_notification(name,margin):
 	try:
 		frappe.sendmail(
 			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			#recipients=["onkar.m@indictranstech.com","khushal.t@indictranstech.com"],
+			# recipients=["onkar.m@indictranstech.com","khushal.t@indictranstech.com"],
 			expose_recipients="header",
 			# sender=frappe.session.user,
 			# reply_to=None,
@@ -143,6 +140,16 @@ def quotation_submit_notification(name,margin,recp,recp_name,customer):
 	except Exception,e:
 		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
+def SO_submit_notification_to_sales_person(name,recp,recp_name,customer):
+	try:
+		message = frappe.render_template("templates/email/SO_submit_notification_to_sales_person.html", {
+			"Name":recp_name,"name":name,"customer":customer
+		})
+		subject="Sales Order Submit Notifications"
+		frappe.sendmail(recipients=recp,subject=subject,message=message,delayed=False)
+		
+	except Exception,e:
+		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
 
 def produ_order(self):
@@ -202,3 +209,10 @@ def after_install_warehouse_add():
   			warehouse.parent_warehouse ="All Warehouses - " + default_abbr
   			warehouse.ignore_mandatory=True
   			warehouse.insert()
+
+def send_email_sales_person(doc,method=None):
+	if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
+		# sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
+		if doc.employee:
+			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
+			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)

@@ -77,7 +77,7 @@ doc_events = {
 	},
 
 	('Quotation', 'Sales Order'): {
-		"validate": "emi.emi.custom_methods.calulate_consolidated_margin"
+		"validate": "emi.emi.custom_methods.calulate_consolidated_margin",
 	},
 	"Stock Ledger Entry" :{
 		"before_submit": "emi.emi.custom_methods.get_requested_for"
@@ -90,6 +90,12 @@ doc_events = {
     },
 	"Purchase Receipt":{
     	 "on_submit": "emi.custom_script.purchase_receipt.purchase_receipt.on_submit",
+    },
+    "Sales Order":{
+    	 "on_submit":"emi.emi.custom_methods.send_email_sales_person",
+    },
+    "Production Order": {
+    	"on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
     }
 }
 

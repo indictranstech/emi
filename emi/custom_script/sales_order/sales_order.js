@@ -42,6 +42,19 @@ frappe.ui.form.on('Sales Order Item',{
 	}
 });
 
+cur_frm.fields_dict['employee'].get_query = function(doc,cdt,cdn) {
+	return{
+			query: "emi.custom_script.sales_order.sales_order.get_sales_person",
+			filters:{'customer': doc.customer}
+	}
+},
+
+cur_frm.fields_dict.lead_owner_name.get_query = function(doc,cdt,cdn) {
+	return{
+		//query: "emi.custom_script.quotation.quotation.get_sales_person",
+		filters:{'customer': doc.customer}
+}
+}
 /*Project Filter on Customer Base*/
 
 cur_frm.fields_dict['project'].get_query = function(doc,cdt,cdn) {
