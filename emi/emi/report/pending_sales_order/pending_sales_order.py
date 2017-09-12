@@ -30,6 +30,7 @@ def get_data(filters):
 		
 		total_row = [['Sub Total', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
 		last_row = [['', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
+		remark_row = [['Remark', '', '', '','', '', '', '','', '', '', '', '','','','','', '','','']]
 		sales_orders = frappe.db.sql("select so.name from `tabSales Order` so where so.status = 'Draft' or so.status = 'To Deliver and Bill'""",as_dict=1)
 		for order in sales_orders:
 			data1 = []
@@ -49,6 +50,7 @@ def get_data(filters):
 			total_row = get_total_sales_amount(data1)
 			last_row  = get_last_total(last_row,total_row)   
 			data.extend(total_row)
+			data.extend(remark_row)
 		data.extend(last_row)
 		return data
 		
