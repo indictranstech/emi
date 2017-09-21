@@ -19,7 +19,7 @@ def on_submit(self, method=None):
 		if store_managers_list:
 			for manager in store_managers_list:
 				name = frappe.db.get_value("User",{"name":manager},"first_name")
-				store_manger_notification(manager,name,self.name,self.customer,self.items,self.posting_date)
+				store_manger_notification(manager,name,self.name,self.customer,self.items,self.posting_date,name)
 
 	for row in self.sales_team:
 		if row:
@@ -70,7 +70,7 @@ def account_manger_notification(recipients,Name,delivery_note,customer,date,amou
 	except Exception,e:
 		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
-def store_manger_notification(recipients,Name,delivery_note,customer,items,date):
+def store_manger_notification(recipients,Name,delivery_note,customer,items,date,name):
 	date = frappe.utils.get_datetime(date).strftime("%d-%m-%Y")
 	try:
 		frappe.sendmail(
@@ -78,11 +78,11 @@ def store_manger_notification(recipients,Name,delivery_note,customer,items,date)
 			expose_recipients="header",
 			sender=frappe.session.user,
 			reply_to=None,
-			subject="Delivery Note Submit Notification",
+			subject="Delivery Note Submit Notification For Store",
 			content=None,
 			reference_doctype=None,
 			reference_name=None,
-			message = frappe.render_template("templates/email/delivery_note_store_manager.html",{"Name":Name,"name":delivery_note,"customer":customer,"items":items,"date":date}),
+			message = frappe.render_template("templates/email/delivery_note_store_manager.html",{"Name":Name,"name":delivery_note,"customer":customer,"items":items,"date":date,"name":name}),
 			message_id=None,
 			unsubscribe_message=None,
 			delayed=False,
