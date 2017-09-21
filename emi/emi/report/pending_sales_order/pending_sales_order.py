@@ -27,10 +27,9 @@ def get_data(filters):
 								order by so.name desc""".format(filters.name,filters.name),as_list=1)
 	else:
 		data=[]
-		
+		project_row = [['Remark', '', '', '','', '', '', '','', '', '', '', '','','','','', '','','']]
 		total_row = [['Sub Total', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
 		last_row = [['', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
-		remark_row = [['Remark', '', '', '','', '', '', '','', '', '', '', '','','','','', '','','']]
 		sales_orders = frappe.db.sql("select so.name from `tabSales Order` so where so.status = 'Draft' or so.status = 'To Deliver and Bill'""",as_dict=1)
 		for order in sales_orders:
 			data1 = []
@@ -39,18 +38,20 @@ def get_data(filters):
   								so_item.description,so_item.stock_uom,
   								so_item.qty,so_item.delivered_qty,
   								format((so_item.qty - so_item.delivered_qty),2),
-  								so_item.rate,so_item.base_net_rate,	
-  								so_item.amount,so_item.base_net_amount  
+  								so_item.rate,format((so_item.base_net_rate),2),	
+  								format((so_item.amount),2),format((so_item.base_net_amount),2)  
 								from
 									`tabSales Order` so,`tabSales Order Item` so_item
 								where
 									so.name = '{0}' and so_item.parent ='{1}' and (so.status ='Draft' or so.status = 'To Deliver and Bill')
 								order by so.name desc""".format(order['name'],order['name']),as_list=1)
+			
+			project_row= get_project_row(order)
+			data.extend(project_row)
 			data.extend(data1)
 			total_row = get_total_sales_amount(data1)
 			last_row  = get_last_total(last_row,total_row)   
 			data.extend(total_row)
-			data.extend(remark_row)
 		data.extend(last_row)
 		return data
 		
@@ -89,17 +90,17 @@ def get_total_sales_amount(item_list):
 	net_amount =0.0
 	base_net_amount = 0.0
 	for item in item_list:
-		print "\nitem",item
+		# print "\nitem",item
 		amount = amount +flt(item[8])
 		qty = qty + flt(item[13])
 		pending_qty = pending_qty + flt(item[14])
 		rate = rate + flt(item[15])
-		net_rate = net_rate + flt(item[16])
+		# net_rate = net_rate + flt(item[16])
 		amount1 =amount1 + flt(item[17])
 		net_amount = net_amount + flt (item[18])
 		base_net_amount = base_net_amount + flt (item[19])
 	
-	return [['Sub Total','', '', '','', '', '', '',amount, '', '', '', '',qty,pending_qty,rate,net_rate, amount1, net_amount,base_net_amount]]
+	return [['Sub Total','', '', '','', '', '', '',amount, '', '', '', '',qty,pending_qty,rate,'', amount1, net_amount,base_net_amount]]
 	
 def get_last_total(last_row,item_list):
 	
@@ -107,7 +108,7 @@ def get_last_total(last_row,item_list):
 	qty = flt(last_row[0][13])
 	pending_qty = flt(last_row[0][14])
 	rate = flt(last_row[0][15])
-	net_rate = flt(last_row[0][16])
+	# net_rate = flt(last_row[0][16])
 	amount1 = flt(last_row[0][17])
 	net_amount = flt(last_row[0][18])
 	base_net_amount = flt(last_row[0][19])
@@ -117,11 +118,18 @@ def get_last_total(last_row,item_list):
 		qty = qty + flt(item[13])
 		pending_qty = pending_qty + flt(item[14])
 		rate = rate + flt(item[15])
-		net_rate = net_rate + flt(item[16])
+		# net_rate = net_rate + flt(item[16])
 		amount1 =amount1 + flt(item[17])
 		net_amount = net_amount + flt(item[18])
 		base_net_amount = base_net_amount + flt(item[19])
 	
-	return [['Grand Total', '', '', '','', '', '', '',amount,'', '', '', '',qty,pending_qty,rate,net_rate, amount1, net_amount,base_net_amount]]
-		
-	
+	return [['Grand Total', '', '', '','', '', '', '',amount,'', '', '', '',qty,pending_qty,rate,'', amount1, net_amount,base_net_amount]]
+
+def get_project_row(order):
+	project = frappe.db.sql("""select project from `tabSales Order` so
+						where
+						so.name = '{0}' """.format(order['name']),as_list=1)
+	if project:
+		project_row = [['PROJECT :' , project[0][0], '', '','', '', '', '','', '', '', '', '','','','','', '','','']]
+		return project_row
+
