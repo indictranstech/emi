@@ -216,3 +216,10 @@ def send_email_sales_person(doc,method=None):
 		if doc.employee:
 			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
 			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
+
+#Quoat Submitted send email to Sales Person
+def send_email_sales_person_quot(doc,method=None):
+	if doc.doctype == "Quotation" and doc.status == "Submitted":
+		if doc.employee:
+			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
+			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
