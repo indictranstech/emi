@@ -55,15 +55,7 @@ cur_frm.fields_dict.lead_owner_name.get_query = function(doc,cdt,cdn) {
 		filters:{'customer': doc.customer}
 }
 }
-/*Project Filter on Customer Base*/
 
-/*cur_frm.fields_dict['project'].get_query = function(doc,cdt,cdn) {
-	return{
-		filters:{ 
-			"customer": doc.customer,
-		}
-	}
-}*/
 frappe.ui.form.on('Sales Order', {
 	onload: function(frm) {
 

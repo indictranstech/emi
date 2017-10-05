@@ -46,25 +46,6 @@ frappe.ui.form.on('Quotation Item',{
 	}
 });
 
-
-
-/*Project Filter on Customer Base*/
-/*cur_frm.fields_dict['project'].get_query = function(doc,cdt,cdn) {
-	return{
-		filters:{ 
-			'customer': doc.customer,
-		}
-	}
-},*/
-
-/*cur_frm.cscript.customer = function(frm){
-console.log("hiiiiii")
-return{
-		query: "emi.custom_script.quotation.quotation.get_sales_person",
-	}
-	
-}*/
-
 cur_frm.fields_dict['employee'].get_query = function(doc,cdt,cdn) {
 	return{
 			query: "emi.custom_script.quotation.quotation.get_sales_person",
