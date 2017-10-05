@@ -95,7 +95,7 @@ doc_events = {
     	 "on_submit":"emi.emi.custom_methods.send_email_sales_person",
     },
       "Quotation":{
-         "on_submit":"emi.emi.custom_methods.emi.emi.custom_methods.send_email_sales_person_quot",
+         "on_submit":"emi.emi.custom_methods.send_email_sales_person_quot",
     },
     "Production Order": {
     	"on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
