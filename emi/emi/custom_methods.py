@@ -13,7 +13,7 @@ def validate_delivery_note(doc, method):
 			format(exist_invoice, doc.delivery_note))
 	
 def calulate_consolidated_margin(doc, method):
-	#calculat consolidate_margin = sum of item_price_rate - sum of total_margin
+	# Calculat consolidate_margin = sum of item_price_rate - sum of total_margin
 	# Calculate price_list_total,and margin percentage
 
 	consolidated_margin = 0
@@ -22,8 +22,16 @@ def calulate_consolidated_margin(doc, method):
 	for row in doc.items:
 		if not row.price_list_rate:
 			frappe.throw(("First create 'Item Price' for this item."))
-		
-		
+		if row.rate > row.price_list_rate and not row.margin_type:
+			diff = row.rate -row.price_list_rate
+			row.margin_type = "Amount"
+			row.margin_rate_or_amount = flt(diff)
+			row.total_margin = row.rate
+			row.discount_percentage = 0.0
+
+	for row in doc.items:
+		if not row.price_list_rate:
+			frappe.throw(("First create 'Item Price' for this item."))
 
 		# # if row.discount_percentage:
 		# # 	if row.margin_type == "Amount":	
@@ -64,7 +72,6 @@ def calulate_consolidated_margin(doc, method):
 			doc.consolidated_margin = doc.consolidated_margin - doc.discount_amount
 			doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
 		
-
 	if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
 		sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 	
@@ -77,7 +84,6 @@ def calulate_consolidated_margin(doc, method):
 		if doc.employee:
 			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
 			quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,email_id,doc.lead_owner_name,doc.customer)
-
 
 	if doc.consolidated_margin:
 		if doc.discount_amount>doc.consolidated_margin:
@@ -92,7 +98,6 @@ def get_requested_for(self,method):
 
 def add_margin_price(items,final_margin_type,final_margin_rate_or_amount):
 	for row in items:
-		print row.idx 
 		row.margin_type = final_margin_type
 		row.margin_rate_or_amount = final_margin_rate_or_amount 
 
