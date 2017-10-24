@@ -1895,10 +1895,10 @@
   "is_standard": "Yes", 
   "javascript": null, 
   "json": null, 
-  "modified": "2017-05-10 17:16:32.494378", 
+  "modified": "2017-10-24 09:58:23.306729", 
   "module": "Emi", 
   "name": "Item BOM Details", 
-  "query": "select item_code as  \"Item Code:Data:120\",\nitem_name as \"Item Name:Data:120\",\nitem_group as \"Item Group:Data:120\",stock_uom as \"UOM:Data:120\",\ndefault_warehouse as\"Warehouse:Data:120\" \nfrom \n`tabItem` \nwhere \ndefault_bom IS NULL;", 
+  "query": "select item_code as  \"Item Code:Data:120\",\nitem_name as \"Item Name:Data:120\",\nitem_group as \"Item Group:Data:120\",stock_uom as \"UOM:Data:120\",\ndefault_warehouse as\"Warehouse:Data:120\"\nfrom \n`tabItem` \nwhere \n default_bom not like \"BOM%%\" or default_bom is null;", 
   "ref_doctype": "Item", 
   "report_name": "Item BOM Details", 
   "report_type": "Query Report"
