@@ -3,27 +3,27 @@
   "docstatus": 0, 
   "doctype": "Custom Script", 
   "dt": "Quotation", 
-  "modified": "2017-03-21 10:51:02.317505", 
+  "modified": "2017-10-30 13:35:01.298263", 
   "name": "Quotation-Client", 
-  "script": "cur_frm.add_fetch(\"lead_owner_name\", \"cell_number\", \"mobile_no\");", 
+  "script": "cur_frm.add_fetch(\"lead_owner_name\", \"cell_number\", \"mobile_no\");\ncur_frm.add_fetch(\"customer\", \"tax_id\", \"tax_id\");", 
   "script_type": "Client"
  }, 
  {
   "docstatus": 0, 
   "doctype": "Custom Script", 
   "dt": "Purchase Order", 
-  "modified": "2017-03-09 12:50:52.341282", 
+  "modified": "2017-10-30 14:39:51.569776", 
   "name": "Purchase Order-Client", 
-  "script": "cur_frm.add_fetch('supplier', 'payment_terms', 'payment_terms')", 
+  "script": "cur_frm.add_fetch('supplier', 'payment_terms', 'payment_terms')\ncur_frm.add_fetch('supplier', 'vat_id', 'vat_id')", 
   "script_type": "Client"
  }, 
  {
   "docstatus": 0, 
   "doctype": "Custom Script", 
   "dt": "Sales Invoice", 
-  "modified": "2017-08-04 22:36:16.970534", 
+  "modified": "2017-10-28 17:02:32.705060", 
   "name": "Sales Invoice-Client", 
-  "script": "cur_frm.add_fetch(\"employee\", \"employee_name\", \"lead_owner_name\");\n", 
+  "script": "cur_frm.add_fetch(\"employee\", \"employee_name\", \"lead_owner_name\");\ncur_frm.add_fetch(\"customer\", \"tax_id\", \"tax_id\");", 
   "script_type": "Client"
  }, 
  {
@@ -33,6 +33,15 @@
   "modified": "2017-08-07 12:42:56.469188", 
   "name": "Stock Entry-Client", 
   "script": "cur_frm.add_fetch(\"to_warehouse\", \"address_line_1\", \"address_line_1\");\ncur_frm.add_fetch(\"to_warehouse\", \"address_line_2\", \"address_line_2\");\ncur_frm.add_fetch(\"to_warehouse\", \"state\", \"state\");\ncur_frm.add_fetch(\"to_warehouse\", \"city\", \"city\");\ncur_frm.add_fetch(\"to_warehouse\", \"pin\", \"pin\");\ncur_frm.add_fetch(\"to_warehouse\", \"mobile_no\", \"mobile_no\");\n", 
+  "script_type": "Client"
+ }, 
+ {
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Sales Order", 
+  "modified": "2017-10-30 09:51:13.773716", 
+  "name": "Sales Order-Client", 
+  "script": "cur_frm.add_fetch(\"customer\", \"tax_id\", \"tax_id\");\n", 
   "script_type": "Client"
  }
 ]
