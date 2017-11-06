@@ -84,6 +84,7 @@ doc_events = {
 	},
 	"Delivery Note": {
         "on_submit": "emi.custom_script.delivery_note.delivery_note.on_submit",
+        "validate": "emi.custom_script.delivery_note.delivery_note.validate"
     },
     "Stock Entry":{
     	 "on_submit": "emi.custom_script.stock_entry.stock_entry.on_submit",
