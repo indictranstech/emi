@@ -15,6 +15,11 @@ def validate_delivery_note(doc, method):
 def calulate_consolidated_margin(doc, method):
 	# Calculat consolidate_margin = sum of item_price_rate - sum of total_margin
 	# Calculate price_list_total,and margin percentage
+	#Page-break
+	for row in self.items:
+		if len(self.items) > 8:
+			if float(row.idx) % 8 == 0:
+				row.page_break = 1
 
 	consolidated_margin = 0
 	price_list_total = 0
