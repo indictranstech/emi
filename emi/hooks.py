@@ -87,24 +87,24 @@ doc_events = {
         "validate": "emi.custom_script.delivery_note.delivery_note.validate"
     },
     "Stock Entry":{
-    	 "on_submit": "emi.custom_script.stock_entry.stock_entry.on_submit",
-         "validate": "emi.custom_script.stock_entry.stock_entry.validate",
+        "on_submit": "emi.custom_script.stock_entry.stock_entry.on_submit",
+        "validate": "emi.custom_script.stock_entry.stock_entry.validate",
     },
 	"Purchase Receipt":{
-    	 "on_submit": "emi.custom_script.purchase_receipt.purchase_receipt.on_submit",
-         "validate": "emi.custom_script.purchase_receipt.purchase_receipt.validate",
+        "on_submit": "emi.custom_script.purchase_receipt.purchase_receipt.on_submit",
+        "validate": "emi.custom_script.purchase_receipt.purchase_receipt.validate",
     },
     "Sales Order":{
-    	 "on_submit":"emi.emi.custom_methods.send_email_sales_person",
+        "on_submit":"emi.emi.custom_methods.send_email_sales_person",
     },
-      "Quotation":{
-         "on_submit":"emi.emi.custom_methods.send_email_sales_person_quot",
+    "Quotation":{
+        "on_submit":"emi.emi.custom_methods.send_email_sales_person_quot",
     },
     "Purchase Order": {
         "validate": "emi.custom_script.purchase_order.purchase_order.validate",
     },
     "Production Order": {
-    	   "on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
+        "on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
     },
 }
 
