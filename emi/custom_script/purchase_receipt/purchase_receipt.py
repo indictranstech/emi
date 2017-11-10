@@ -34,3 +34,9 @@ def purchase_receipt_submit_notification(name,recp,recpname,items,date,supplier)
 	except Exception,e:
 		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
+def validate(self,method=None):
+	
+	for row in self.items:
+		if len(self.items) > 8:
+			if float(row.idx) % 8 == 0:
+				row.page_break = 1

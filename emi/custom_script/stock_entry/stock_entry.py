@@ -20,7 +20,7 @@ def stock_entry_submit_notification(name,recp,recpname,purpose,items):
 	date = frappe.utils.get_datetime(nowdate()).strftime("%d-%m-%Y")
 	try:
 		frappe.sendmail(
-			# recipients=[recp,"onkar.m@indictranstech.com","sangram.p@indictranstech.com"],
+			#recipients=[recp,"onkar.m@indictranstech.com","sangram.p@indictranstech.com"],
 			recipients=[recp,"sankar@emiuae.ae","emistores@emiuae.ae","harish@emiuae.ae"],
 			expose_recipients="header",
 			sender=frappe.session.user,
@@ -38,3 +38,10 @@ def stock_entry_submit_notification(name,recp,recpname,purpose,items):
 	except Exception,e:
 		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
+
+@frappe.whitelist()
+def validate(self,method=None):
+	for row in self.items:
+		if len(self.items) > 8:
+			if float(row.idx) % 8 == 0:
+				row.page_break = 1

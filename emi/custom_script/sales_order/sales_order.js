@@ -66,6 +66,15 @@ cur_frm.fields_dict.lead_owner_name.get_query = function(doc,cdt,cdn) {
 	}
 }
 
+cur_frm.fields_dict['project'].get_query = function(doc, cdt, cdn) {
+	return {
+		query: "erpnext.controllers.queries.get_project_name",
+		filters: {
+			
+		}
+	}
+}
+
 frappe.ui.form.on('Sales Order', {
 	onload: function(frm) {
 		if(frappe.get_prev_route()[1]!="Quotation" && cur_frm.doc.__islocal)
