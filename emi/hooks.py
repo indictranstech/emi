@@ -73,7 +73,7 @@ after_install = ["emi.emi.custom_methods.after_install_process_add","emi.emi.cus
 
 doc_events = {
 	"Sales Invoice": {
-		"validate": "emi.emi.custom_methods.validate_delivery_note",
+		"validate": "emi.emi.custom_methods.validate_delivery_note"
 	},
 
 	('Quotation', 'Sales Order'): {
@@ -92,7 +92,7 @@ doc_events = {
     },
 	"Purchase Receipt":{
         "on_submit": "emi.custom_script.purchase_receipt.purchase_receipt.on_submit",
-        "validate": "emi.custom_script.purchase_receipt.purchase_receipt.validate",
+        "validate": "emi.custom_script.purchase_receipt.purchase_receipt.validate"
     },
     "Sales Order":{
         "on_submit":"emi.emi.custom_methods.send_email_sales_person",
@@ -101,7 +101,7 @@ doc_events = {
         "on_submit":"emi.emi.custom_methods.send_email_sales_person_quot",
     },
     "Purchase Order": {
-        "validate": "emi.custom_script.purchase_order.purchase_order.validate",
+        "validate": "emi.custom_script.purchase_order.purchase_order.validate"
     },
     "Production Order": {
         "on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
