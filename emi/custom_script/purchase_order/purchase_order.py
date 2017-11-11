@@ -7,6 +7,6 @@ from frappe import _
 @frappe.whitelist()
 def validate(self,method=None):
 	for row in self.items:
-		if len(self.items) > 8:
-			if float(row.idx) % 8 == 0:
+		if len(self.items) > 6:
+			if float(row.idx) % 6 == 0:
 				row.page_break = 1
