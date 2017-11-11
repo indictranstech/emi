@@ -73,7 +73,8 @@ after_install = ["emi.emi.custom_methods.after_install_process_add","emi.emi.cus
 
 doc_events = {
 	"Sales Invoice": {
-		"validate": "emi.emi.custom_methods.validate_delivery_note"
+		"validate": ["emi.emi.custom_methods.validate_delivery_note",
+            "emi.emi.custom_methods.validate_si"]
 	},
 
 	('Quotation', 'Sales Order'): {

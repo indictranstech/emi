@@ -234,3 +234,9 @@ def send_email_sales_person_quot(doc,method=None):
 		if doc.employee:
 			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
 			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
+
+def validate_si(doc, method):
+	for row in self.items:
+		if len(self.items) > 8:
+			if float(row.idx) % 8 == 0:
+				row.page_break = 1
