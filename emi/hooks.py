@@ -146,4 +146,4 @@ doctype_js = {
 override_whitelisted_methods = {
 	"erpnext.manufacturing.doctype.production_order.production_order.make_stock_entry": "emi.emi.custom_methods.make_stock_entry"
 }
-fixtures = ["Web Form","Custom Field","Print Format","Property Setter","Letter Head","Report","Custom Script"]
+fixtures = ["Web Form","Custom Field","Print Format","Property Setter","Letter Head","Report","Custom Script","Address Template"]
