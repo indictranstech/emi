@@ -4,9 +4,9 @@
   "docstatus": 0, 
   "doctype": "Address Template", 
   "is_default": 1, 
-  "modified": "2017-11-13 15:50:51.119035", 
+  "modified": "2017-11-13 15:39:29.298797", 
   "name": "United Arab Emirates", 
-  "template": "{% if pincode %}\n\tPO.Box:{{ pincode }}<br>\n{% endif -%}\n{% if address_line1 %}\n\t{{ address_line1 }}<br>\n{% endif -%}\n{% if address_line2 %}\n\t{{ address_line2 }}<br>\n{% endif -%}\n{{ city }}<br>\n{{ country }}"
+  "template": "{% if pincode %}\n\tPO.Box:{{ pincode }}<br>\n{% endif -%}\n{% if address_line1 %}\n\t{{ address_line2 }}<br>\n{% endif -%}\n{% if address_line2 %}\n\t{{ address_line2 }}<br>\n{% endif -%}\n{{ city }}<br>\n{{ country }}"
  }, 
  {
   "country": "India", 
