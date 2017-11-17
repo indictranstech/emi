@@ -21,7 +21,7 @@
   "docstatus": 0, 
   "doctype": "Custom Script", 
   "dt": "Sales Invoice", 
-  "modified": "2017-10-28 17:02:32.705060", 
+  "modified": "2017-11-16 10:19:09.051910", 
   "name": "Sales Invoice-Client", 
   "script": "cur_frm.add_fetch(\"employee\", \"employee_name\", \"lead_owner_name\");\ncur_frm.add_fetch(\"customer\", \"tax_id\", \"tax_id\");", 
   "script_type": "Client"
@@ -39,9 +39,9 @@
   "docstatus": 0, 
   "doctype": "Custom Script", 
   "dt": "Sales Order", 
-  "modified": "2017-10-30 09:51:13.773716", 
+  "modified": "2017-11-15 15:12:06.567560", 
   "name": "Sales Order-Client", 
-  "script": "cur_frm.add_fetch(\"customer\", \"tax_id\", \"tax_id\");\n", 
+  "script": "cur_frm.add_fetch(\"customer\", \"tax_id\", \"tax_id\");", 
   "script_type": "Client"
  }
 ]

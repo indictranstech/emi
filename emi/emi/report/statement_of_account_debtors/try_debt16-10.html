@@ -1,0 +1,132 @@
+<div class="row">
+	<div class="col-xs-2"></div>
+	<div class="col-xs-5"></div>
+	<div class="col-xs-5">
+		<span><b>EVEREST METAL INDUSTRIES L.L.C</b></span><br>
+		P.O Box : 283177, Dubai, U.A.E <br>
+		Tel : 04-8877505<br>
+		Fax : 04-8877541
+	</div>			
+</div>
+<div class="row">
+	<div class="col-xs-2"></div>
+	<div class="col-xs-6">
+		<h5 class="text-center"><b>{%= __("STATEMENT OF ACCOUNT (DEBTORS)") %}</b></h5>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-2"></div>
+	<div class="col-xs-6" align="center">
+		<span>As on {%= dateutil.str_to_user(filters.report_date) %}</span>
+	</div>
+</div>
+<br>
+{% if(filters.customer) { %}
+	<div class="row">
+		<div class="col-xs-1">To,</div>	
+	</div>
+	<br>
+<div style="width: 300px;height: 175px;padding: 7px;border: 1px solid black">
+	<div class="row">
+		<div class="col-xs-12"><h6><b>{%= filters.customer %}</b></h6></div>	
+	</div>
+	{% for(var i=0, l=1; i<l; i++) { %}
+		<div class="row">
+			<div class="col-xs-12">{%= data[i][__("Address")] %}</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">Email ID : {%= data[i][__("Email ID")] %}</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">Phone : {%= data[i][__("Phone")] %}</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">Fax : {%= data[i][__("Fax")] %}</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6">Credit Limit : {%= data[i][__("Credit Limit")] %}</div>
+			<div class="col-xs-6">Credit Days : {%= data[i][__("Cr. Days")] %}</div>
+		</div>
+</div>	
+		<div class="row">
+			<div class="col-xs-4"></div>
+			<div class="col-xs-4"></div>
+			<div class="col-xs-4"><b>Currency : {%= data[i][__("Currency")] %}</b></div>
+
+		</div>
+
+		{% } %}		
+{% } %}
+
+<table class="table table-bordered">
+	<tbody>
+		<tr>
+		{% if(report.report_name === "Statement Of Account Debtors") { %}
+			<th style="width: 15%">{%= __("Date") %}</th>
+			<th style="width: 15%">{%= __("Type") %}</th>
+			<th style="width: 15%">{%= __("Doc No.") %}</th>
+			<th style="width: 10%">{%= __("LPO No.") %}</th>
+			<th style="width: 15%">{%= __("LPO Dt.") %}</th>
+			<th style="width: 15%">{%= __("Inv Amt.") %}</th>
+			<th style="width: 15%">{%= __("Balance") %}</th>
+		{% } else { %}
+				<th style="width: 40%">{%= __("Party") %}</th>
+				<th style="width: 15%">{%= __("Total Invoiced Amount") %}</th>
+				<th style="width: 15%">{%= __("Total Paid Amount") %}</th>
+				<th style="width: 15%">{%= __("Total Outstanding Amount") %}</th>
+		{% } %}
+		</tr>
+		{% for(var i=0, l=data.length; i<l; i++) { %}
+		<tr>
+		{% if(report.report_name === "Statement Of Account Debtors") { %}
+			{% if(data[i][__("Customer")]) { %}
+				<td>{%= dateutil.str_to_user(data[i][__("Posting Date")]) %}</td>
+				<td>{%= data[i][__("Voucher Type")] %} </td>
+				<td>{%= data[i][__("Voucher No")] %} </td>
+				<td>{%= data[i][__("LPO No")] %} </td>
+				<td>{%= data[i][__("LPO Dt")] %} </td>
+				<td>{%= format_currency(data[i]["Invoiced Amount"], data[i]["currency"]) %}</td>
+				<td>{%= format_currency(data[i]["Outstanding Amount"], data[i]["currency"]) %}</td>
+			{% } else { %}
+				<td></td>
+				<td></td>
+				<td><b>{%= __("Total") %}</b></td>
+				<td style="text-align: right">
+					{%= format_currency(data[i]["Invoiced Amount"]) %}</td>
+				<td style="text-align: right">
+					{%= format_currency(data[i]["Paid Amount"]) %}</td>
+				<td style="text-align: right">
+						{%= format_currency(data[i]["Outstanding Amount"]) %}</td>
+			{% } %}
+		{% } else { %}
+			{% if(data[i][__("Customer")] || "&nbsp;") { %}
+					{% if(data[i][__("Customer")] != __("'Total'")) { %}
+						<td>{%= data[i][__("Customer")] %}
+						<br>{%= __("Remarks") %}: {%= data[i][__("Remarks")] %}</td>
+					{% } else { %}
+						<td><b>{%= __("Total") %}</b></td>
+					{% } %}
+					<td style="text-align: right">{%= format_currency(data[i][__("Total Invoiced Amt")]) %}</td>
+					<td style="text-align: right">{%= format_currency(data[i][__("Total Paid Amt")]) %}</td>
+				<td style="text-align: right">{%= format_currency(data[i][__("Total Outstanding Amt")]) %}</td>
+				{% } %}
+
+			{% } %}
+
+		</tr>
+		{% } %} 
+	<tbody>	
+</table>
+<br>
+<div class="row">
+	<div class="col-xs-12">
+		<span><b>Yours Sincerely,</b></span>
+	</div>
+	<br>
+	<br>
+	<br>
+	<div class="col-xs-12">
+		For <span style="font-size: 15px;"><b>EVEREST METAL INDUSTRIES L.L.C</b></span>
+	</div>
+	
+</div>
