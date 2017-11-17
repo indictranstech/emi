@@ -1,0 +1,18 @@
+{
+ "add_total_row": 0, 
+ "apply_user_permissions": 1, 
+ "creation": "2017-11-14 15:18:11.565881", 
+ "disabled": 0, 
+ "docstatus": 0, 
+ "doctype": "Report", 
+ "idx": 0, 
+ "is_standard": "Yes", 
+ "modified": "2017-11-14 15:19:41.739166", 
+ "modified_by": "Administrator", 
+ "module": "Emi", 
+ "name": "Custom Profit and Loss Statement", 
+ "owner": "Administrator", 
+ "ref_doctype": "GL Entry", 
+ "report_name": "Custom Profit and Loss Statement", 
+ "report_type": "Script Report"
+}
