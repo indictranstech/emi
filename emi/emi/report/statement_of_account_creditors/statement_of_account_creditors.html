@@ -1,0 +1,166 @@
+<div class="row">
+	<div class="col-xs-2"></div>
+	<div class="col-xs-5"></div>
+	<div class="col-xs-5">
+		<span><b>EVEREST METAL INDUSTRIES L.L.C</b></span><br>
+		P.O Box : 283177, Dubai, U.A.E <br>
+		Tel : 04-8877505<br>
+		Fax : 04-8877541
+	</div>			
+</div>
+<div class="row">
+	<div class="col-xs-2"></div>
+	<div class="col-xs-6">
+		<h5 class="text-center"><b>{%= __("STATEMENT OF ACCOUNT (CREDITORS)") %}</b></h5>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-2"></div>
+	<div class="col-xs-6" align="center">
+		<span>As on {%= dateutil.str_to_user(filters.report_date) %}</span>
+	</div>
+</div>
+<br>
+{% if(filters.supplier) { %}
+	<div class="row">
+		<div class="col-xs-1">To,</div>	
+	</div>
+	<br>
+<div style="width: 420px;height: 185px;padding: 7px;border: 1px solid black">
+	<div class="row">
+		<div class="col-xs-12"><h6><b>{%= filters.supplier %}</b></h6></div>	
+	</div>
+	{% for(var i=0, l=1; i<l; i++) { %}
+		<div class="row">
+			<div class="col-xs-12">{%= data[i][__("Address")] %}</div>
+			<div class="col-xs-12">Email ID : {%= data[i][__("Email ID")] %}</div>
+			<div class="col-xs-12">Phone : {%= data[i][__("Phone")] %}</div>
+			<div class="col-xs-12">Fax : {%= data[i][__("Fax")] %}</div>	
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-xs-4">Cr. Days : {%= data[i][__("Cr. Days")] %}</div>
+		</div>
+</div>	
+		<div class="row">
+			<div class="col-xs-4"></div>
+			<div class="col-xs-4"></div>
+			<div class="col-xs-4" style="padding-left: 82px;"><b>Currency : {%= data[i][__("currency")] %}</b></div>
+
+		</div>
+
+		{% } %}		
+{% } %}
+
+<table class="table table-bordered">
+	<tbody>
+		<tr>
+		{% if(report.report_name === "Statement Of Account Creditors") { %}
+			<th style="width: 15%">{%= __("Date") %}</th>
+			<th style="width: 15%">{%= __("Type") %}</th>
+			<th style="width: 15%">{%= __("Doc No.") %}</th>
+			<th style="width: 10%">{%= __("LPO No.") %}</th>
+			<th style="width: 12%">{%= __("LPO Dt.") %}</th>
+			<th style="width: 15%">{%= __("Inv Amt.") %}</th>
+			<th style="width: 15%">{%= __("Balance") %}</th>
+		{% } else { %}
+				<th style="width: 40%">{%= __("Party") %}</th>
+				<th style="width: 15%">{%= __("Total Invoiced Amount") %}</th>
+				<th style="width: 15%">{%= __("Total Paid Amount") %}</th>
+				<th style="width: 15%">{%= __("Total Outstanding Amount") %}</th>
+		{% } %}
+		</tr>
+		{% for(var i=0, l=data.length; i<l; i++) { %}
+		<tr>
+		{% if(report.report_name === "Statement Of Account Creditors") { %}
+			{% if(data[i][__("Supplier")]) { %}
+				<td>{%= dateutil.str_to_user(data[i][__("Posting Date")]) %}</td>
+				<td>{%= data[i][__("Voucher Type")] %} </td>
+				<td>{%= data[i][__("Voucher No")] %} </td>
+				<td>{%= data[i][__("LPO No")] %} </td>
+				<td>{%= dateutil.str_to_user(data[i][__("Bill Date")]) %} </td>
+				<td>{%= format_currency(data[i]["Invoiced Amount"], data[i]["currency"]) %}</td>
+				{% if(data[i]["Outstanding Amount"] < 0) { %}
+					<td style="color: red;">({%= format_currency(data[i]["Outstanding Amount"], data[i]["currency"]) %})</td>
+				{% } else { %}
+					<td>{%= format_currency(data[i]["Outstanding Amount"], data[i]["currency"]) %}</td>
+				{% } %}
+			{% } else { %}
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+
+				<td><b>{%= __("Total") %}</b></td>
+				<td>{%= format_currency(data[i]["Invoiced Amount"]) %}</td>
+				{% if(data[i]["Outstanding Amount"] < 0) { %}
+					<td style="color: red;">
+						{%= format_currency(data[i]["Outstanding Amount"]) %}</td>
+				{% } else { %}
+					<td>{%= format_currency(data[i]["Outstanding Amount"]) %}</td>
+				{% } %}
+				
+			{% } %}
+		{% } else { %}
+			{% if(data[i][__("Supplier")] || "&nbsp;") { %}
+					{% if(data[i][__("Supplier")] != __("'Total'")) { %}
+						<td>{%= data[i][__("Supplier")] %}
+						<br>{%= __("Remarks") %}: {%= data[i][__("Remarks")] %}</td>
+					{% } else { %}
+						<td><b>{%= __("Total") %}</b></td>
+					{% } %}
+					<td style="text-align: right">{%= format_currency(data[i][__("Total Invoiced Amt")]) %}</td>
+				<td style="text-align: right;">{%= format_currency(data[i][__("Total Outstanding Amt")]) %}</td>
+				{% } %}
+
+			{% } %}
+
+		</tr>
+		{% } %} 
+	<tbody>	
+</table>
+<div class="row">
+	<div class="col-xs-12"><b>Aging Analysis</b></div>	
+</div>
+<table class="table table-bordered">
+	<tbody>
+		<tr>
+			<th style="text-align: center;">0 To {%= filters.range1 %}</th>
+			<th style="text-align: center;">{%= filters.range1 %} To {%= filters.range2 %}</th>
+			<th style="text-align: center;">{%= filters.range2 %} To {%= filters.range3 %}</th>
+			<th style="text-align: center;">Above {%= filters.range3 %} </th>
+			<th style="text-align: center;">Total</th>
+		</tr>
+			{% var range1 = filters.range1 %}
+			{% var range2 = filters.range2 %}
+			{% var range3 = filters.range3 %}
+		{% for(var i=0, l=data.length; i<l; i++) { %}
+			{% var range1_value = data[i][__("0-{0}",[range1])] %}
+			{% var range2_value = data[i][__("{0}-{1}",[range1 + 1,range2])] %}
+			{% var range3_value = data[i][__("{0}-{1}",[range2 + 1,range3])] %}
+			{% var range4_value = data[i][__("{0}-Above",[range3 + 1])] %}
+
+		<tr>
+			{% if(data[i][__("Supplier")]) { %}
+				<td style="text-align: center;">{%= data[i][__("0-{0}",[range1])] %}</td>
+				<td style="text-align: center;">{%= data[i][__("{0}-{1}",[range1 + 1,range2])] %}</td>
+				<td style="text-align: center;">{%= data[i][__("{0}-{1}",[range2 + 1,range3])] %}</td>
+				<td style="text-align: center;">{%= data[i][__("{0}-Above",[range3 + 1])] %}</td>
+				<td style="text-align: center;">{%= range1_value + range2_value + range3_value + range4_value %}</td>		
+			{% } %}
+		</tr>
+	{% } %}
+	</tbody>	
+</table>
+
+<br>
+<div class="row">
+	<div class="col-xs-12">
+		<span><b>Yours Sincerely,</b></span>
+	</div>
+	
+	<div class="col-xs-12" style="padding-top: 50px;">
+		For <span style="font-size: 15px;"><b>EVEREST METAL INDUSTRIES L.L.C</b></span>
+	</div>
+	
+</div>
