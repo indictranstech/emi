@@ -246,6 +246,18 @@ def get_data():
 			"label": _("Margin per Sales Order"),
 			"description": _("Margin per Sales Order"),
 			"doctype":"Sales Order"
+		},
+		{
+			"type": "report",
+			"name": "Statement Of Account Debtors",
+			"doctype": "Sales Invoice",	
+			"is_query_report": True
+		},
+		{
+			"type": "report",
+			"name": "Statement Of Account Creditors",
+			"doctype": "Purchase Invoice",
+			"is_query_report": True
 		}
 		]
 	}
