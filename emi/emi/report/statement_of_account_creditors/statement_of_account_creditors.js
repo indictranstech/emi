@@ -14,13 +14,17 @@ frappe.query_reports["Statement Of Account Creditors"] = {
 			"fieldname":"supplier",
 			"label": __("Supplier"),
 			"fieldtype": "Link",
-			"options": "Supplier"
+			"options": "Supplier",
+			change : function(){
+				frappe.query_reports["Statement Of Account Creditors"].get_address($(this).val())
+			}
 		},
 		{
 			"fieldname":"report_date",
 			"label": __("As on Date"),
 			"fieldtype": "Date",
-			"default": get_today()
+			"default": get_today(),
+			"df.hidden": 1
 		},
 		{
 			"fieldname":"ageing_based_on",
@@ -53,5 +57,23 @@ frappe.query_reports["Statement Of Account Creditors"] = {
 			"default": "90",
 			"reqd": 1
 		}
-	]
+	],
+	onload : function(report){
+		this.report_data = report;
+	},
+	get_address: function(supplier){
+		var me =this;
+		frappe.call({
+				method: "emi.emi.report.statement_of_account_creditors.statement_of_account_creditors.get_address",
+				args: {
+					"supplier": supplier
+				},
+				callback: function(r, rt) {
+					if(r.message) {
+						me.report_data.address = r.message.addr
+						me.report_data.cr_days = r.message.cr_days
+					}
+				}
+			});
+	}
 }

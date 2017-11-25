@@ -75,8 +75,7 @@ class ReceivablePayableReport(object):
 		if args.get("party_type") == "Supplier":
 			columns += [_("Supplier Type") + ":Link/Supplier Type:80"]
 			
-		columns.extend([_("Remarks") + "::200",_("Address") + "::200",_("LPO No") + "::200",
-						_("Cr. Days") + "::100",_("Email ID") + "::200",_("Phone") + "::200",_("Fax") + "::200"])
+		columns.extend([_("Remarks") + "::200",_("LPO No") + "::200"])
 		
 		return columns
 
@@ -151,19 +150,8 @@ class ReceivablePayableReport(object):
 					if args.get("party_type") == "Supplier":
 						row += [self.get_supplier_type(gle.party)]
 						row.append(gle.remarks)
-						email = ""
-						phone = ""
-						fax = ""
-						cr_days = 0
-						address = voucher_details.get(gle.voucher_no, {}).get("address_display", "")
 						po_no = voucher_details.get(gle.voucher_no,{}).get("po_no","")
-						if voucher_details.get(gle.voucher_no,{}).get("customer_credit",[]):
-							cr_days = voucher_details.get(gle.voucher_no, {}).get("customer_credit",[])[0].get("credit_days", 0)
-						if voucher_details.get(gle.voucher_no, {}).get("email", []):
-							email = voucher_details.get(gle.voucher_no, {}).get("email", [])[0].get('email_id')
-							phone = voucher_details.get(gle.voucher_no, {}).get("email", [])[0].get('phone')
-							fax = voucher_details.get(gle.voucher_no, {}).get("email", [])[0].get('fax')
-						row.extend([address,po_no,cr_days,email,phone,fax])
+						row.append(po_no)
 
 					print("3",row)
 					data.append(row)
@@ -232,18 +220,9 @@ class ReceivablePayableReport(object):
 					voucher_details.setdefault(si.name, si)
 
 		if party_type == "Supplier":
-			for pi in frappe.db.sql("""select name, due_date, bill_no, bill_date ,address_display,currency, customer_purchase_order_no as po_no
+			for pi in frappe.db.sql("""select name, due_date, bill_no, bill_date, customer_purchase_order_no as po_no
 				from `tabPurchase Invoice` where docstatus=1""", as_dict=1):
 					voucher_details.setdefault(pi.name, pi)
-					supplier_dict = frappe.db.get_value("Purchase Invoice",pi.name,["supplier_address","supplier"],as_dict=1)
-					email = frappe.db.sql("""select email_id,phone,fax from `tabAddress` where name = '{0}'
-						 """.format(supplier_dict.get('supplier_address')),as_dict=1)
-					supplier_credit = frappe.db.sql("""select credit_days from `tabSupplier` where name = '{0}'
-						 """.format(supplier_dict.get('supplier')),as_dict=1)
-					if email:
-						pi.update({"email":email})
-					if supplier_credit:
-						pi.update({"customer_credit":supplier_credit})
 
 		return voucher_details
 
@@ -326,3 +305,29 @@ def get_ageing_data(first_range, second_range, third_range, age_as_on, entry_dat
 
 def get_sales_team_data(voucher_no):
 	return frappe.db.sql("select sales_person from `tabSales Team` where parent='{0}'".format(voucher_no),as_dict=1)
+
+@frappe.whitelist()
+def get_address(supplier):
+	days = 0
+	if supplier:
+		address = frappe.db.sql("""select pincode,address_line1,address_line2,city,country,email_id,phone,fax 
+								from `tabAddress` where supplier = '{0}' and (is_primary_address = 1 or address_type = 'Billing') limit 1 """.format(supplier),as_dict=1)
+		cr_days = frappe.db.sql("""select credit_days from `tabSupplier` where name = '{0}' """.format(supplier),as_dict=1)
+		if cr_days:
+			days = cr_days[0].credit_days
+		addr = ""
+		if address:
+			if address[0].pincode:
+				addr = "PO.Box: {0}<br>".format(address[0].pincode)
+			if address[0].address_line1:
+				addr +=  address[0].address_line1 + "<br>"
+			if address[0].address_line2:
+				addr += address[0].address_line2 + "<br>"
+			addr +=  address[0].city + "<br>" + address[0].country + "<br>"
+			if address[0].email_id:
+				addr += "Email : {0}<br>".format(address[0].email_id)
+			if address[0].phone:
+				addr += "Phone : {0}<br>".format(address[0].phone)
+			if address[0].fax:
+				addr += "Fax : {0}<br>".format(address[0].fax)
+		return {"addr":addr,"cr_days" : days}

@@ -76,9 +76,7 @@ class ReceivablePayableReport(object):
 		if args.get("party_type") == "Supplier":
 			columns += [_("Supplier Type") + ":Link/Supplier Type:80"]
 			
-		columns.extend([_("Remarks") + "::200",_("LPO No") + "::200",_("LPO Dt") + "::200",_("Address") + "::200",
-						_("Credit Limit") + "::200",_("Cr. Days") + "::100",
-						_("Email ID") + "::200",_("Phone") + "::200",_("Fax") + "::200"])
+		columns.extend([_("Remarks") + "::200",_("LPO No") + "::200",_("LPO Dt")])
 		
 		return columns
 
@@ -156,20 +154,9 @@ class ReceivablePayableReport(object):
 
 					row.append(gle.remarks)
 					if args.get("party_type") == "Customer":
-						email = ""
-						phone = ""
-						fax = ""
 						po_no = voucher_details.get(gle.voucher_no, {}).get("customer_po_no", "")
 						po_date = voucher_details.get(gle.voucher_no, {}).get("po_date", "")
-						address = voucher_details.get(gle.voucher_no, {}).get("address_display", "")
-						if voucher_details.get(gle.voucher_no,{}).get("customer_credit",[]):
-							cr_limit = voucher_details.get(gle.voucher_no, {}).get("customer_credit",[])[0].get("credit_limit", "")
-							cr_days = voucher_details.get(gle.voucher_no, {}).get("customer_credit",[])[0].get("credit_days", "")
-						if voucher_details.get(gle.voucher_no, {}).get("email", []):
-							email = voucher_details.get(gle.voucher_no, {}).get("email", [])[0].get('email_id')
-							phone = voucher_details.get(gle.voucher_no, {}).get("email", [])[0].get('phone')
-							fax = voucher_details.get(gle.voucher_no, {}).get("email", [])[0].get('fax')
-						row.extend([po_no,po_date,address,cr_limit,cr_days,email,phone,fax])
+						row.extend([po_no,po_date])
 
 					data.append(row)
 		return data
@@ -232,18 +219,9 @@ class ReceivablePayableReport(object):
 		voucher_details = frappe._dict()
 
 		if party_type == "Customer":
-			for si in frappe.db.sql("""select name, due_date,customer_po_no,po_date,address_display
+			for si in frappe.db.sql("""select name, due_date,customer_po_no,po_date
 				from `tabSales Invoice` where docstatus=1""", as_dict=1):
 					voucher_details.setdefault(si.name, si)
-					customer_dict = frappe.db.get_value("Sales Invoice",si.name,["customer_address","customer"],as_dict=1)
-					email = frappe.db.sql("""select email_id,phone,fax from `tabAddress` where name = '{0}'
-						 """.format(customer_dict.get('customer_address')),as_dict=1)
-					customer_credit = frappe.db.sql("""select credit_limit,credit_days from `tabCustomer` where name = '{0}'
-						 """.format(customer_dict.get('customer')),as_dict=1)
-					if email:
-						si.update({"email":email})
-					if customer_credit:
-						si.update({"customer_credit":customer_credit})
 
 
 		if party_type == "Supplier":
@@ -320,6 +298,7 @@ class ReceivablePayableReport(object):
 			"chart_type": 'pie'
 		}
 
+
 def execute(filters=None):
 	args = {
 		"party_type": "Customer",
@@ -348,3 +327,36 @@ def get_ageing_data(first_range, second_range, third_range, age_as_on, entry_dat
 
 def get_sales_team_data(voucher_no):
 	return frappe.db.sql("select sales_person from `tabSales Team` where parent='{0}'".format(voucher_no),as_dict=1)
+
+@frappe.whitelist()
+def get_address(customer):
+	days = 0
+	limit = 0.0
+	s_person = ""
+	if customer:
+		address = frappe.db.sql("""select pincode,address_line1,address_line2,city,country,email_id,phone,fax 
+								from `tabAddress` where customer = '{0}' and (is_primary_address = 1 or address_type = 'Billing') limit 1 """.format(customer),as_dict=1)
+		cr_days = frappe.db.sql("""select credit_limit,credit_days from `tabCustomer` where name = '{0}' """.format(customer),as_dict=1)
+		sp_name = frappe.db.sql("""select s.sales_person as sales_person from `tabSales Team` s, `tabCustomer` c 
+									where c.name = s.parent and c.name = '{0}' limit 1""".format(customer),as_dict=1)
+		if cr_days:
+			days = cr_days[0].credit_days
+			limit = cr_days[0].credit_limit
+		if sp_name:
+			s_person = ''.join([c for c in sp_name[0].sales_person if c.isupper()])	
+		addr = ""
+		if address:
+			if address[0].pincode:
+				addr = "PO.Box: {0}<br>".format(address[0].pincode)
+			if address[0].address_line1:
+				addr +=  address[0].address_line1 + "<br>"
+			if address[0].address_line2:
+				addr += address[0].address_line2 + "<br>"
+			addr +=  address[0].city + ", " + address[0].country + "<br>"
+			if address[0].email_id:
+				addr += "Email : {0}<br>".format(address[0].email_id)
+			if address[0].phone:
+				addr += "Phone : {0}<br>".format(address[0].phone)
+			if address[0].fax:
+				addr += "Fax : {0}<br>".format(address[0].fax)
+		return {"addr":addr,"cr_days" : days ,"cr_limit":limit,"s_person":s_person}

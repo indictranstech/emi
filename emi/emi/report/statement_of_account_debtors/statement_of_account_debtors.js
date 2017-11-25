@@ -14,7 +14,10 @@ frappe.query_reports["Statement Of Account Debtors"] = {
 				"fieldname":"customer",
 				"label": __("Customer"),
 				"fieldtype": "Link",
-				"options": "Customer"
+				"options": "Customer",
+				change : function(){
+					frappe.query_reports["Statement Of Account Debtors"].get_address($(this).val())
+				}
 			},
 			{
 				"fieldname":"report_date",
@@ -54,5 +57,26 @@ frappe.query_reports["Statement Of Account Debtors"] = {
 				"reqd": 1
 			}
 		],
+		onload : function(report){
+			this.report_data = report;
+		},
+		get_address: function(customer){
+			var me =this;
+			frappe.call({
+					method: "emi.emi.report.statement_of_account_debtors.statement_of_account_debtors.get_address",
+					args: {
+						"customer": customer
+					},
+					callback: function(r, rt) {
+						if(r.message) {
+							me.report_data.address = r.message.addr
+							me.report_data.cr_limit = r.message.cr_limit
+							me.report_data.cr_days = r.message.cr_days
+							me.report_data.s_person = r.message.s_person
+
+						}
+					}
+				});
+		}
 
 }
