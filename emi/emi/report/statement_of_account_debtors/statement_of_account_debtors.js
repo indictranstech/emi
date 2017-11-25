@@ -72,6 +72,8 @@ frappe.query_reports["Statement Of Account Debtors"] = {
 							me.report_data.address = r.message.addr
 							me.report_data.cr_limit = r.message.cr_limit
 							me.report_data.cr_days = r.message.cr_days
+							me.report_data.s_person = r.message.s_person
+
 						}
 					}
 				});

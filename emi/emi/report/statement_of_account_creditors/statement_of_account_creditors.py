@@ -308,10 +308,13 @@ def get_sales_team_data(voucher_no):
 
 @frappe.whitelist()
 def get_address(supplier):
+	days = 0
 	if supplier:
 		address = frappe.db.sql("""select pincode,address_line1,address_line2,city,country,email_id,phone,fax 
 								from `tabAddress` where supplier = '{0}' and (is_primary_address = 1 or address_type = 'Billing') limit 1 """.format(supplier),as_dict=1)
 		cr_days = frappe.db.sql("""select credit_days from `tabSupplier` where name = '{0}' """.format(supplier),as_dict=1)
+		if cr_days:
+			days = cr_days[0].credit_days
 		addr = ""
 		if address:
 			if address[0].pincode:
@@ -327,4 +330,4 @@ def get_address(supplier):
 				addr += "Phone : {0}<br>".format(address[0].phone)
 			if address[0].fax:
 				addr += "Fax : {0}<br>".format(address[0].fax)
-		return {"addr":addr,"cr_days" : cr_days[0].credit_days}
+		return {"addr":addr,"cr_days" : days}

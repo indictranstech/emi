@@ -298,6 +298,7 @@ class ReceivablePayableReport(object):
 			"chart_type": 'pie'
 		}
 
+
 def execute(filters=None):
 	args = {
 		"party_type": "Customer",
@@ -329,10 +330,20 @@ def get_sales_team_data(voucher_no):
 
 @frappe.whitelist()
 def get_address(customer):
+	days = 0
+	limit = 0.0
+	s_person = ""
 	if customer:
 		address = frappe.db.sql("""select pincode,address_line1,address_line2,city,country,email_id,phone,fax 
 								from `tabAddress` where customer = '{0}' and (is_primary_address = 1 or address_type = 'Billing') limit 1 """.format(customer),as_dict=1)
 		cr_days = frappe.db.sql("""select credit_limit,credit_days from `tabCustomer` where name = '{0}' """.format(customer),as_dict=1)
+		sp_name = frappe.db.sql("""select s.sales_person as sales_person from `tabSales Team` s, `tabCustomer` c 
+									where c.name = s.parent and c.name = '{0}' limit 1""".format(customer),as_dict=1)
+		if cr_days:
+			days = cr_days[0].credit_days
+			limit = cr_days[0].credit_limit
+		if sp_name:
+			s_person = ''.join([c for c in sp_name[0].sales_person if c.isupper()])	
 		addr = ""
 		if address:
 			if address[0].pincode:
@@ -341,11 +352,11 @@ def get_address(customer):
 				addr +=  address[0].address_line1 + "<br>"
 			if address[0].address_line2:
 				addr += address[0].address_line2 + "<br>"
-			addr +=  address[0].city + "<br>" + address[0].country + "<br>"
+			addr +=  address[0].city + ", " + address[0].country + "<br>"
 			if address[0].email_id:
 				addr += "Email : {0}<br>".format(address[0].email_id)
 			if address[0].phone:
 				addr += "Phone : {0}<br>".format(address[0].phone)
 			if address[0].fax:
 				addr += "Fax : {0}<br>".format(address[0].fax)
-		return {"addr":addr,"cr_days" : cr_days[0].credit_days,"cr_limit":cr_days[0].credit_limit}
+		return {"addr":addr,"cr_days" : days ,"cr_limit":limit,"s_person":s_person}

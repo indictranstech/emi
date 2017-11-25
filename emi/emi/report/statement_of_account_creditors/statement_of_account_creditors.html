@@ -48,13 +48,14 @@
 	<tbody>
 		<tr>
 		{% if(report.report_name === "Statement Of Account Creditors") { %}
-			<th style="width: 15%">{%= __("Date") %}</th>
+			<th style="width: 13%">{%= __("Date") %}</th>
 			<th style="width: 15%">{%= __("Type") %}</th>
-			<th style="width: 15%">{%= __("Doc No.") %}</th>
+			<th style="width: 13%">{%= __("Doc No.") %}</th>
 			<th style="width: 10%">{%= __("LPO No.") %}</th>
 			<th style="width: 12%">{%= __("LPO Dt.") %}</th>
-			<th style="width: 15%">{%= __("Inv Amt.") %}</th>
-			<th style="width: 15%">{%= __("Balance") %}</th>
+			<th style="width: 13%">{%= __("Inv Amt.") %}</th>
+			<th style="width: 13%">{%= __("Balance") %}</th>
+			<th style="width: 15%">{%= __("Net Balance") %}</th>
 		{% } else { %}
 				<th style="width: 40%">{%= __("Party") %}</th>
 				<th style="width: 15%">{%= __("Total Invoiced Amount") %}</th>
@@ -62,6 +63,8 @@
 				<th style="width: 15%">{%= __("Total Outstanding Amount") %}</th>
 		{% } %}
 		</tr>
+		{% var net_balance = 0.0 %}
+		{% var amt = 0.0 %}
 		{% for(var i=0, l=data.length; i<l; i++) { %}
 		<tr>
 		{% if(report.report_name === "Statement Of Account Creditors") { %}
@@ -71,12 +74,15 @@
 				<td>{%= data[i][__("Voucher No")] %} </td>
 				<td>{%= data[i][__("LPO No")] %} </td>
 				<td>{%= dateutil.str_to_user(data[i][__("Bill Date")]) %} </td>
-				<td>{%= format_currency(data[i]["Invoiced Amount"], data[i]["currency"]) %}</td>
+				<td style="text-align: right;">{%= format_currency(data[i]["Invoiced Amount"], data[i]["currency"]) %}</td>
 				{% if(data[i]["Outstanding Amount"] < 0) { %}
-					<td style="color: red;">({%= format_currency(data[i]["Outstanding Amount"], data[i]["currency"]) %})</td>
+					<td style="color: red;text-align: right;">{%= format_currency(data[i]["Outstanding Amount"], data[i]["currency"]) %}</td>
 				{% } else { %}
-					<td>{%= format_currency(data[i]["Outstanding Amount"], data[i]["currency"]) %}</td>
+					<td style="text-align: right;">{%= format_currency(data[i]["Outstanding Amount"], data[i]["currency"]) %}</td>
 				{% } %}
+				{% var amt = data[i]["Outstanding Amount"] %}
+				{% var net_balance = net_balance + amt %}
+				<td style="text-align: right;">{%= format_currency(net_balance, data[i]["currency"]) %}</td>
 			{% } else { %}
 				<td></td>
 				<td></td>
@@ -84,14 +90,14 @@
 				<td></td>
 
 				<td><b>{%= __("Total") %}</b></td>
-				<td>{%= format_currency(data[i]["Invoiced Amount"]) %}</td>
+				<td style="text-align: right;">{%= format_currency(data[i]["Invoiced Amount"]) %}</td>
 				{% if(data[i]["Outstanding Amount"] < 0) { %}
-					<td style="color: red;">
+					<td style="color: red;text-align: right;">
 						{%= format_currency(data[i]["Outstanding Amount"]) %}</td>
 				{% } else { %}
-					<td>{%= format_currency(data[i]["Outstanding Amount"]) %}</td>
+					<td style="text-align: right;">{%= format_currency(data[i]["Outstanding Amount"]) %}</td>
 				{% } %}
-				
+				<td></td>
 			{% } %}
 		{% } else { %}
 			{% if(data[i][__("Supplier")] || "&nbsp;") { %}
@@ -126,22 +132,35 @@
 			{% var range1 = filters.range1 %}
 			{% var range2 = filters.range2 %}
 			{% var range3 = filters.range3 %}
-		{% for(var i=0, l=data.length; i<l; i++) { %}
-			{% var range1_value = data[i][__("0-{0}",[range1])] %}
-			{% var range2_value = data[i][__("{0}-{1}",[range1 + 1,range2])] %}
-			{% var range3_value = data[i][__("{0}-{1}",[range2 + 1,range3])] %}
-			{% var range4_value = data[i][__("{0}-Above",[range3 + 1])] %}
-
-		<tr>
-			{% if(data[i][__("Supplier")]) { %}
-				<td style="text-align: center;">{%= data[i][__("0-{0}",[range1])] %}</td>
-				<td style="text-align: center;">{%= data[i][__("{0}-{1}",[range1 + 1,range2])] %}</td>
-				<td style="text-align: center;">{%= data[i][__("{0}-{1}",[range2 + 1,range3])] %}</td>
-				<td style="text-align: center;">{%= data[i][__("{0}-Above",[range3 + 1])] %}</td>
-				<td style="text-align: center;">{%= range1_value + range2_value + range3_value + range4_value %}</td>		
+			{% var count1 = 0.0 %}
+			{% var count2 = 0.0 %}
+			{% var count3 = 0.0 %}
+			{% var count4 = 0.0 %}
+			{% for(var i=0, l=data.length; i<l; i++) { %}
+				{% if(data[i][__("Supplier")]) { %}
+					{% var range1_value = data[i][__("0-{0}",[range1])] %}
+					{% var range2_value = data[i][__("{0}-{1}",[range1 + 1,range2])] %}
+					{% var range3_value = data[i][__("{0}-{1}",[range2 + 1,range3])] %}
+					{% var range4_value = data[i][__("{0}-Above",[range3 + 1])] %}
+					{% count1 += range1_value %}
+					{% count2 += range2_value %}
+					{% count3 += range3_value %}
+					{% count4 += range4_value %}
+					{% total = count1 + count2 + count3 + count4 %}
+					{% final_total = format_currency(total,data[i][__("currency")]) %}
+					{% data1 = format_currency(count1,data[i][__("currency")]) %}
+					{% data2 = format_currency(count2,data[i][__("currency")]) %}
+					{% data3 = format_currency(count3,data[i][__("currency")]) %}
+					{% data4 = format_currency(count4,data[i][__("currency")]) %}
+				{% } %}
 			{% } %}
+		<tr>
+				<td style="text-align: right;">{%= data1 %}</td>
+				<td style="text-align: right;">{%= data2 %}</td>
+				<td style="text-align: right;">{%= data3 %}</td>
+				<td style="text-align: right;">{%= data4 %}</td>
+				<td style="text-align: right;">{%= final_total %}</td>		
 		</tr>
-	{% } %}
 	</tbody>	
 </table>
 
@@ -152,7 +171,7 @@
 	</div>
 	
 	<div class="col-xs-12" style="padding-top: 50px;">
-		 <span style="font-size: 15px;"><b>FOR EVEREST METAL INDUSTRIES L.L.C</b></span>
+		For <span style="font-size: 15px;"><b>EVEREST METAL INDUSTRIES L.L.C</b></span>
 	</div>
 	
 </div>
