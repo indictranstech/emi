@@ -258,8 +258,14 @@ def get_data():
 			"name": "Statement Of Account Creditors",
 			"doctype": "Purchase Invoice",
 			"is_query_report": True
-		}
+		},
+		{
+			"type": "report",
+			"name": "Custom Profit and Loss Statement",
+			"doctype": "GL Entry",
+			"is_query_report": True
+		},
+		]
+	}
 	]
- }
-]
 	

@@ -1,0 +1,125 @@
+<html>
+  <head>
+    <style>
+      td{
+          border: 0!important;
+        }
+        th{
+          border: 0!important;
+        }
+    </style>
+  </head>
+  
+  <body>
+
+    <div class="container-fluid" style="margin-bottom:5px;">    
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="text-center">
+              {%= frappe.boot.letter_heads[filters.letter_head ||  frappe.defaults.get_default("letter_head")] %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+     
+        <div class="row">
+          <div class="col-xs-6">
+            <h5 class="text-left">
+              INCOME STATEMENT AS ON 
+              {%= data[1][__("year_end_date")] %}
+             
+             
+            </h5>  
+          </div>
+          <div class="col-xs-6">
+            <h5 class="text-right">Currency-AED</h5>  
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th class="col-xs-9">Description</th>
+            <th class="col-xs-3">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% var sales_amount = 0 %}
+          {% var cost_of_goods = 0 %}
+          {% var total_expenses = 0 %}
+         
+          {% for(var i=0, l=data.length; i<l; i++) { %}
+
+              {% if(data[i][__("account_name")] == 'Sales' ) { %}
+
+                  <tr>
+                    <td>{%= data[i][__("account_name")]%} </td>
+                    <td>{%= flt(data[i][__("total")],3)%}</td>
+                  </tr>
+                    {% sales_amount = flt(data[i][__("total")],3)  %}
+              {% } %} 
+              
+              {% if(data[i][__("account_name")] == 'Cost of Goods Sold' ) { %}       
+
+                  <tr>
+                    <td>{%= data[i][__("account_name")]%}</td>
+                    <td>({%= flt(data[i][__("total")],3)%})</td>
+                  </tr>
+                  {% cost_of_goods = flt(data[i][__("total")],3)  %}
+
+              {% } %}
+          {% } %}
+              
+              
+              <tr>
+                    <td>{{ "Gross Profit "}}</td>
+                    <td>({{ (sales_amount - (cost_of_goods* -1)) }})</td>
+              </tr>
+
+              <tr>
+                    <td>{{ "Other Income"}}</td>
+                    <td> </td>
+              </tr>
+              <tr>
+                    <td>{{ "Total Income"}}</td>
+                    <td>({{ (sales_amount - (cost_of_goods* -1)) }}) </td>
+              </tr>
+              <!-- <tr>
+                    <td>{{ "NET(LOSS)/PROFIT FOR THE YEAR/PERIOD"}}</td>
+                    <td> </td>
+              </tr> -->
+
+          {% for(var i=0, l=data.length; i<l; i++) { %}
+
+                {% if(data[i][__("parent_account")] == 'Indirect Expenses - E' ) { %}
+
+                  <tr>
+                    <td>{%= data[i][__("account_name")]%} </td>
+                    <td>({%= flt(data[i][__("total")],3)%})</td>
+                  </tr>
+                    {% total_expenses = flt(total_expenses)+flt(data[i][__("total")],3)  %}
+              {% } %} 
+
+          {% } %}
+
+              <tr>
+                    <td>{{ "Total Expenses "}}</td>
+                    <td>({{ total_expenses }})</td>
+              </tr>
+              <tr>
+                    <td>{{ "NET(LOSS)/PROFIT FOR THE YEAR/PERIOD"}}</td>
+                    <td>({{(sales_amount - (cost_of_goods* -1))-(total_expenses)}})</td>
+              </tr>
+
+
+
+
+        </tbody>
+         
+      </table>
+    </div>
+  </body>
+</html>
