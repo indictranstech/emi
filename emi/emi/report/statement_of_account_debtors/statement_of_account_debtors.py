@@ -33,7 +33,7 @@ class ReceivablePayableReport(object):
 		if args.get("party_type") == "Supplier":
 			columns += [_("Bill No") + "::80", _("Bill Date") + ":Date:80"]
 
-		for label in ("Invoiced Amount", "Paid Amount", "Outstanding Amount"):
+		for label in ("Invoiced Amount", "Paid Amount", "Outstanding Amount","PDC Amt"):
 			columns.append({
 				"label": label,
 				"fieldtype": "Currency",
@@ -97,9 +97,10 @@ class ReceivablePayableReport(object):
 		data = []
 		for gle in self.get_entries_till(self.filters.report_date, args.get("party_type")):
 			if self.is_receivable_or_payable(gle, dr_or_cr, future_vouchers):
-				outstanding_amount = flt(self.get_outstanding_amount(gle, 
-					self.filters.report_date, dr_or_cr), currency_precision)
-					
+				# outstanding_amount = flt(self.get_outstanding_amount(gle, 
+				# 	self.filters.report_date, dr_or_cr), currency_precision)
+				amt = self.get_outstanding_amount(gle,self.filters.report_date, dr_or_cr)
+				outstanding_amount = flt(amt.get('amount'),currency_precision)
 				if abs(outstanding_amount) > 0.1/10**currency_precision:
 					row = [gle.posting_date, gle.party]
 
@@ -123,7 +124,7 @@ class ReceivablePayableReport(object):
 					invoiced_amount = gle.get(dr_or_cr) if (gle.get(dr_or_cr) > 0) else 0
 					paid_amt = invoiced_amount - outstanding_amount
 
-					row += [invoiced_amount, paid_amt, outstanding_amount]
+					row += [invoiced_amount, paid_amt, outstanding_amount,amt.get('pdc_amount')]
 
 					# ageing data
 					entry_date = due_date if self.filters.ageing_based_on == "Due Date" else gle.posting_date
@@ -188,11 +189,14 @@ class ReceivablePayableReport(object):
 
 	def get_outstanding_amount(self, gle, report_date, dr_or_cr):
 		payment_amount = 0.0
+		pdc_amount = 0.0
 		for e in self.get_gl_entries_for(gle.party, gle.party_type, gle.voucher_type, gle.voucher_no):
 			if getdate(e.posting_date) <= report_date and e.name!=gle.name:
 				payment_amount += (flt(e.credit if gle.party_type == "Customer" else e.debit) - flt(e.get(dr_or_cr)))
-
-		return flt(gle.get(dr_or_cr)) - flt(gle.credit if gle.party_type == "Customer" else gle.debit) - payment_amount
+			if getdate(e.posting_date) > report_date:
+				pdc_amount += flt(e.credit if gle.party_type == "Customer" else e.debit)
+		amount = flt(gle.get(dr_or_cr)) - flt(gle.credit if gle.party_type == "Customer" else gle.debit) - payment_amount
+		return {"amount":amount,"pdc_amount":pdc_amount}
 
 	def get_party_name(self, party_type, party_name):
 		return self.get_party_map(party_type).get(party_name, {}).get("customer_name" if party_type == "Customer" else "supplier_name") or ""
