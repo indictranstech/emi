@@ -49,13 +49,14 @@
 	<tbody>
 		<tr>
 		{% if(report.report_name === "Statement Of Account Debtors") { %}
-			<th style="width: 13%">{%= __("Date") %}</th>
-			<th style="width: 15%">{%= __("Type") %}</th>
+			<th style="width: 14%">{%= __("Date") %}</th>
+			<th style="width: 13%">{%= __("Type") %}</th>
 			<th style="width: 13%">{%= __("Doc No.") %}</th>
 			<th style="width: 10%">{%= __("LPO No.") %}</th>
-			<th style="width: 12%">{%= __("LPO Dt.") %}</th>
-			<th style="width: 13%">{%= __("Inv Amt.") %}</th>
+			<th style="width: 10%">{%= __("LPO Dt.") %}</th>
+			<th style="width: 10%">{%= __("Inv Amt.") %}</th>
 			<th style="width: 13%">{%= __("Balance") %}</th>
+			<th style="width: 13%">{%= __("PDC Amt") %}</th>
 			<th style="width: 15%">{%= __("Net Balance") %}</th>
 		{% } else { %}
 				<th style="width: 40%">{%= __("Party") %}</th>
@@ -65,6 +66,7 @@
 		{% } %}
 		</tr>
 		{% var net_balance = 0.0 %}
+		{% var update_balance = 0.0 %}
 		{% var amt = 0.0 %}
 		{% for(var i=0, l=data.length; i<l; i++) { %}
 		<tr>
@@ -81,8 +83,11 @@
 				{% } else { %}
 					<td style="text-align: right;">{%= format_currency(data[i]["Outstanding Amount"], data[i]["currency"]) %}</td>
 				{% } %}
+				<td style="text-align: right">{%= format_currency(data[i]["PDC Amt"], data[i]["currency"]) %}</td>
 				{% var amt = data[i]["Outstanding Amount"] %}
-				{% var net_balance = net_balance + amt %}
+				{% var ab = data[i]["PDC Amt"] %}
+				{% update_balance = amt - ab %}
+				{% net_balance += update_balance %}
 				<td style="text-align: right;">{%= format_currency(net_balance, data[i]["currency"]) %}</td>
 				
 			{% } else { %}
@@ -99,6 +104,8 @@
 				{% } else { %}
 					<td style="text-align: right;">{%= format_currency(data[i]["Outstanding Amount"],data[i]["currency"]) %}</td>
 				{% } %}
+				<td style="text-align: right">
+						{%= format_currency(data[i]["PDC Amt"],data[i]["currency"]) %}</td>
 				<td></td>
 			{% } %}
 		{% } else { %}

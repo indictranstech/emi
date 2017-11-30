@@ -111,7 +111,7 @@ doc_events = {
 
 doctype_js = {
     "Quotation":["custom_script/quotation/quotation.js"],
-    "Sales Order" :["custom_script/sales_order/sales_order.js"]  
+    "Sales Order" :["custom_script/sales_order/sales_order.js"]
 }
 
 # Scheduled Tasks
