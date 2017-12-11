@@ -105,7 +105,7 @@ doc_events = {
         "validate": "emi.custom_script.purchase_order.purchase_order.validate"
     },
     "Production Order": {
-        "on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
+       "on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
     },
 }
 
