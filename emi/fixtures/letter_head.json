@@ -1,5 +1,16 @@
 [
  {
+  "content": "<img src=\"/files/EMI L.Head Logo + Heading.png\">", 
+  "disabled": 0, 
+  "docstatus": 0, 
+  "doctype": "Letter Head", 
+  "footer": "<img src=\"/files/EMI L.Head address.png\">", 
+  "is_default": 0, 
+  "letter_head_name": "EMI Letter", 
+  "modified": "2017-09-08 14:08:48.048893", 
+  "name": "EMI Letter"
+ }, 
+ {
   "content": "<div>\n    <div style=\"text-align: center;\">\n        <img alt=\"Smiley face\" height=\"82\" src=\"/files/EMI LOGO-4.jpg\" style=\"line-height: 1.42857;\" width=\"82\"><span style=\"line-height: 1.42857;\">\u00a0\u00a0</span><b style=\"font-size: 24px; line-height: 1.3em; text-align: center;\">EVEREST METAL INDUSTRIES L.L.C.</b>\n\n        <img height=\"82\" src=\"/files/EMI_ISO.jpg\" style=\"line-height: 1.42857;\" width=\"82\">\n        <br style=\"line-height: 1.42857;\">\n    </div>\n</div>\n<div>\n    <hr>\n    <div style=\"text-align: center;\">\u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 DUBAI OFFICE \u00a0 \u00a0 \u00a0 \u00a0: P.O.BOX 283177, TEL:0097148877505, FAX : 0097148877541</div>\n    <div style=\"text-align: center;\">\u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 ABU DHABI OFFICE \u00a0 : P.O BOX 53837, TEL :00971 2 6413739, FAX : 00971 2 6413794</div>\n    <div style=\"text-align: center;\">\u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 TRADE LICENCE NO : 631162, INDUSTRIAL LICENCE NO :3279</div>\n</div>", 
   "disabled": 0, 
   "docstatus": 0, 
@@ -11,14 +22,14 @@
   "name": "Everest"
  }, 
  {
-  "content": "<div style=\"text-align: center;\">\n    <img src=\"/files/EMI L.Head Logo + Heading.png\">\n</div>", 
+  "content": "<div style=\"text-align: center;\">\n    <img src=\"/files/EMI L.Head Logo + Heading.png\"><img src=\"https://emierp.e-grc.com/files/EMI%20L.Head%20Logo%20+%20Heading.png\">\u00a0\n</div>", 
   "disabled": 0, 
   "docstatus": 0, 
   "doctype": "Letter Head", 
-  "footer": "<img src=\"/files/EMI L.Head address.png\">", 
+  "footer": "<img src=\"/files/EMI L.Head address.png\"><img src=\"https://emierp.e-grc.com/files/EMI%20L.Head%20address.png\">", 
   "is_default": 1, 
   "letter_head_name": "EMI With Logo andName", 
-  "modified": "2017-05-15 13:46:07.417068", 
+  "modified": "2017-12-19 13:49:40.738135", 
   "name": "EMI With Logo andName"
  }, 
  {
