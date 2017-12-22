@@ -43,9 +43,9 @@ def get_colums(filters):
 				   ("Sales Amount") + ":Currency:120",
 				   ("Sales Person") + ":Data:120",
 				   ("Contact No") + ":Data:120",
-				   ("Allocated Percentage") + ":Data:120",
+				   ("Allocated Percentage") + ":Float:120",
 				   ("Allocated Amount") + ":Currency:120",
-				   ("Incentives") + ":Data:120"
+				   ("Incentives") + ":Float:120"
 
 
 			]

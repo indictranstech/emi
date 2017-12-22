@@ -16,16 +16,15 @@ def calulate_consolidated_margin(doc, method):
 	# Calculat consolidate_margin = sum of item_price_rate - sum of total_margin
 	# Calculate price_list_total,and margin percentage
 	#Page-break
-	
 	for row in doc.items:
 		if len(doc.items) > 8:
 			if float(row.idx) % 8 == 0:
 				row.page_break = 1
 
 	consolidated_margin = 0
-	price_list_total = 0
+	price_list_total = 0	
+	discounted_amount = 0.0
 
-	k =[]
 	for row in doc.items:
 		if not row.price_list_rate:
 			frappe.throw(("First create 'Item Price' for this item."))
@@ -60,57 +59,35 @@ def calulate_consolidated_margin(doc, method):
 		# 	if current_rate < last_rate:
 		# 		less_margin_notification(doc.doctype,doc.name,row.margin_rate_or_amount,row.margin_type,row.discount_percentage)
 
-
 		if row.margin_rate_or_amount:
-			if row.margin_type == "Percentage":
-				print "______________________________________________"
-				print "Row No",row.idx
-				print "Item",row.item_code
-				print "Item Rate",row.rate
-				print "Margin Type",row.margin_type
-				print "Margin Rate Or Amount",row.margin_rate_or_amount
-				print "price list rate",row.price_list_rate
+			if row.margin_type == "Percentage":		
 				margin_amt = ((row.price_list_rate * row.margin_rate_or_amount)/100) * row.qty
-				print "Margin Amt",margin_amt
-				print "Consolidated Margin before",consolidated_margin
 				consolidated_margin += margin_amt
-				print "Consolidated Margin After",consolidated_margin
-				print "Price List Total",price_list_total
-				price_list_total += row.price_list_rate * row.qty
+				price_list_total += (row.price_list_rate * row.qty)
+				
 			elif row.margin_type == "Amount":
-				print "______________________________________________"
-				print "Row No",row.idx
-				print "Item",row.item_code
-				print "Item Rate",row.rate
-				print "Margin Type",row.margin_type
-				print "Margin Rate Or Amount",row.margin_rate_or_amount
-				print "price list rate",row.price_list_rate
-				print "Margin Amt",(row.margin_rate_or_amount * row.qty)
-				print "Consolidated Margin before",consolidated_margin
 				consolidated_margin += (row.margin_rate_or_amount * row.qty)
-				print "Consolidated Margin After",consolidated_margin
-				price_list_total += row.price_list_rate * row.qty
-				print "Price List Total",price_list_total
+				price_list_total += (row.price_list_rate * row.qty)
+				
 		else:
 			if row.rate < row.price_list_rate:
-				k.append(row.idx)
-			print "______________________________________________"
-			print "Row No",row.idx
-			print "Item",row.item_code
-			print "Item Rate",row.rate
-			print "price list rate",row.price_list_rate
+				if row.discount_percentage:
+					discounted_amount = discounted_amount + ((row.price_list_rate -row.rate)*row.qty)
+					price_list_total += (row.price_list_rate * row.qty)
+					
+				else:
+					price_list_total += (row.price_list_rate * row.qty)
+
 	doc.consolidated_margin = consolidated_margin
+	doc.discounted_amount = discounted_amount
+	doc.price_list_total = price_list_total
+	
 	if consolidated_margin != 0: 
 		doc.consolidated_margin_percentage = get_percenage(float(consolidated_margin),float(price_list_total))
-	print "_____consolidated_margin________",doc.consolidated_margin
-	print "____________price_list_total___________________",price_list_total
-	print "consolidated_margin_percentage",doc.consolidated_margin_percentage
-	print "______Discounted Row__",k
 	if doc.apply_discount_on == "Net Total" and doc.additional_discount_percentage and doc.discount_amount:
 		if doc.consolidated_margin != 0:
 			doc.consolidated_margin = doc.consolidated_margin - doc.discount_amount
 			doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
-		
 	if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
 		sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 	
@@ -146,8 +123,8 @@ def get_percenage(value1,value2):
 def sales_order_submit_notification(name,margin):
 	try:
 		frappe.sendmail(
-			#recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			recipients=["onkar.m@indictranstech.com","khushal.t@indictranstech.com"],
+			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
+			#recipients=["onkar.m@indictranstech.com","khushal.t@indictranstech.com"],
 			expose_recipients="header",
 			# sender=frappe.session.user,
 			# reply_to=None,

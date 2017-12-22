@@ -13,21 +13,37 @@ def execute(filters=None):
 	return columns, data
 
 def get_data(filters):
-	currency_precision = get_currency_precision() or 3
-	print "____________________________________",currency_precision
+
+	precision = int(frappe.db.get_value("System Settings",{"name":"System Settings"},"float_precision"))
+	# currency_precision = get_currency_precision() or 3
+	print "____________________________________",precision,type(precision)
+	data=[]
+
 	if filters:
-	 	return frappe.db.sql("""select so.name,so.customer,so.company,so.transaction_date,so.delivery_date,so.contact_person,so.customer_address,
-	 							so.po_no,format(so.grand_total,3),so_item.item_name,so_item.item_group,
+		project_row = [['Remark', '', '', '','', '', '', '','', '', '', '', '','','','','', '','','']]
+		total_row = [['Sub Total', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
+		last_row = [['', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
+
+	 	data = []
+	 	data1= frappe.db.sql("""select so.name,so.customer,so.company,so.transaction_date,so.delivery_date,so.contact_person,so.customer_address,
+	 							so.po_no,so.grand_total,so_item.item_name,so_item.item_group,
   								so_item.description,so_item.stock_uom,
   								so_item.qty,so_item.delivered_qty,
-  								format((so_item.qty - so_item.delivered_qty),2),
+  								format((so_item.qty - so_item.delivered_qty),3),
   								format(so_item.rate,3),format(so_item.base_net_rate,3),	
   								format(so_item.amount,3),format(so_item.base_net_amount,3)  
 								from
 									`tabSales Order` so,`tabSales Order Item` so_item
 								where
 									so.name = '{0}' and so_item.parent ='{1}' and (so.status ='Draft' or so.status = 'To Deliver and Bill')
-								order by so.name desc""".format(filters.name,filters.name,int(currency_precision)),as_list=1)
+								order by so.name desc""".format(filters.name,filters.name,int(precision)),as_list=1)
+		project_row= get_project_row(filters)
+		data.extend(project_row)
+		data.extend(data1)
+		total_row = get_total_sales_amount(data1)
+		last_row  = get_last_total(last_row,total_row) 
+		data.extend(last_row)
+		return data
 	else:
 		data=[]
 		project_row = [['Remark', '', '', '','', '', '', '','', '', '', '', '','','','','', '','','']]
