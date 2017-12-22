@@ -16,6 +16,7 @@ def calulate_consolidated_margin(doc, method):
 	# Calculat consolidate_margin = sum of item_price_rate - sum of total_margin
 	# Calculate price_list_total,and margin percentage
 	#Page-break
+	doc.consolidated_margin_percentage = 0.0
 	for row in doc.items:
 		if len(doc.items) > 8:
 			if float(row.idx) % 8 == 0:
@@ -78,7 +79,7 @@ def calulate_consolidated_margin(doc, method):
 				else:
 					price_list_total += (row.price_list_rate * row.qty)
 
-	doc.consolidated_margin = consolidated_margin
+	doc.consolidated_margin = (consolidated_margin -discounted_amount)
 	doc.discounted_amount = discounted_amount
 	doc.price_list_total = price_list_total
 	

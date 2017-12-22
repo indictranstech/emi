@@ -82,4 +82,11 @@ frappe.ui.form.on('Sales Order', {
 			frm.set_value("employee","")
 		}
 	},
+	refresh:function(frm){
+		if(frm.doc.consolidated_margin == 0.0){
+			cur_frm.set_value("consolidated_margin_percentage", 0.0)
+			refresh_field("consolidated_margin_percentage")
+		}
+
+	}
 })
