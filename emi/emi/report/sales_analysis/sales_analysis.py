@@ -148,7 +148,7 @@ def get_colums(filters):
 				   ("Amount") + ":Currency:120",
 				   ("Net Sales") + ":Currency:120",
 				   ("Sales Return") + ":Data:120",
-				   ("Sales Amount") +":Data:120"
+				   ("Sales Amount") +":Float:120"
 			]
 	return columns
 

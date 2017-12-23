@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.utils import flt, cint, nowdate,get_datetime
+from erpnext.accounts.utils import get_currency_precision
 
 def execute(filters=None):
 	columns, data = [], []
@@ -12,19 +13,37 @@ def execute(filters=None):
 	return columns, data
 
 def get_data(filters):
+
+	precision = int(frappe.db.get_value("System Settings",{"name":"System Settings"},"float_precision"))
+	# currency_precision = get_currency_precision() or 3
+	print "____________________________________",precision,type(precision)
+	data=[]
+
 	if filters:
-	 	return frappe.db.sql("""select so.name,so.customer,so.company,so.transaction_date,so.delivery_date,so.contact_person,so.customer_address,
+		project_row = [['Remark', '', '', '','', '', '', '','', '', '', '', '','','','','', '','','']]
+		total_row = [['Sub Total', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
+		last_row = [['', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
+
+	 	data = []
+	 	data1= frappe.db.sql("""select so.name,so.customer,so.company,so.transaction_date,so.delivery_date,so.contact_person,so.customer_address,
 	 							so.po_no,so.grand_total,so_item.item_name,so_item.item_group,
   								so_item.description,so_item.stock_uom,
   								so_item.qty,so_item.delivered_qty,
-  								format((so_item.qty - so_item.delivered_qty),2),
-  								so_item.rate,so_item.base_net_rate,	
-  								so_item.amount,so_item.base_net_amount  
+  								format((so_item.qty - so_item.delivered_qty),3),
+  								format(so_item.rate,3),format(so_item.base_net_rate,3),	
+  								format(so_item.amount,3),format(so_item.base_net_amount,3)  
 								from
 									`tabSales Order` so,`tabSales Order Item` so_item
 								where
 									so.name = '{0}' and so_item.parent ='{1}' and (so.status ='Draft' or so.status = 'To Deliver and Bill')
-								order by so.name desc""".format(filters.name,filters.name),as_list=1)
+								order by so.name desc""".format(filters.name,filters.name,int(precision)),as_list=1)
+		project_row= get_project_row(filters)
+		data.extend(project_row)
+		data.extend(data1)
+		total_row = get_total_sales_amount(data1)
+		last_row  = get_last_total(last_row,total_row) 
+		data.extend(last_row)
+		return data
 	else:
 		data=[]
 		project_row = [['Remark', '', '', '','', '', '', '','', '', '', '', '','','','','', '','','']]
@@ -64,7 +83,7 @@ def get_colums(filters):
 				   ("Contact Person")+ " :Data:140",
 				   ("Address")+":Data:180",
 				   ("Customer PO NO") + ":Data:70",
-				   ("Amount") + ":Currency:120",
+				   ("Amount") + ":Currency:200",
 				   ("Item Name") + ":Data:70" ,
 				   ("Item Group") + ":Data:70",
 				   ("Description") + ":Data:100",
@@ -72,15 +91,16 @@ def get_colums(filters):
 				   ("Qty") + ":Float:50" , 
 				   ("Delivered Qty") +":Float:50",
 				   ("Pending Qty") + ":Float:50",
-				   ("Rate") + ":Currency:10",
-				   ("Net Rate") + ":Currency:50", 
-		  		   ("Amount") + ":Currency:50",
-		  		   ("Net Amount") + ":Currency:10" 
+				   ("Rate") + ":Currency:100",
+				   ("Net Rate") + ":Currency:110", 
+		  		   ("Amount") + ":Currency:110",
+		  		   ("Net Amount") + ":Currency:180" 
 			 ]
 				  	
 	return columns
 
 def get_total_sales_amount(item_list):
+	currency_precision = get_currency_precision() or 3
 	amount = 0.0
 	qty = 0.0
 	pending_qty = 0.0
@@ -100,10 +120,10 @@ def get_total_sales_amount(item_list):
 		net_amount = net_amount + flt (item[18])
 		base_net_amount = base_net_amount + flt (item[19])
 	
-	return [['Sub Total','', '', '','', '', '', '',amount, '', '', '', '',qty,pending_qty,rate,'', amount1, net_amount,base_net_amount]]
+	return [['Sub Total','', '', '','', '', '', '',flt(amount,currency_precision), '', '', '', '',qty,pending_qty,rate,'', flt(amount1,currency_precision), flt(net_amount,currency_precision),flt(base_net_amount,currency_precision)]]
 	
 def get_last_total(last_row,item_list):
-	
+	currency_precision = get_currency_precision() or 3
 	amount = flt(last_row[0][8])
 	qty = flt(last_row[0][13])
 	pending_qty = flt(last_row[0][14])

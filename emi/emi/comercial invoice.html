@@ -1,0 +1,293 @@
+{%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead) -%}
+    {% if letter_head  %}
+        <div class="letter-head">{{ letter_head }}</div>
+    {% endif %}
+
+    {% if no_letterhead %}
+        <br><br><br><br>
+    {% endif %}
+
+    {%- if doc.meta.is_submittable and doc.docstatus==0-%}
+        <div class="alert alert-info text-center">
+            <h4 style="margin: 0px;">{{ _("PROFORMA") }}</h4>
+        </div>
+    {%- endif -%}
+
+    {%- if doc.meta.is_submittable and doc.docstatus==2-%}
+        <div class="alert alert-danger text-center">
+            <h4 style="margin: 0px;">{{ _("CANCELLED") }}</h4>
+        </div>
+    {%- endif -%}
+
+    {% if max_pages > 1 %}
+        <p class="text-right">
+            {{ _("Page #{0} of {1}").format(page_num, max_pages) }}
+        </p>
+    {% endif %}
+{%- endmacro -%}
+
+{{ add_header(0,1,doc,letter_head, no_letterhead) }}
+    <div>
+        <div id="footer-html" class="visible-pdf">
+        {% if not no_letterhead and footer %}
+            <div></div>
+            <div class="letter-head-footer">
+                {{ footer }}
+            </div>
+        {% endif %}
+        <p class="text-center small page-number visible-pdf">
+            {{ _("Page {0} of {1}").format('<span class="page"></span>', '<span class="topage"></span>') }}
+        </p>
+        </div>
+        <!-- <h2>
+            <center>COMMERCIAL INVOICE</center>
+        </h2> -->
+    </div>
+
+<div class="container-fluid">
+    
+    <table class="table table-bordered" style="margin-top:0px;">
+        <div>
+            <h2>
+                <center>COMMERCIAL INVOICE</center>
+            </h2>
+        </div>
+        <tr>
+            <td rowspan="4">
+                <strong><u>BUYER:</u></strong><br>
+                <strong>{{doc.customer}}</strong><br>
+                {{doc.address_display or ''}}<br>
+                <strong><u>TAX ID:</u></strong>
+                {{doc.tax_id or ''}}
+            </td>
+
+            <td><b> Invoice No.</b> </td>
+            <td> {{doc.name or ''}}</td>
+            <td><b> Date </b></td>
+            <td> {{doc.get_formatted("posting_date") or ''}}</td>
+        </tr>
+        
+        <tr>
+            <td><b> Delivery No.</b></td>
+            <td> {{doc.delivery_note or '-'}}</td>
+            <td ><b> Date</b></td>
+            <td>{{doc.get_formatted("delivery_date") or ''}}</td>
+        </tr>
+  
+        <tr>     
+            <td> <b>LPO No </b></td>
+            <td>  {{doc.customer_po_no or '-'}} </td>
+            <td><b>Date</b></td>
+            <td>  {{doc.get_formatted("po_date") or ''}} </td>
+        </tr>
+        
+        <tr>  
+            <td><b>Payment Terms</b></td>
+            <td>  {{doc.terms_of_payment or '-'}} </td>
+            <td><b>SID</b></td>
+            <td>  {{doc.lead_owner_name or '-'}} </td>   
+        </tr>
+    </table>
+
+    <table class="table table-condensed table-hover table-bordered">
+        <tbody>
+            <tr>
+                <th class = "col-sm-1" style="text-align:center;">Sr</th>
+                <th class = "col-sm-3" style="text-align:center;">Item Code</th>
+                <th class = "col-sm-6" style="text-align:center;">Description</th>
+                <th class="col-sm-1 text-right" style="text-align:center;" >Total Qty</th>
+                <th class="col-sm-1 text-right" style="text-align:center;" >Unit</th>
+                <th class="col-sm-1 text-right" style="text-align:center;">U / price ({{doc.currency or ''}})</th>
+                <th class="col-sm-5 text-right" style="text-align:center;">Total Amount ({{doc.currency or ''}})</th>
+            </tr>
+        {%- for row in doc.items -%}
+            <tr>
+                <td style="width: 5%;text-align:center;">{{ row.idx }}</td>
+                <td style="width: 20%;">{{ row.item_code or '' }}  </td>           
+                <td style="width: 37%;">{{ row.description or '' }}</td>
+                <td style="width: 4%; text-align: right;">{{ (row.qty) }}</td>
+                <td style="width: 3%; text-align: right;">{{ (row.stock_uom) }}</td>
+                <td style="width: 5%; text-align: right;">{{ row.get_formatted("rate") or ''}}</td>
+                <td style="width: 15%; text-align: right;">{{ row.get_formatted("amount") or ''}}</td> 
+            </tr>
+        {% if row.page_break -%}
+            </tbody>
+            </table>
+        {%- if doc.terms -%}
+        <div class="row">
+            <div class="col-xs-12"><b>Terms & Conditions:</b></div>
+            <div class="col-xs-12 text-left">{{ doc.terms or '' }}</div>
+        </div>
+        {%- endif -%} 
+        <div class="col-xs-12"> 
+            <div class="row">
+              <div class="col-xs-3" style="margin-left:-13px;"><b>Received By :</b><big></big>
+              </div>
+              <div class="col-xs-1"></div>
+              <div class="col-xs-8 text-right" ><big><b style="margin-left:68px">For EVEREST METAL INDUSTRIES L.L.C</b></big></div>
+            </div>
+        </div> 
+           <div class="col-xs-12"> 
+            <div class="row">
+              <div class="col-xs-4" style="margin-left:-13px;"><b>Signature :</b><big></big></div>
+              <div class="col-xs-1"></div>
+              <div class="col-xs-7" style="margin-right:-13px;" ><center><b style="margin-left:70px">Authorised Signature</b></center></div>
+            </div>
+        </div> 
+        <div class="page-break"></div> 
+        {% if letter_head  %}
+            <div class="letter-head">{{ letter_head }}</div>
+        {% endif %}
+        {% if no_letterhead %}
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+        {% endif %}
+    <table class="table table-bordered" style="margin-top:0px;">
+        <div>
+            <h2>
+                <center>COMMERCIAL INVOICE</center>
+            </h2>
+        </div>
+        <tr> </tr>
+        <tr>
+            <td rowspan="4">
+                <strong><u>BUYER:</u></strong><br>
+                <strong>{{doc.customer}}</strong><br>
+                {{doc.address_display or ''}}<br>
+                <strong><u>TAX ID:</u></strong>
+                {{doc.tax_id or ''}}
+            </td>
+
+            <td><b> Invoice No.</b> </td>
+            <td> {{doc.name or ''}}</td>
+            <td><b> Date </b></td>
+            <td> {{doc.get_formatted("posting_date") or ''}}</td>
+        </tr>
+        
+        <tr>
+            <td><b> Delivery No.</b></td>
+            <td> {{doc.delivery_note or '-'}}</td>
+            <td ><b> Date</b></td>
+            <td>{{doc.get_formatted("delivery_date") or ''}}</td>
+        </tr>
+  
+        <tr>     
+            <td> <b>LPO No </b></td>
+            <td>  {{doc.customer_po_no or '-'}} </td>
+            <td><b>Date</b></td>
+            <td>  {{doc.get_formatted("po_date") or ''}} </td>
+        </tr>
+        
+        <tr>  
+            <td><b>Payment Terms</b></td>
+            <td>  {{doc.terms_of_payment or '-'}} </td>
+            <td><b>SID</b></td>
+            <td>  {{doc.lead_owner_name or '-'}} </td>   
+        </tr>
+    </table>
+    
+    <table class="table table-condensed table-hover table-bordered">
+        <thead>
+            <tr>
+                <th class = "col-sm-1" style="text-align:center;">Sr</th>
+                <th class = "col-sm-3" style="text-align:center;">Item Code</th>
+                <th class = "col-sm-6" style="text-align:center;">Description</th>
+                <th class="col-sm-1 text-right" style="text-align:center;" >Total Qty</th>
+                <th class="col-sm-1 text-right" style="text-align:center;" >Unit</th>
+                <th class="col-sm-1 text-right" style="text-align:center;">U / price ({{doc.currency or ''}})</th>
+                <th class="col-sm-5 text-right" style="text-align:center;">Total Amount ({{doc.currency or ''}})</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+        {%- endif %}
+        {%- endfor -%}
+         </tbody>
+    </table>
+</div>
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-7 text-left"><big><b></b></big></div>
+      <div class="col-xs-2 text-right"><b>Grand Total</b></div>
+      <div class="col-xs-3 text-right">{{ doc.get_formatted("total") or ''}}</div>
+    </div>
+
+    <!--discount-->
+    {%- if doc.discount_amount -%}
+    <div class="row">
+      <div class="col-xs-7 text-left"><big><b></b></big></div>
+      <div class="col-xs-2 text-right"><b>Discount</b></div>
+      <div class="col-xs-3 text-right">{{ doc.get_formatted("discount_amount") or '' }}</div>
+    </div>
+    {%- endif -%} 
+
+  <!--taxes-->
+    {%- for row in doc.taxes -%}
+    {%- if not row.included_in_print_rate -%}
+    {%- if row.tax_amount -%}  
+    <div class="row">
+      <div class="col-xs-6 text-left"><big><b></b></big></div>
+      <div class="col-xs-3 text-right"><b>{{ row.description }}</b></div>
+      <div class="col-xs-3 text-right">{{ row.get_formatted("tax_amount") or '' }}</div>
+    </div>
+    {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+
+    <!--Net total-->
+    
+    <div class="row">
+      <div class="col-xs-7 text-left"><big><b></b></big></div>
+      <div class="col-xs-2 text-right"><b>Net Total</b></div>
+      <div class="col-xs-3 text-right">{{ doc.get_formatted("grand_total") or ''}}</div>
+    </div>
+
+    <div class="row">
+        <div class="alert">
+          <div class="col-xs-12 text-right" style="border: solid 1px"><b>
+            {{ ("AMOUNT IN WORDS:") }}</b>
+          {{ doc.get_formatted("in_words") }}</div>
+        </div> 
+    </div>
+    {%- if doc.remarks and doc.remarks!='No Remarks'-%}
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-3" style="margin-left:-15px;"><b>Remarks:</b></div>
+                <div class="col-xs-9" style="margin-left:-80px;">{{ doc.remarks or '' }}</div>
+            </div>
+        </div>
+    {%- endif -%}
+
+
+    {%- if doc.terms -%}
+        <div class="row">
+            <div class="col-xs-12"><b>Terms & Conditions:</b></div>
+            <div class="col-xs-12 text-left">{{ doc.terms or '' }}</div>
+        </div>
+    {%- endif -%} 
+     <div class="col-xs-12"> 
+        <div class="row">
+              <div class="col-xs-3" style="margin-left:-13px;"><b>Received By :</b><big></big></div>
+              <div class="col-xs-1"></div>
+              <div class="col-xs-8 text-right" ><big><b style="margin-left:68px">For EVEREST METAL INDUSTRIES L.L.C</b></big></div>
+        </div>
+    </div> 
+    <br><br><br>
+    
+    <div class="col-xs-12"> 
+        <div class="row">
+              <div class="col-xs-4" style="margin-left:-13px;"><b>Signature :</b><big></big></div>
+              <div class="col-xs-1"></div>
+              <div class="col-xs-7" style="margin-right:-13px;" ><center><b style="margin-left:70px">Authorised Signature</b></center></div>
+               
+            </div>
+    </div> 
+</div>
+
+
+
