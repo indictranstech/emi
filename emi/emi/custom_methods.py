@@ -89,8 +89,8 @@ def calulate_consolidated_margin(doc, method):
 		if doc.consolidated_margin != 0:
 			doc.consolidated_margin = doc.consolidated_margin - doc.discount_amount
 			doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
-	if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
-		sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
+	# if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
+	# 	sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 	
 	if doc.doctype == "Quotation" and doc.status == "Submitted":
 		# sales_executives= frappe.db.sql(" select parent from tabUserRole where  role = 'Emi Sales Executive' and parent <> 'Administrator'",as_list=True)
@@ -121,11 +121,11 @@ def add_margin_price(items,final_margin_type,final_margin_rate_or_amount):
 def get_percenage(value1,value2):
 	return (value1/value2*100)
 
-def sales_order_submit_notification(name,margin):
+def sales_order_submit_notification(doc,method=None):
 	try:
 		frappe.sendmail(
 			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			#recipients=["onkar.m@indictranstech.com","khushal.t@indictranstech.com"],
+			#recipients=["onkar.m@indictranstech.com","sukrut.j@indictranstech.com"],
 			expose_recipients="header",
 			# sender=frappe.session.user,
 			# reply_to=None,
@@ -133,7 +133,7 @@ def sales_order_submit_notification(name,margin):
 			content=None,
 			reference_doctype=None,
 			reference_name=None,
-			message = frappe.render_template("templates/email/sales_order_sunmit_notification.html", {"name":name,"margin":margin}),
+			message = frappe.render_template("templates/email/sales_order_sunmit_notification.html", {"name":doc.name,"margin":doc.consolidated_margin_percentage}),
 			message_id=None,
 			unsubscribe_message=None,
 			delayed=False,
