@@ -96,7 +96,8 @@ doc_events = {
         "validate": "emi.custom_script.purchase_receipt.purchase_receipt.validate"
     },
     "Sales Order":{
-        "on_submit":"emi.emi.custom_methods.send_email_sales_person",
+        "on_submit":["emi.emi.custom_methods.send_email_sales_person",
+                    "emi.emi.custom_methods.sales_order_submit_notification"]
     },
     "Quotation":{
         "on_submit":"emi.emi.custom_methods.send_email_sales_person_quot",
