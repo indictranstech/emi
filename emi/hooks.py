@@ -100,7 +100,7 @@ doc_events = {
                     "emi.emi.custom_methods.sales_order_submit_notification"]
     },
     "Quotation":{
-        "on_submit":"emi.emi.custom_methods.send_email_sales_person_quot",
+        "on_submit":"emi.emi.custom_methods.quotation_submit_notification",
     },
     "Purchase Order": {
         "validate": "emi.custom_script.purchase_order.purchase_order.validate"
