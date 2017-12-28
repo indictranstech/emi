@@ -92,19 +92,20 @@ def calulate_consolidated_margin(doc, method):
 	# if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
 	# 	sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 	
-	if doc.doctype == "Quotation" and doc.status == "Submitted":
+	# if doc.doctype == "Quotation" and doc.status == "Submitted":
 		# sales_executives= frappe.db.sql(" select parent from tabUserRole where  role = 'Emi Sales Executive' and parent <> 'Administrator'",as_list=True)
 		# if sales_executives:
 		# 	for executive in sales_executives[0]:
 		# 		name = frappe.db.get_value("User",{"name":executive},"first_name")
 		# 		quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,executive,name,doc.customer)	
-		if doc.employee:
-			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
-			quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,email_id,doc.lead_owner_name,doc.customer)
+		# if doc.employee:
+		# 	email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
+		# 	quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,email_id,doc.lead_owner_name,doc.customer)
 
 	if doc.consolidated_margin:
 		if doc.discount_amount>doc.consolidated_margin:
-			frappe.throw(("Discount Amount Should Be Less Than Consolidated Margin"))
+			pass
+			# frappe.throw(("Discount Amount Should Be Less Than Consolidated Margin"))
 
 
 """Get requested_for field when update_stock is 1"""
@@ -142,26 +143,30 @@ def sales_order_submit_notification(doc,method=None):
 	except Exception,e:
 		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
-def quotation_submit_notification(name,margin,recp,recp_name,customer):
-	try:
-		frappe.sendmail(
-			recipients = recp,
-			expose_recipients = "header",
-			sender = frappe.session.user,
-			reply_to = None,
-			subject = "Quotation Submit Notifications",
-			content = None,
-			reference_doctype = None,
-			reference_name = None,
-			message = frappe.render_template("templates/email/quotation_submit_notification.html", {"Name":recp_name,"name":name,"margin":margin,"customer":customer}),
-			message_id = None,
-			unsubscribe_message = None,
-			delayed = False,
-			communication = None
-		)
-	except Exception,e:
-		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
-
+def quotation_submit_notification(doc,method=None):
+	if doc.employee:
+		email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
+		if email_id:
+			try:
+				frappe.sendmail(
+					recipients = email_id,
+					expose_recipients = "header",
+					sender = frappe.session.user,
+					reply_to = None,
+					subject = "Quotation Submit Notifications",
+					content = None,
+					reference_doctype = None,
+					reference_name = None,
+					message = frappe.render_template("templates/email/quotation_submit_notification.html", {"Name":doc.lead_owner_name,"name":doc.name,"margin":doc.consolidated_margin_percentage,"customer":doc.customer}),
+					message_id = None,
+					unsubscribe_message = None,
+					delayed = False,
+					communication = None
+				)
+			except Exception,e:
+				frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
+		else:
+			pass
 def SO_submit_notification_to_sales_person(name,recp,recp_name,customer):
 	try:
 		message = frappe.render_template("templates/email/SO_submit_notification_to_sales_person.html", {
