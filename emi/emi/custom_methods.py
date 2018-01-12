@@ -13,15 +13,14 @@ def validate_delivery_note(doc, method):
 			format(exist_invoice, doc.delivery_note))
 	
 def calulate_consolidated_margin(doc, method):
-	# Calculat consolidate_margin = sum of item_price_rate - sum of total_margin
-	# Calculate price_list_total,and margin percentage
+	
 	#Page-break
-	doc.consolidated_margin_percentage = 0.0
 	for row in doc.items:
 		if len(doc.items) > 8:
 			if float(row.idx) % 8 == 0:
 				row.page_break = 1
 
+	doc.consolidated_margin_percentage = 0.0	
 	consolidated_margin = 0
 	price_list_total = 0	
 	discounted_amount = 0.0
@@ -65,30 +64,29 @@ def calulate_consolidated_margin(doc, method):
 				margin_amt = ((row.price_list_rate * row.margin_rate_or_amount)/100) * row.qty
 				consolidated_margin += margin_amt
 				price_list_total += (row.price_list_rate * row.qty)
-				
 			elif row.margin_type == "Amount":
 				consolidated_margin += (row.margin_rate_or_amount * row.qty)
 				price_list_total += (row.price_list_rate * row.qty)
 				
 		else:
-			if row.rate < row.price_list_rate:
-				if row.discount_percentage:
-					discounted_amount = discounted_amount + ((row.price_list_rate -row.rate)*row.qty)
-					price_list_total += (row.price_list_rate * row.qty)
-					
-				else:
-					price_list_total += (row.price_list_rate * row.qty)
+			if row.discount_percentage:
+				discounted_amount = discounted_amount + ((row.price_list_rate -row.rate)*row.qty)
+				price_list_total += (row.price_list_rate * row.qty)	
+			else:
+				price_list_total += (row.price_list_rate * row.qty)
 
-	doc.consolidated_margin = (consolidated_margin -discounted_amount)
-	doc.discounted_amount = discounted_amount
-	doc.price_list_total = price_list_total
+		#print "consolidated_margin",(consolidated_margin -discounted_amount)
+		# doc.consolidated_margin = (consolidated_margin -discounted_amount)
+		# doc.discounted_amount = discounted_amount
+		doc.price_list_total = price_list_total
+		doc.consolidated_margin = (doc.net_total - price_list_total)
 	
 	if consolidated_margin != 0:
 		doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
-	if doc.apply_discount_on == "Net Total" and doc.additional_discount_percentage and doc.discount_amount:
-		if doc.consolidated_margin != 0:
-			doc.consolidated_margin = doc.consolidated_margin - doc.discount_amount
-			doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
+	# if doc.apply_discount_on == "Net Total" and doc.additional_discount_percentage or doc.discount_amount:
+	# 	if doc.consolidated_margin != 0:
+	# 		doc.consolidated_margin = doc.consolidated_margin - doc.discount_amount
+	# 		doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
 	# if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
 	# 	sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 	
@@ -125,8 +123,8 @@ def get_percenage(value1,value2):
 def sales_order_submit_notification(doc,method=None):
 	try:
 		frappe.sendmail(
-			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			#recipients=["onkar.m@indictranstech.com","sukrut.j@indictranstech.com"],
+			#recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
+			recipients=["onkar.m@indictranstech.com","sukrut.j@indictranstech.com"],
 			expose_recipients="header",
 			# sender=frappe.session.user,
 			# reply_to=None,
