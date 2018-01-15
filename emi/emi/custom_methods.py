@@ -123,8 +123,8 @@ def get_percenage(value1,value2):
 def sales_order_submit_notification(doc,method=None):
 	try:
 		frappe.sendmail(
-			#recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			recipients=["onkar.m@indictranstech.com","sukrut.j@indictranstech.com"],
+			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
+			#recipients=["onkar.m@indictranstech.com","sukrut.j@indictranstech.com"],
 			expose_recipients="header",
 			# sender=frappe.session.user,
 			# reply_to=None,
