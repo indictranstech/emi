@@ -22,14 +22,14 @@
   "name": "Everest"
  }, 
  {
-  "content": "<div style=\"text-align: center;\">\n    <img src=\"/files/EMI L.Head Logo + Heading.png\"><img src=\"https://emierp.e-grc.com/files/EMI%20L.Head%20Logo%20+%20Heading.png\">\u00a0\n</div>", 
+  "content": "<div style=\"text-align: center;\">\n    <img src=\"/files/EMI L.Head Logo + Heading.png\">\u00a0</div>", 
   "disabled": 0, 
   "docstatus": 0, 
   "doctype": "Letter Head", 
-  "footer": "<img src=\"/files/EMI L.Head address.png\"><img src=\"https://emierp.e-grc.com/files/EMI%20L.Head%20address.png\">", 
+  "footer": "<img src=\"/files/EMI L.Head address.png\">\n", 
   "is_default": 1, 
   "letter_head_name": "EMI With Logo andName", 
-  "modified": "2017-12-19 13:49:40.738135", 
+  "modified": "2018-01-16 15:59:49.412110", 
   "name": "EMI With Logo andName"
  }, 
  {
