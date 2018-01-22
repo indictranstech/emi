@@ -80,9 +80,8 @@ def calulate_consolidated_margin(doc, method):
 		# doc.discounted_amount = discounted_amount
 		doc.price_list_total = price_list_total
 		doc.consolidated_margin = (doc.net_total - price_list_total)
-	
-	if consolidated_margin != 0:
-		doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
+	if doc.consolidated_margin != 0:
+		doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(doc.price_list_total))
 	# if doc.apply_discount_on == "Net Total" and doc.additional_discount_percentage or doc.discount_amount:
 	# 	if doc.consolidated_margin != 0:
 	# 		doc.consolidated_margin = doc.consolidated_margin - doc.discount_amount
