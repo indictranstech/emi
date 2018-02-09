@@ -20,7 +20,7 @@ def stock_entry_submit_notification(name,recp,recpname,purpose,items):
 	date = frappe.utils.get_datetime(nowdate()).strftime("%d-%m-%Y")
 	try:
 		frappe.sendmail(
-			#recipients=[recp,"onkar.m@indictranstech.com","sangram.p@indictranstech.com"],
+			#recipients=[recp,"onkar.m@indictranstech.com","prashant.j@indictranstech.com"],
 			recipients=[recp,"sankar@emiuae.ae","emistores@emiuae.ae","harish@emiuae.ae"],
 			expose_recipients="header",
 			sender=frappe.session.user,

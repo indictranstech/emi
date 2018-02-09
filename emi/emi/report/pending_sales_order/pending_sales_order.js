@@ -17,6 +17,14 @@ frappe.query_reports["Pending Sales Order"] = {
 								]
 							}
 					}
+				},
+				{
+					"fieldname":"customer",
+					"label": __("Customer"),
+					"fieldtype": "Link",
+					"options": "Customer",
+					"width": "80",
+					
 				}
 			]
 }
