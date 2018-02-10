@@ -32,8 +32,8 @@ def SI_submit_notification(doc,method=None):
 	if doc.docstatus == 1:
 		try:
 			frappe.sendmail(
-			#recipients=["sridhar@emiuae.ae","mathur@emiuae.ae"],
-			recipients=["onkar.m@indictranstech.com"],
+			recipients=["sridhar@emiuae.ae","mathur@emiuae.ae"],
+			#recipients=["onkar.m@indictranstech.com"],
 			expose_recipients="header",
 			# sender=frappe.session.user,
 			# reply_to=None,
