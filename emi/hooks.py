@@ -46,7 +46,7 @@ app_license = "INDICTRANS"
 # ------------
 
 # before_install = "emi.install.before_install"
-after_install = ["emi.emi.custom_methods.after_install_process_add","emi.emi.custom_methods.after_install_warehouse_add"]
+#after_install = ["emi.emi.custom_methods.after_install_process_add","emi.emi.custom_methods.after_install_warehouse_add"]
 
 # Desk Notifications
 # ------------------
@@ -74,11 +74,13 @@ after_install = ["emi.emi.custom_methods.after_install_process_add","emi.emi.cus
 doc_events = {
 	"Sales Invoice": {
 		"validate": ["emi.emi.custom_methods.validate_delivery_note",
-            "emi.emi.custom_methods.validate_si"]
+            "emi.emi.custom_methods.validate_si","emi.custom_script.sales_invoice.sales_invoice.validate"],
+        "on_submit":"emi.custom_script.sales_invoice.sales_invoice.SI_submit_notification"
 	},
 
 	('Quotation', 'Sales Order'): {
-		"validate": "emi.emi.custom_methods.calulate_consolidated_margin",
+		"validate": ["emi.emi.custom_methods.calulate_consolidated_margin",
+            "emi.custom_script.quotation.quotation.validate"],
 	},
 	"Stock Ledger Entry" :{
 		"before_submit": "emi.emi.custom_methods.get_requested_for"
@@ -97,22 +99,31 @@ doc_events = {
     },
     "Sales Order":{
         "on_submit":["emi.emi.custom_methods.send_email_sales_person",
-                    "emi.emi.custom_methods.sales_order_submit_notification"]
+                    "emi.emi.custom_methods.sales_order_submit_notification"],
+        "validate":"emi.custom_script.sales_order.sales_order.validate",
     },
     "Quotation":{
         "on_submit":"emi.emi.custom_methods.quotation_submit_notification",
     },
     "Purchase Order": {
-        "validate": "emi.custom_script.purchase_order.purchase_order.validate"
+        "validate": "emi.custom_script.purchase_order.purchase_order.validate",
+        "on_submit": "emi.custom_script.purchase_order.purchase_order.po_submit_notification"
+    },
+    "Purchase Invoice": {
+        "on_submit": "emi.custom_script.purchase_invoice.purchase_invoice.PI_submit_notification"
     },
     "Production Order": {
         "on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
+    },
+     "Quality Inspection": {
+        "on_submit": "emi.custom_script.quality_inspection.quality_inspection.notify_to_qc_manager",
     },
 }
 
 doctype_js = {
     "Quotation":["custom_script/quotation/quotation.js"],
-    "Sales Order" :["custom_script/sales_order/sales_order.js"]
+    "Sales Order" :["custom_script/sales_order/sales_order.js"],
+    "Sales Invoice":["custom_script/sales_invoice/sales_invoice.js"],
 }
 
 # Scheduled Tasks

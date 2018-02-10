@@ -14,11 +14,10 @@ def validate_delivery_note(doc, method):
 	
 def calulate_consolidated_margin(doc, method):
 	
-	#Page-break
-	for row in doc.items:
-		if len(doc.items) > 8:
-			if float(row.idx) % 8 == 0:
-				row.page_break = 1
+
+
+			# if float(row.idx) % 10 == 0:
+			# 	row.page_break = 1
 
 	doc.consolidated_margin_percentage = 0.0	
 	consolidated_margin = 0
@@ -103,9 +102,25 @@ def calulate_consolidated_margin(doc, method):
 		if doc.discount_amount>doc.consolidated_margin:
 			pass
 			# frappe.throw(("Discount Amount Should Be Less Than Consolidated Margin"))
+	#Page-break
+	page_break_idx = 6
+	for row in doc.items:
+		if len(doc.items) > 5:
+			if float(row.idx) == 6:
+				row.page_break = 1
+				page_break_idx = 6
+				page_break_idx = page_break_idx + 10
+			elif row.idx >= page_break_idx:
+				print "page_break_idx",page_break_idx
+				print "row",row.idx
+				if float(row.idx) == page_break_idx:
+					print "row"
+					row.page_break = 1
+					page_break_idx = page_break_idx + 10	
 
 
-"""Get requested_for field when update_stock is 1"""
+
+"""Get requested_for == field when update_stock is 1"""
 def get_requested_for(self,method):
 	if self.voucher_type == "Stock Entry":
 		requested_for = frappe.db.get_value("Stock Entry",{"name":self.voucher_no},["requested_for"])
@@ -249,7 +264,17 @@ def send_email_sales_person_quot(doc,method=None):
 			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
 
 def validate_si(doc, method):
+	page_break_idx = 5
 	for row in doc.items:
-		if len(doc.items) > 8:
-			if float(row.idx) % 8 == 0:
+		if len(doc.items) > 4:
+			if float(row.idx) == 5:
 				row.page_break = 1
+				page_break_idx = 5
+				page_break_idx = page_break_idx + 8
+			elif row.idx >= page_break_idx:
+				print "page_break_idx",page_break_idx
+				print "row",row.idx
+				if float(row.idx) == page_break_idx:
+					print "row"
+					row.page_break = 1
+					page_break_idx = page_break_idx + 8	
