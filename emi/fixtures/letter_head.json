@@ -22,14 +22,14 @@
   "name": "Everest"
  }, 
  {
-  "content": "<img src=\"/private/files/EMI L.Head Logo + Heading.pnge86331e86331.png\">", 
+  "content": "<img src=\"/private/files/EMI L.Head Logo + Heading.pnge86331.png\">", 
   "disabled": 0, 
   "docstatus": 0, 
   "doctype": "Letter Head", 
-  "footer": "<img src=\"/private/files/footer2cd467.png\">", 
+  "footer": "<img src=\"/private/files/footer.png\">", 
   "is_default": 1, 
   "letter_head_name": "EMI With Logo andName", 
-  "modified": "2018-02-09 18:41:35.227015", 
+  "modified": "2018-02-16 15:49:46.217334", 
   "name": "EMI With Logo andName"
  }, 
  {
