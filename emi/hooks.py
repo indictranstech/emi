@@ -115,8 +115,11 @@ doc_events = {
     "Production Order": {
         "on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
     },
-     "Quality Inspection": {
+    "Quality Inspection": {
         "on_submit": "emi.custom_script.quality_inspection.quality_inspection.notify_to_qc_manager",
+    },
+    "Item": {
+        "validate": "emi.emi.custom_methods.item_trigger",
     },
 }
 

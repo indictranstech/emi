@@ -30,20 +30,17 @@ def validate(self,method=None):
 	self.printformat_vat_tax = printformat_vat_tax
 	self.printformat_in_word = money_in_words(self.printformat_net_total_with_tax, self.currency)
 
-	page_break_idx = 7
+	page_break_idx = 8
 	for row in self.items:
-		if len(self.items) > 6:
-			if float(row.idx) == 7:
+		if len(self.items)>7:
+			if row.idx == 8:
 				row.page_break = 1
-				page_break_idx = 7
-				page_break_idx = page_break_idx + 11
+				page_break_idx = 8
+				page_break_idx += 15
 			elif row.idx >= page_break_idx:
-				print "page_break_idx",page_break_idx
-				print "row",row.idx
-				if float(row.idx) == page_break_idx:
-					print "row"
+				if row.idx == page_break_idx:
 					row.page_break = 1
-					page_break_idx = page_break_idx + 11	
+					page_break_idx += 15	
 
 @frappe.whitelist()
 # def po_submit_notification ():

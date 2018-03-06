@@ -103,22 +103,21 @@ def calulate_consolidated_margin(doc, method):
 			pass
 			# frappe.throw(("Discount Amount Should Be Less Than Consolidated Margin"))
 	#Page-break
-	page_break_idx = 6
-	for row in doc.items:
-		if len(doc.items) > 5:
-			if float(row.idx) == 6:
-				row.page_break = 1
-				page_break_idx = 6
-				page_break_idx = page_break_idx + 10
-			elif row.idx >= page_break_idx:
-				print "page_break_idx",page_break_idx
-				print "row",row.idx
-				if float(row.idx) == page_break_idx:
-					print "row"
-					row.page_break = 1
-					page_break_idx = page_break_idx + 10	
-
-
+	# page_break_idx = 6
+	# for row in doc.items:
+	# 	if len(doc.items) > 5:
+	# 		if float(row.idx) == 6:
+	# 			row.page_break = 1
+	# 			page_break_idx = 6
+	# 			page_break_idx = page_break_idx + 10
+	# 		elif row.idx >= page_break_idx:
+	# 			print "page_break_idx",page_break_idx
+	# 			print "row",row.idx
+	# 			if float(row.idx) == page_break_idx:
+	# 				print "row"
+	# 				row.page_break = 1
+	# 				page_break_idx = page_break_idx + 10
+	page_break(doc)
 
 """Get requested_for == field when update_stock is 1"""
 def get_requested_for(self,method):
@@ -264,17 +263,23 @@ def send_email_sales_person_quot(doc,method=None):
 			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
 
 def validate_si(doc, method):
-	page_break_idx = 5
+	page_break(doc)
+
+def item_trigger(doc,method):
+	print "##############################"
+	print "Item description",doc.description,type(doc.description)
+
+def page_break(doc):
+	page_break_idx = 8
 	for row in doc.items:
-		if len(doc.items) > 4:
-			if float(row.idx) == 5:
+		if len(doc.items)>7:
+			if row.idx == 8:
 				row.page_break = 1
-				page_break_idx = 5
-				page_break_idx = page_break_idx + 8
+				page_break_idx = 8
+				page_break_idx += 15
 			elif row.idx >= page_break_idx:
-				print "page_break_idx",page_break_idx
-				print "row",row.idx
-				if float(row.idx) == page_break_idx:
-					print "row"
+				if row.idx == page_break_idx:
 					row.page_break = 1
-					page_break_idx = page_break_idx + 8	
+					page_break_idx += 15
+
+	

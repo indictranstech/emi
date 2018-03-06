@@ -95,20 +95,17 @@ def store_manger_notification(recipients,Name,delivery_note,customer,items,date,
 
 def validate(self,method=None):
 	
-	page_break_idx = 7
+	page_break_idx = 8
 	for row in self.items:
-		if len(self.items) > 6:
-			if float(row.idx) == 7:
+		if len(self.items)>7:
+			if row.idx == 8:
 				row.page_break = 1
-				page_break_idx = 7
-				page_break_idx = page_break_idx + 9
+				page_break_idx = 8
+				page_break_idx += 15
 			elif row.idx >= page_break_idx:
-				print "page_break_idx",page_break_idx
-				print "row",row.idx
-				if float(row.idx) == page_break_idx:
-					print "row"
+				if row.idx == page_break_idx:
 					row.page_break = 1
-					page_break_idx = page_break_idx + 9	
+					page_break_idx += 15	
 
 
 
