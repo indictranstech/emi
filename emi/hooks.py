@@ -117,10 +117,8 @@ doc_events = {
     },
     "Quality Inspection": {
         "on_submit": "emi.custom_script.quality_inspection.quality_inspection.notify_to_qc_manager",
-    },
-    "Item": {
-        "validate": "emi.emi.custom_methods.item_trigger",
-    },
+    }
+    
 }
 
 doctype_js = {
