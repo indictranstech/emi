@@ -14,8 +14,6 @@ def validate_delivery_note(doc, method):
 	
 def calulate_consolidated_margin(doc, method):
 	
-
-
 			# if float(row.idx) % 10 == 0:
 			# 	row.page_break = 1
 
@@ -265,9 +263,6 @@ def send_email_sales_person_quot(doc,method=None):
 def validate_si(doc, method):
 	page_break(doc)
 
-def item_trigger(doc,method):
-	print "##############################"
-	print "Item description",doc.description,type(doc.description)
 
 def page_break(doc):
 	page_break_idx = 8
