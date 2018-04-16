@@ -16,18 +16,23 @@ def validate (doc,method=None):
 	printformat_net_total = printformat_vat_tax = 0.0
 	discount_amount = delivery_charge = 0.0
 	for tax in doc.taxes:
-		if tax.account_head == "Stock Adjustment - E":
-			delivery_charge = tax.tax_amount
+		if doc.shipping_rule:
+			shipping_rule_doc = frappe.get_doc("Shipping Rule",doc.shipping_rule)
+		if tax.account_head == shipping_rule_doc.account:
+			doc.delivery_charge = tax.tax_amount
+		
+		if tax.account_head == "Output VAT  - E":
+			printformat_vat_tax = tax.tax_amount
 
 	if doc.discount_amount:
 		discount_amount = doc.discount_amount
 		
 	doc.delivery_charge = delivery_charge
 	printformat_net_total = (doc.total - discount_amount) + delivery_charge
-	printformat_vat_tax = (printformat_net_total * 5)/100
-	doc.printformat_net_total_with_tax = printformat_net_total + printformat_vat_tax
-	doc.printformat_net_total = printformat_net_total
-	doc.printformat_vat_tax = printformat_vat_tax
-	doc.printformat_in_word = money_in_words(doc.printformat_net_total_with_tax, doc.currency)
+	printformat_vat_tax = printformat_vat_tax
+	# doc.printformat_net_total_with_tax = printformat_net_total + printformat_vat_tax
+	# doc.printformat_net_total = printformat_net_total
+	# doc.printformat_vat_tax = printformat_vat_tax
+	# doc.printformat_in_word = money_in_words(doc.printformat_net_total_with_tax, doc.currency)
 
 

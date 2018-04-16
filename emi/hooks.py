@@ -125,6 +125,8 @@ doctype_js = {
     "Quotation":["custom_script/quotation/quotation.js"],
     "Sales Order" :["custom_script/sales_order/sales_order.js"],
     "Sales Invoice":["custom_script/sales_invoice/sales_invoice.js"],
+    "Purchase Receipt":["custom_script/purchase_receipt/purchase_receipt.js"],
+    "Purchase Invoice":["custom_script/purchase_invoice/purchase_invoice.js"],
 }
 
 # Scheduled Tasks
