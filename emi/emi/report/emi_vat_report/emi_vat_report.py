@@ -27,11 +27,22 @@ def execute(filters=None):
 	for row in res:
 		trn = territory =''
 		part1 = row[0:9]
-		if row[7] and row[8]:
-			trn = frappe.db.get_value(row[7],{"name":row[8]},"tax_registration_no")
-			territory = frappe.db.get_value(row[7],{"name":row[8]},"territory")
+		if row[4] == "Sales Invoice" and row[6]:
+			trn = frappe.db.get_value("Customer",{"name":row[6]},"tax_registration_no")
+			territory = frappe.db.get_value("Customer",{"name":row[6]},"territory")
 			part1.append(trn)
 			part1.append(territory)
+		elif row[4] == "Purchase Invoice" and row[6]:
+			trn = frappe.db.get_value("Customer",{"name":row[6]},"tax_registration_no")
+			territory = frappe.db.get_value("Customer",{"name":row[6]},"territory")
+			part1.append(trn)
+			part1.append(territory)
+
+		# if row[7] and row[8]:
+		# 	trn = frappe.db.get_value(row[7],{"name":row[8]},"tax_registration_no")
+		# 	territory = frappe.db.get_value(row[7],{"name":row[8]},"territory")
+		# 	part1.append(trn)
+		# 	part1.append(territory)
 		else:
 			part1.append(territory)
 		
@@ -39,11 +50,9 @@ def execute(filters=None):
 		part1.extend(part2)
 		data.append(part1)
 	vat_data = get_vat_data(filters)
-	print "____________",vat_data
 	for v in vat_data[0]:
 		data.append(v)
-	print "________________",data	
-	return columns, data,vat_data[1]
+	return columns, data
 
 def validate_filters(filters, account_details):
 	if not filters.get('company'):
@@ -334,17 +343,15 @@ def get_vat_data(filters=None):
 	for row in input_vat_data:
 		if row[1] == "'Closing (Opening + Totals)'":
 			total_input_vat = row[3]
-			vat.append(["","Total Input Vat ",total_input_vat])
+			vat.append(["","Total Input Vat ",flt(total_input_vat,3)])
 
 	'''Output VAT'''
 	filters['account'] ='Output VAT  - E'
-	print "__________________filters_________",filters
 	output_vat_data = get_result(filters, account_details)
-	print "_________________output_vat_data_________",output_vat_data
 	for row in output_vat_data:
 		if row[1] == "'Closing (Opening + Totals)'":
 			total_output_vat = row[3]
-			vat.append(["","Total Output Vat ",total_output_vat])
+			vat.append(["","Total Output Vat ",flt(total_output_vat,3)])
 
 
 	'''RCM VAT'''
@@ -353,12 +360,12 @@ def get_vat_data(filters=None):
 	for row in rcm_vat_data:
 		if row[1] == "'Closing (Opening + Totals)'":
 			total_rcm_vat = row[2]
-			vat.append(["","Total RCM Vat ",total_rcm_vat])
+			vat.append(["","Total RCM Vat ",flt(total_rcm_vat,3)])
 
 	total_vat_payble = total_output_vat + total_rcm_vat
-	vat.append(["","Total Vat Payble ",total_vat_payble])
-	net_vat_payable = total_output_vat - total_input_vat
-	vat.append(["","Net Vat Payble ",net_vat_payable])
+	vat.append(["","Total Vat Payble ",flt(total_vat_payble,3)])
+	net_vat_payable = total_vat_payble - total_input_vat
+	vat.append(["","Net Vat Payble ",flt(net_vat_payable,3)])
 	
 	vat_calculation_table = frappe.render_template("templates/vat_report/vat_calculation.html", {"total_input_vat":total_input_vat,"total_output_vat":total_output_vat,"total_rcm_vat":total_rcm_vat,"total_vat_payble":total_vat_payble,"net_vat_payable":net_vat_payable}),
 	return vat,vat_calculation_table

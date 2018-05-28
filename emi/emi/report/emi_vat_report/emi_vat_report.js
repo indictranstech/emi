@@ -82,13 +82,17 @@ frappe.query_reports["EMI-VAT Report"] = {
 		// 	"label": __("Group by Account"),
 		// 	"fieldtype": "Check",
 		// },
-		{
-			"fieldname":"letter_head",
-			"label": __("Letter Head"),
-			"fieldtype": "Link",
-			"options": "Letter Head",
-			"default": frappe.defaults.get_default("letter_head"),
-		}
+		// {
+		// 	"fieldname":"letter_head",
+		// 	"label": __("Letter Head"),
+		// 	"fieldtype": "Link",
+		// 	"options": "Letter Head",
+		// 	"default": frappe.defaults.get_default("letter_head"),
+		// },
+		
 
-	]
+	],
+	onload: function(report) {
+		$('body').find("[data-fieldname=account]").prop("disabled",true)
+	}
 }
