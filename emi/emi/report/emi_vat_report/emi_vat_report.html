@@ -1,0 +1,107 @@
+<html>
+<head>
+	<style type="text/css">
+	</style>
+</head>
+<body>
+	<div class="container-fluid" style="margin-bottom: 5px;">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="text-center">
+					{%= frappe.boot.letter_heads[filters.letter_head ||  frappe.defaults.get_default("letter_head")] %}
+				</div>
+		 	</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12">
+				<h2>
+               		 <center>VAT REPORT</center>
+            	</h2>
+	 		</div>
+		</div> 
+
+   		<div class="row">
+			<div class="col-sm-12">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th style="width: 15%">{%= __("Date") %}</th>
+							<th style="width: 15%">{%= __("Ref") %}</th>
+							<th style="width: 40%">{%= __("Party") %}</th>
+							<th style="width: 15%">{%= __("Debit") %}</th>
+							<th style="width: 15%">{%= __("Credit") %}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for(var i=0, l=data.length; i< l; i++) { %}
+							<tr>
+							{% if(data[i][__("Posting Date")]) { %}
+								<td>{%= dateutil.str_to_user(data[i][__("Posting Date")]) %}</td>
+								<td>{%= data[i][__("Voucher Type")] %}
+									<br>{%= data[i][__("Voucher No")] %}</td>
+								<td>
+									
+										{%= data[i][__("Party")] || data[i][__("Account")] %}
+										<br>
+									
+
+									{{ __("Against") }}: {%= data[i][__("Against Account")] %}
+									{% if(data[i][__("TRN")]) { %}<br>{{ __("TRN") }}: {%= data[i][__("TRN")] %}{% } %}
+									<br>{% if(data[i][__("Territory")]) { %}{{ __("Territory") }}: {%= data[i][__("Territory")] %}{% } %}
+									
+									<br>{%= __("Remarks") %}: {%= data[i][__("Remarks")] %}</td>
+								<td style="text-align: right">{%= format_currency(data[i][__("Debit")]) %}</td>
+								<td style="text-align: right">{%= format_currency(data[i][__("Credit")]) %}</td>
+							
+							{% } %}
+							</tr>
+						{% } %}
+					</tbody>
+				</table>
+
+			</div>
+			<div class="col-sm-12">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th style="width: 15%">{%= __("Perticulars") %}</th>
+							<th style="width: 15%">{%= __("Amount") %}</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+						{% for(var i=0, l=data.length; i< l; i++) { %}
+							<tr>
+							<tr>
+							{% if(data[i][__("Account")] == 'Total Input Vat ' ) { %}
+							<td>{%= data[i][__("Account")]%}</td>
+							<td>{%= data[i][__("Debit")]%}</td>
+							{% } %}
+							{% if(data[i][__("Account")] == 'Total Output Vat ' ) { %}
+							<td>{%= data[i][__("Account")]%}</td>
+							<td>{%= data[i][__("Debit")]%}</td>
+							{% } %}
+							{% if(data[i][__("Account")] == 'Total RCM Vat ' ) { %}
+							<td>{%= data[i][__("Account")]%}</td>
+							<td>{%= data[i][__("Debit")]%}</td>
+							{% } %}
+							{% if(data[i][__("Account")] == 'Total Vat Payble ' ) { %}
+							<td>{%= data[i][__("Account")]%}</td>
+							<td>{%= data[i][__("Debit")]%}</td>
+							{% } %}
+							{% if(data[i][__("Account")] == 'Net Vat Payble ' ) { %}
+							<td>{%= data[i][__("Account")]%}</td>
+							<td>{%= data[i][__("Debit")]%}</td>
+							{% } %}
+							</tr>
+						{% } %}
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+
+	</div>
+</body>
+</html>
