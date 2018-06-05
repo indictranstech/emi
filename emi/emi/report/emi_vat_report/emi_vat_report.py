@@ -342,7 +342,7 @@ def get_vat_data(filters=None):
 	input_vat_data = get_result(filters,account_details)
 	for row in input_vat_data:
 		if row[1] == "'Closing (Opening + Totals)'":
-			total_input_vat = row[3]
+			total_input_vat = row[2]
 			vat.append(["","Total Input Vat ",flt(total_input_vat,3)])
 
 	'''Output VAT'''
