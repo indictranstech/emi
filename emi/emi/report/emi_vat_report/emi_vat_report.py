@@ -28,12 +28,12 @@ def execute(filters=None):
 		trn = territory =''
 		part1 = row[0:9]
 		if row[4] == "Sales Invoice" and row[6]:
-			trn = frappe.db.get_value("Customer",{"name":row[6]},"tax_registration_no")
+			trn = frappe.db.get_value("Customer",{"name":row[6]},"tax_registration_number")
 			territory = frappe.db.get_value("Customer",{"name":row[6]},"territory")
 			part1.append(trn)
 			part1.append(territory)
 		elif row[4] == "Purchase Invoice" and row[6]:
-			trn = frappe.db.get_value("Customer",{"name":row[6]},"tax_registration_no")
+			trn = frappe.db.get_value("Customer",{"name":row[6]},"tax_registration_number")
 			territory = frappe.db.get_value("Customer",{"name":row[6]},"territory")
 			part1.append(trn)
 			part1.append(territory)
