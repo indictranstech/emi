@@ -341,15 +341,15 @@ def get_vat_data(filters=None):
 	filters['account'] ='Input Vat - E'
 	input_vat_data = get_result(filters,account_details)
 	for row in input_vat_data:
-		if row[1] == "'Closing (Opening + Totals)'":
-			total_input_vat = row[3]
+		if row[1] == "'Totals'":
+			total_input_vat = row[2]
 			vat.append(["","Total Input Vat ",flt(total_input_vat,3)])
 
 	'''Output VAT'''
 	filters['account'] ='Output VAT  - E'
 	output_vat_data = get_result(filters, account_details)
 	for row in output_vat_data:
-		if row[1] == "'Closing (Opening + Totals)'":
+		if row[1] == "'Totals'":
 			total_output_vat = row[3]
 			vat.append(["","Total Output Vat ",flt(total_output_vat,3)])
 
@@ -358,7 +358,7 @@ def get_vat_data(filters=None):
 	filters['account'] ='RCM VAT - E'
 	rcm_vat_data = get_result(filters, account_details)
 	for row in rcm_vat_data:
-		if row[1] == "'Closing (Opening + Totals)'":
+		if row[1] == "'Totals'":
 			total_rcm_vat = row[2]
 			vat.append(["","Total RCM Vat ",flt(total_rcm_vat,3)])
 
