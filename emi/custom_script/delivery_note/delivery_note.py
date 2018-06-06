@@ -14,19 +14,19 @@ def on_submit(self, method=None):
 		if account_manager_list:
 			for manager in account_manager_list:
 				name = frappe.db.get_value("User",{"name":manager},"first_name")
-				account_manger_notification(manager,name,self.name,self.customer,self.posting_date,self.total)	
+				#account_manger_notification(manager,name,self.name,self.customer,self.posting_date,self.total)	
 
 	if store_managers:
 		store_managers_list = [manager.get('parent') for manager in store_managers]
 		if store_managers_list:
 			for manager in store_managers_list:
 				name = frappe.db.get_value("User",{"name":manager},"first_name")
-				store_manger_notification(manager,name,self.name,self.customer,self.items,self.posting_date,name)
+				#store_manger_notification(manager,name,self.name,self.customer,self.items,self.posting_date,name)
 
 	for row in self.sales_team:
 		if row:
 			recipients =frappe.db.get_value("Employee",{'employee_name':row.sales_person},"user_id")	
-			delivery_note_submit_notification(row.sales_person,self.name,row.allocated_amount,self.posting_date,recipients)			
+			#delivery_note_submit_notification(row.sales_person,self.name,row.allocated_amount,self.posting_date,recipients)			
 
 def delivery_note_submit_notification(Name,name,amount,date,recipients):
 	date = frappe.utils.get_datetime(date).strftime("%d-%m-%Y")

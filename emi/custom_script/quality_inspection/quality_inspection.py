@@ -16,5 +16,5 @@ def notify_to_qc_manager(doc, method=None):
 		})
 	if doc.verified_by_manager:
 		verified_by = doc.verified_by_manager
-		frappe.sendmail(recipients=verified_by,subject=subject,message=message)
+		#frappe.sendmail(recipients=verified_by,subject=subject,message=message)
 
