@@ -132,50 +132,52 @@ def get_percenage(value1,value2):
 	return (value1/value2*100)
 
 def sales_order_submit_notification(doc,method=None):
-	try:
-		frappe.sendmail(
-			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			#recipients=["onkar.m@indictranstech.com","sukrut.j@indictranstech.com"],
-			expose_recipients="header",
-			# sender=frappe.session.user,
-			# reply_to=None,
-			subject="Sales Order Submit Notifications",
-			content=None,
-			reference_doctype=None,
-			reference_name=None,
-			message = frappe.render_template("templates/email/sales_order_sunmit_notification.html", {"name":doc.name,"margin":doc.consolidated_margin_percentage,"customer":doc.customer}),
-			message_id=None,
-			unsubscribe_message=None,
-			delayed=False,
-			communication=None
-		)
-	except Exception,e:
-		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
+	pass
+	# try:
+	# 	frappe.sendmail(
+	# 		#recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
+	# 		recipients=["prashant.j@indictranstech.com","sukrut.j@indictranstech.com"],
+	# 		expose_recipients="header",
+	# 		# sender=frappe.session.user,
+	# 		# reply_to=None,
+	# 		subject="Sales Order Submit Notifications",
+	# 		content=None,
+	# 		reference_doctype=None,
+	# 		reference_name=None,
+	# 		message = frappe.render_template("templates/email/sales_order_sunmit_notification.html", {"name":doc.name,"margin":doc.consolidated_margin_percentage,"customer":doc.customer}),
+	# 		message_id=None,
+	# 		unsubscribe_message=None,
+	# 		delayed=False,
+	# 		communication=None
+	# 	)
+	# except Exception,e:
+	# 	frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
 def quotation_submit_notification(doc,method=None):
-	if doc.employee:
-		email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
-		if email_id:
-			try:
-				frappe.sendmail(
-					recipients = email_id,
-					expose_recipients = "header",
-					sender = frappe.session.user,
-					reply_to = None,
-					subject = "Quotation Submit Notifications",
-					content = None,
-					reference_doctype = None,
-					reference_name = None,
-					message = frappe.render_template("templates/email/quotation_submit_notification.html", {"Name":doc.lead_owner_name,"name":doc.name,"margin":doc.consolidated_margin_percentage,"customer":doc.customer}),
-					message_id = None,
-					unsubscribe_message = None,
-					delayed = False,
-					communication = None
-				)
-			except Exception,e:
-				frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
-		else:
-			pass
+	pass
+	# if doc.employee:
+	# 	email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
+	# 	if email_id:
+	# 		try:
+	# 			frappe.sendmail(
+	# 				recipients = email_id,
+	# 				expose_recipients = "header",
+	# 				sender = frappe.session.user,
+	# 				reply_to = None,
+	# 				subject = "Quotation Submit Notifications",
+	# 				content = None,
+	# 				reference_doctype = None,
+	# 				reference_name = None,
+	# 				message = frappe.render_template("templates/email/quotation_submit_notification.html", {"Name":doc.lead_owner_name,"name":doc.name,"margin":doc.consolidated_margin_percentage,"customer":doc.customer}),
+	# 				message_id = None,
+	# 				unsubscribe_message = None,
+	# 				delayed = False,
+	# 				communication = None
+	# 			)
+	# 		except Exception,e:
+	# 			frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
+	# 	else:
+	# 		pass
 def SO_submit_notification_to_sales_person(name,recp,recp_name,customer):
 	try:
 		message = frappe.render_template("templates/email/SO_submit_notification_to_sales_person.html", {
@@ -251,14 +253,14 @@ def send_email_sales_person(doc,method=None):
 		# sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 		if doc.employee:
 			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
-			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
+			#SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
 
 #Quoat Submitted send email to Sales Person
 def send_email_sales_person_quot(doc,method=None):
 	if doc.doctype == "Quotation" and doc.status == "Submitted":
 		if doc.employee:
 			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
-			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
+			#SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
 
 def validate_si(doc, method):
 	page_break(doc)

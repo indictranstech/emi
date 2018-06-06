@@ -46,23 +46,24 @@ def validate(self,method=None):
 # def po_submit_notification ():
 def po_submit_notification (self,method=None):
 	if self.docstatus == 1:
-		try:
-			frappe.sendmail(
-			recipients=["rahul.saharia@emiuae.ae"],
-			#recipients=["onkar.m@indictranstech.com"],
-			expose_recipients="header",
-			# sender=frappe.session.user,
-			# reply_to=None,
-			subject="Purchase Order Submit Notifications",
-			content=None,
-			reference_doctype=None,
-			reference_name=None,
-			message = frappe.render_template("templates/email/purchase_order_submit_notification.html", {"name":self.name,"supplier":self.supplier}),
-			message_id=None,
-			unsubscribe_message=None,
-			delayed=False,
-			communication=None
-		)
+		pass
+		# try:
+		# 	frappe.sendmail(
+		# 	recipients=["rahul.saharia@emiuae.ae"],
+		# 	#recipients=["onkar.m@indictranstech.com"],
+		# 	expose_recipients="header",
+		# 	# sender=frappe.session.user,
+		# 	# reply_to=None,
+		# 	subject="Purchase Order Submit Notifications",
+		# 	content=None,
+		# 	reference_doctype=None,
+		# 	reference_name=None,
+		# 	message = frappe.render_template("templates/email/purchase_order_submit_notification.html", {"name":self.name,"supplier":self.supplier}),
+		# 	message_id=None,
+		# 	unsubscribe_message=None,
+		# 	delayed=False,
+		# 	communication=None
+		# )
 		
-		except Exception,e:
-			frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
+		# except Exception,e:
+		# 	frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
