@@ -31,7 +31,7 @@ def get_data(filters):
   								so_item.qty,so_item.delivered_qty,
   								format((so_item.qty - so_item.delivered_qty),3),
   								format(so_item.rate,3),format(so_item.base_net_rate,3),	
-  								format(so_item.amount,3),format(so_item.base_net_amount,3)  
+  								format(so_item.amount,3),format(((so_item.qty - so_item.delivered_qty)*so_item.rate),2)  
 								from
 									`tabSales Order` so,`tabSales Order Item` so_item
 								where
@@ -59,7 +59,7 @@ def get_data(filters):
   									so_item.qty,so_item.delivered_qty,
   									format((so_item.qty - so_item.delivered_qty),2),
   									so_item.rate,format((so_item.base_net_rate),2),	
-  									format((so_item.amount),2),format((so_item.base_net_amount),2)  
+  									format((so_item.amount),2),format(((so_item.qty - so_item.delivered_qty)*so_item.rate),2) 
 									from
 										`tabSales Order` so,`tabSales Order Item` so_item
 									where
@@ -88,12 +88,12 @@ def get_data(filters):
   								so_item.qty,so_item.delivered_qty,
   								format((so_item.qty - so_item.delivered_qty),2),
   								so_item.rate,format((so_item.base_net_rate),2),	
-  								format((so_item.amount),2),format((so_item.base_net_amount),2)  
+  								format((so_item.amount),2),format(((so_item.qty - so_item.delivered_qty)*so_item.rate),2)  
 								from
 									`tabSales Order` so,`tabSales Order Item` so_item
 								where
 									so.name = '{0}' and so_item.parent ='{1}' and (so.status ='Draft' or so.status = 'To Deliver and Bill')
-								order by so.name desc""".format(order['name'],order['name']),as_list=1)
+								order by so.name desc""".format(order['name'],order['name']),as_list=1,debug=1)
 			
 			project_row= get_project_row(order)
 			data.extend(project_row)
