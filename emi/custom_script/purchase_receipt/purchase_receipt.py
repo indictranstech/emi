@@ -11,7 +11,7 @@ def on_submit(self, method=None):
 		if store_managers_list:
 			for manager in store_managers_list:
 				name = frappe.db.get_value("User",{"name":manager},"first_name")
-				purchase_receipt_submit_notification(self.name,manager,name,self.items,self.posting_date,self.supplier)
+				#purchase_receipt_submit_notification(self.name,manager,name,self.items,self.posting_date,self.supplier)
 
 def purchase_receipt_submit_notification(name,recp,recpname,items,date,supplier):
 	date = frappe.utils.get_datetime(date).strftime("%d-%m-%Y")

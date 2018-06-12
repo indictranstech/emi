@@ -13,17 +13,14 @@ def validate_delivery_note(doc, method):
 			format(exist_invoice, doc.delivery_note))
 	
 def calulate_consolidated_margin(doc, method):
-	# Calculat consolidate_margin = sum of item_price_rate - sum of total_margin
-	# Calculate price_list_total,and margin percentage
-	#Page-break
 	
-	for row in doc.items:
-		if len(doc.items) > 8:
-			if float(row.idx) % 8 == 0:
-				row.page_break = 1
+			# if float(row.idx) % 10 == 0:
+			# 	row.page_break = 1
 
+	doc.consolidated_margin_percentage = 0.0	
 	consolidated_margin = 0
-	price_list_total = 0
+	price_list_total = 0	
+	discounted_amount = 0.0
 
 	for row in doc.items:
 		if not row.price_list_rate:
@@ -59,44 +56,68 @@ def calulate_consolidated_margin(doc, method):
 		# 	if current_rate < last_rate:
 		# 		less_margin_notification(doc.doctype,doc.name,row.margin_rate_or_amount,row.margin_type,row.discount_percentage)
 
-
 		if row.margin_rate_or_amount:
-			if row.margin_type == "Percentage":
+			if row.margin_type == "Percentage":		
 				margin_amt = ((row.price_list_rate * row.margin_rate_or_amount)/100) * row.qty
 				consolidated_margin += margin_amt
-				price_list_total += row.price_list_rate * row.qty
+				price_list_total += (row.price_list_rate * row.qty)
 			elif row.margin_type == "Amount":
 				consolidated_margin += (row.margin_rate_or_amount * row.qty)
-				price_list_total += row.price_list_rate * row.qty
+				price_list_total += (row.price_list_rate * row.qty)
+				
+		else:
+			if row.discount_percentage:
+				discounted_amount = discounted_amount + ((row.price_list_rate -row.rate)*row.qty)
+				price_list_total += (row.price_list_rate * row.qty)	
+			else:
+				price_list_total += (row.price_list_rate * row.qty)
+
+		#print "consolidated_margin",(consolidated_margin -discounted_amount)
+		# doc.consolidated_margin = (consolidated_margin -discounted_amount)
+		# doc.discounted_amount = discounted_amount
+		doc.price_list_total = price_list_total
+		doc.consolidated_margin = (doc.net_total - price_list_total)
+	if doc.consolidated_margin != 0:
+		doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(doc.price_list_total))
+	# if doc.apply_discount_on == "Net Total" and doc.additional_discount_percentage or doc.discount_amount:
+	# 	if doc.consolidated_margin != 0:
+	# 		doc.consolidated_margin = doc.consolidated_margin - doc.discount_amount
+	# 		doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
+	# if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
+	# 	sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 	
-	doc.consolidated_margin = consolidated_margin
-	if consolidated_margin != 0: 
-		doc.consolidated_margin_percentage = get_percenage(float(consolidated_margin),float(price_list_total))
-	
-	if doc.apply_discount_on == "Net Total" and doc.additional_discount_percentage and doc.discount_amount:
-		if doc.consolidated_margin != 0:
-			doc.consolidated_margin = doc.consolidated_margin - doc.discount_amount
-			doc.consolidated_margin_percentage = get_percenage(float(doc.consolidated_margin),float(price_list_total))
-		
-	if doc.doctype == "Sales Order" and doc.status == "To Deliver and Bill":
-		sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
-	
-	if doc.doctype == "Quotation" and doc.status == "Submitted":
+	# if doc.doctype == "Quotation" and doc.status == "Submitted":
 		# sales_executives= frappe.db.sql(" select parent from tabUserRole where  role = 'Emi Sales Executive' and parent <> 'Administrator'",as_list=True)
 		# if sales_executives:
 		# 	for executive in sales_executives[0]:
 		# 		name = frappe.db.get_value("User",{"name":executive},"first_name")
 		# 		quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,executive,name,doc.customer)	
-		if doc.employee:
-			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
-			quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,email_id,doc.lead_owner_name,doc.customer)
+		# if doc.employee:
+		# 	email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
+		# 	quotation_submit_notification(doc.name,doc.consolidated_margin_percentage,email_id,doc.lead_owner_name,doc.customer)
 
 	if doc.consolidated_margin:
 		if doc.discount_amount>doc.consolidated_margin:
-			frappe.throw(("Discount Amount Should Be Less Than Consolidated Margin"))
+			pass
+			# frappe.throw(("Discount Amount Should Be Less Than Consolidated Margin"))
+	#Page-break
+	# page_break_idx = 6
+	# for row in doc.items:
+	# 	if len(doc.items) > 5:
+	# 		if float(row.idx) == 6:
+	# 			row.page_break = 1
+	# 			page_break_idx = 6
+	# 			page_break_idx = page_break_idx + 10
+	# 		elif row.idx >= page_break_idx:
+	# 			print "page_break_idx",page_break_idx
+	# 			print "row",row.idx
+	# 			if float(row.idx) == page_break_idx:
+	# 				print "row"
+	# 				row.page_break = 1
+	# 				page_break_idx = page_break_idx + 10
+	page_break(doc)
 
-
-"""Get requested_for field when update_stock is 1"""
+"""Get requested_for == field when update_stock is 1"""
 def get_requested_for(self,method):
 	if self.voucher_type == "Stock Entry":
 		requested_for = frappe.db.get_value("Stock Entry",{"name":self.voucher_no},["requested_for"])
@@ -110,47 +131,53 @@ def add_margin_price(items,final_margin_type,final_margin_rate_or_amount):
 def get_percenage(value1,value2):
 	return (value1/value2*100)
 
-def sales_order_submit_notification(name,margin):
-	try:
-		frappe.sendmail(
-			recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
-			# recipients=["onkar.m@indictranstech.com","khushal.t@indictranstech.com"],
-			expose_recipients="header",
-			# sender=frappe.session.user,
-			# reply_to=None,
-			subject="Sales Order Submit Notifications",
-			content=None,
-			reference_doctype=None,
-			reference_name=None,
-			message = frappe.render_template("templates/email/sales_order_sunmit_notification.html", {"name":name,"margin":margin}),
-			message_id=None,
-			unsubscribe_message=None,
-			delayed=False,
-			communication=None
-		)
-	except Exception,e:
-		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
+def sales_order_submit_notification(doc,method=None):
+	pass
+	# try:
+	# 	frappe.sendmail(
+	# 		#recipients=["david.newman@emiuae.ae","rachitsaharia@emiuae.ae"],
+	# 		recipients=["prashant.j@indictranstech.com","sukrut.j@indictranstech.com"],
+	# 		expose_recipients="header",
+	# 		# sender=frappe.session.user,
+	# 		# reply_to=None,
+	# 		subject="Sales Order Submit Notifications",
+	# 		content=None,
+	# 		reference_doctype=None,
+	# 		reference_name=None,
+	# 		message = frappe.render_template("templates/email/sales_order_sunmit_notification.html", {"name":doc.name,"margin":doc.consolidated_margin_percentage,"customer":doc.customer}),
+	# 		message_id=None,
+	# 		unsubscribe_message=None,
+	# 		delayed=False,
+	# 		communication=None
+	# 	)
+	# except Exception,e:
+	# 	frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
-def quotation_submit_notification(name,margin,recp,recp_name,customer):
-	try:
-		frappe.sendmail(
-			recipients = recp,
-			expose_recipients = "header",
-			sender = frappe.session.user,
-			reply_to = None,
-			subject = "Quotation Submit Notifications",
-			content = None,
-			reference_doctype = None,
-			reference_name = None,
-			message = frappe.render_template("templates/email/quotation_submit_notification.html", {"Name":recp_name,"name":name,"margin":margin,"customer":customer}),
-			message_id = None,
-			unsubscribe_message = None,
-			delayed = False,
-			communication = None
-		)
-	except Exception,e:
-		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
-
+def quotation_submit_notification(doc,method=None):
+	pass
+	# if doc.employee:
+	# 	email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
+	# 	if email_id:
+	# 		try:
+	# 			frappe.sendmail(
+	# 				recipients = email_id,
+	# 				expose_recipients = "header",
+	# 				sender = frappe.session.user,
+	# 				reply_to = None,
+	# 				subject = "Quotation Submit Notifications",
+	# 				content = None,
+	# 				reference_doctype = None,
+	# 				reference_name = None,
+	# 				message = frappe.render_template("templates/email/quotation_submit_notification.html", {"Name":doc.lead_owner_name,"name":doc.name,"margin":doc.consolidated_margin_percentage,"customer":doc.customer}),
+	# 				message_id = None,
+	# 				unsubscribe_message = None,
+	# 				delayed = False,
+	# 				communication = None
+	# 			)
+	# 		except Exception,e:
+	# 			frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
+	# 	else:
+	# 		pass
 def SO_submit_notification_to_sales_person(name,recp,recp_name,customer):
 	try:
 		message = frappe.render_template("templates/email/SO_submit_notification_to_sales_person.html", {
@@ -226,17 +253,30 @@ def send_email_sales_person(doc,method=None):
 		# sales_order_submit_notification(doc.name,doc.consolidated_margin_percentage)
 		if doc.employee:
 			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
-			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
+			#SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
 
 #Quoat Submitted send email to Sales Person
 def send_email_sales_person_quot(doc,method=None):
 	if doc.doctype == "Quotation" and doc.status == "Submitted":
 		if doc.employee:
 			email_id=frappe.db.get_value("Employee",{"name":doc.employee},"user_id")
-			SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
+			#SO_submit_notification_to_sales_person(doc.name,email_id,doc.lead_owner_name,doc.customer)
 
 def validate_si(doc, method):
+	page_break(doc)
+
+
+def page_break(doc):
+	page_break_idx = 8
 	for row in doc.items:
-		if len(doc.items) > 8:
-			if float(row.idx) % 8 == 0:
+		if len(doc.items)>7:
+			if row.idx == 8:
 				row.page_break = 1
+				page_break_idx = 8
+				page_break_idx += 15
+			elif row.idx >= page_break_idx:
+				if row.idx == page_break_idx:
+					row.page_break = 1
+					page_break_idx += 15
+
+	

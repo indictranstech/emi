@@ -13,30 +13,30 @@ def on_submit(self, method=None):
 			if store_managers_list:
 				for manager in store_managers_list:
 					name = frappe.db.get_value("User",{"name":manager},"first_name")
-					stock_entry_submit_notification(self.name,manager,name,self.purpose,self.items)
+					#stock_entry_submit_notification(self.name,manager,name,self.purpose,self.items)
 	
 
 def stock_entry_submit_notification(name,recp,recpname,purpose,items):
 	date = frappe.utils.get_datetime(nowdate()).strftime("%d-%m-%Y")
-	try:
-		frappe.sendmail(
-			#recipients=[recp,"onkar.m@indictranstech.com","sangram.p@indictranstech.com"],
-			recipients=[recp,"sankar@emiuae.ae","emistores@emiuae.ae","harish@emiuae.ae"],
-			expose_recipients="header",
-			sender=frappe.session.user,
-			reply_to=None,
-			subject= purpose+" Notification for "+ name,
-			content=None,
-			reference_doctype=None,
-			reference_name=None,
-			message = frappe.render_template("templates/email/stock_entry_notification.html", {"Name":recpname,"purpose":purpose,"items":items,"date":date}),
-			message_id=None,
-			unsubscribe_message=None,
-			delayed=False,
-			communication=None
-		)
-	except Exception,e:
-		frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
+	# try:
+	# 	frappe.sendmail(
+	# 		recipients=[recp,"onkar.m@indictranstech.com","prashant.j@indictranstech.com"],
+	# 		#recipients=[recp,"sankar@emiuae.ae","emistores@emiuae.ae","harish@emiuae.ae"],
+	# 		expose_recipients="header",
+	# 		sender=frappe.session.user,
+	# 		reply_to=None,
+	# 		subject= purpose+" Notification for "+ name,
+	# 		content=None,
+	# 		reference_doctype=None,
+	# 		reference_name=None,
+	# 		message = frappe.render_template("templates/email/stock_entry_notification.html", {"Name":recpname,"purpose":purpose,"items":items,"date":date}),
+	# 		message_id=None,
+	# 		unsubscribe_message=None,
+	# 		delayed=False,
+	# 		communication=None
+	# 	)
+	# except Exception,e:
+	# 	frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
 
 @frappe.whitelist()

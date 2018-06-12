@@ -31,7 +31,8 @@ frappe.ui.form.on('Sales Order Item',{
 		d.margin_type = cur_frm.doc.final_margin_type;
 		d.margin_rate_or_amount = cur_frm.doc.final_margin_rate_or_amount;
 		refresh_field("items");
-	}
+	},
+
 	// qty: function(frm, cdt, cdn) {
 	// 	$.each(cur_frm.doc.items, function(idx, val) {
 	// 		frappe.model.set_value(val.doctype, val.name, "margin_type",cur_frm.doc.final_margin_type);
@@ -51,8 +52,25 @@ frappe.ui.form.on('Sales Order Item',{
 
 	// }
 
-});	
+});
+
+frappe.ui.form.on('Sales Taxes and Charges',{
 	
+	charge_type: function(frm,cdt,cdn){
+		
+		var d  = locals[cdt][cdn];
+		if (d.charge_type == "On Previous Row Total"){
+			d.row_id = (d.idx -1) ;
+			refresh_field("taxes");
+		}
+		else if(d.charge_type == "On Previous Row Amount"){
+			d.row_id = (d.idx -1) ;
+			refresh_field("taxes");
+
+		}
+	}
+});	
+
 cur_frm.fields_dict['employee'].get_query = function(doc,cdt,cdn) {
 	return{
 			query: "emi.custom_script.sales_order.sales_order.get_sales_person",
@@ -82,4 +100,11 @@ frappe.ui.form.on('Sales Order', {
 			frm.set_value("employee","")
 		}
 	},
+	refresh:function(frm){
+		if(frm.doc.consolidated_margin == 0.0){
+			cur_frm.set_value("consolidated_margin_percentage", 0.0)
+			refresh_field("consolidated_margin_percentage")
+		}
+
+	}
 })

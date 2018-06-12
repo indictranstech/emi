@@ -14,4 +14,4 @@ def notify_to_qty_manager(doc, method=None):
 		message = frappe.get_template("templates/email/po_submit_notification.html").render({
 			"name":doc.name
 		})
-		frappe.sendmail(recipients=qty_manager,subject=subject,message=message)
+		#frappe.sendmail(recipients=qty_manager,subject=subject,message=message)

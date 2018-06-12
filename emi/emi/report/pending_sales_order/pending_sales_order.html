@@ -21,6 +21,12 @@
 			<h2 class="text-center">Pending Sales Order</h2>	
  		</div>
 	</div>
+	<div class="col-xs-12">
+		<h5 class="text-right">Date
+              {%= data[1][__("Date")]%}
+        </h5>  
+    </div>
+	
 </div>
 <div >
 	<table cellpadding="0" cellspacing="0" border ="1">
@@ -28,6 +34,7 @@
 			<th>Sr</th>
 			<th>Sales Order <br> Party <br> Customer PO NO </th>
 			<th>Item Name <br> Description</th>
+			<th>UOM</th>
 			<th>Ordered Qty</th>
 			<th>Delivered Qty</th>
 			<th>Balanced Qty</th>
@@ -42,8 +49,9 @@
 				 {%= data[i][__("Customer PO NO")]%}  
 			</td>
 			<td> <b>{%= data[i][__("Item Name")]%}</b><br>
-			    {%= data[i][__("Description")]%}
+			    {%= data[i][__("Description")]%}<br>
 			</td>
+			<td>{%= data[i][__("UOM")]%}</td>
 			<td>{%= data[i][__("Qty")]%}</td>
 			<td>{%= data[i][__("Delivered Qty")]%}</td>
 			<td>{%= data[i][__("Pending Qty")]%}</td>

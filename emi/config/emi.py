@@ -265,6 +265,18 @@ def get_data():
 			"doctype": "GL Entry",
 			"is_query_report": True
 		},
+		{
+			"type": "report",
+			"name": "Accounts Receivable For PDC",
+			"doctype": "Sales Invoice",
+			"is_query_report": True
+		},
+		{
+			"type": "report",
+			"name": "EMI-VAT Report",
+			"doctype": "GL Entry",
+			"is_query_report": True
+		},
 		]
 	}
 	]

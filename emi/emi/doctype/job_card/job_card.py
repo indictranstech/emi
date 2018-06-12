@@ -69,7 +69,11 @@ class JobCard(Document):
 		for prod_order, manuf_qty in galvanize_dict.iteritems():
 			if isinstance(prod_order, unicode) and manuf_qty:
 				black_qty = galvanize_dict.get(tuple([prod_order, "black_qty"]), 0)
-				self.init_stock_entry_for_pre_galvanize(prod_order, manuf_qty, black_qty, abbr)
+				non_black_qty = galvanize_dict.get(tuple([prod_order, "non_black_qty"]), 0)
+				if black_qty:
+					self.init_stock_entry_for_pre_galvanize(prod_order, manuf_qty, black_qty,non_black_qty, abbr)
+				else:
+					self.init_stock_entry_for_pre_galvanize(prod_order, manuf_qty, black_qty ,non_black_qty, abbr)
 		
 		# Initaie Final Inspection (material Transfer to Stores) process.		
 		for prod_order, qty in final_insp_dict.iteritems():
@@ -97,19 +101,25 @@ class JobCard(Document):
 		return galvanize_dict, final_insp_dict
 
 
-	def init_stock_entry_for_pre_galvanize(self, prod_order, manuf_qty, black_qty, abbr):
+	def init_stock_entry_for_pre_galvanize(self, prod_order, manuf_qty, black_qty,non_black_qty, abbr):
 		"""Make Manufacture stock entry according to qty & 
 			make material transfer entry if black material exists"""
 	
 		po_doc = make_stock_entry(prod_order, "Manufacture", manuf_qty, via_job_card=True)
 		black_warehouse = "Factory Store Black - " + abbr
+		factory_warehouse = "Factory Store - " + abbr
 		if black_qty:
 			self.make_stock_entry(po_doc, black_warehouse, black_qty)
+		else:
+			self.make_stock_entry(po_doc, factory_warehouse,non_black_qty)
+
+
 	
 
 	def init_stock_entry_for_final_inspection(self, po, frm_warehouse, qty, abbr):
 		"Final inspection stock entry (Material Transfer)"
 		po_doc = frappe.get_doc("Production Order", po)
+
 
 		self.make_stock_entry(po_doc, "Stores - " + abbr, qty, frm_warehouse)
 		insp_qty = po_doc.inspected_qty + qty
