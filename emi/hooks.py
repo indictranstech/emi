@@ -113,7 +113,7 @@ doc_events = {
         "on_submit": "emi.custom_script.purchase_invoice.purchase_invoice.PI_submit_notification"
     },
     "Production Order": {
-        "on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
+       "on_submit": "emi.custom_script.production_order.production_order.notify_to_qty_manager",
     },
     "Quality Inspection": {
         "on_submit": "emi.custom_script.quality_inspection.quality_inspection.notify_to_qc_manager",
