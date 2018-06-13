@@ -154,7 +154,6 @@ class ReceivablePayableReport(object):
 						po_no = voucher_details.get(gle.voucher_no,{}).get("po_no","")
 						row.append(po_no)
 
-					print("3",row)
 					data.append(row)
 		return data
 

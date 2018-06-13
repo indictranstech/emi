@@ -36,7 +36,7 @@ def get_data(filters):
 									`tabSales Order` so,`tabSales Order Item` so_item
 								where
 									so.name = '{0}' and so_item.parent ='{1}' and (so.status ='Draft' or so.status = 'To Deliver and Bill')
-								order by so.name desc""".format(filters.name,filters.name,int(precision)),as_list=1,debug=1)
+								order by so.name desc""".format(filters.name,filters.name,int(precision)),as_list=1)
 	 		project_row= get_project_row(filters)
 			data.extend(project_row)
 			data.extend(data1)
@@ -49,9 +49,8 @@ def get_data(filters):
 			project_row = [['Remark', '', '', '','', '', '', '','', '', '', '', '','','','','', '','','']]
 			total_row = [['Sub Total', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
 			last_row = [['', '', '', '','', '', '', '',0.0, '', '', '', '',0.0,0.0,0.0,0.0, 0.0,0.0,0.0]]
-			sales_orders = frappe.db.sql("select so.name,so.customer from `tabSales Order` so where so.customer = '{0}' and (so.status = 'Draft' or so.status = 'To Deliver and Bill') """.format(filters.customer),as_dict=1,debug=1)
+			sales_orders = frappe.db.sql("select so.name,so.customer from `tabSales Order` so where so.customer = '{0}' and (so.status = 'Draft' or so.status = 'To Deliver and Bill') """.format(filters.customer),as_dict=1)
 			for order in sales_orders:
-				print "Order",order,type(order)
 				data1 = []
 				data1 = frappe.db.sql("""select so.name,so.customer,so.company,so.transaction_date,so.delivery_date,so.contact_person,so.customer_address,
 	 								so.po_no,so.grand_total,so_item.item_name,so_item.item_group,
@@ -64,7 +63,7 @@ def get_data(filters):
 										`tabSales Order` so,`tabSales Order Item` so_item
 									where
 										so.name = '{0}' and so_item.parent ='{1}' and (so.status ='Draft' or so.status = 'To Deliver and Bill')
-									order by so.name desc""".format(order['name'],order['name']),as_list=1,debug=1)
+									order by so.name desc""".format(order['name'],order['name']),as_list=1)
 				project_row= get_project_row(order)
 				data.extend(project_row)
 				data.extend(data1)
@@ -93,7 +92,7 @@ def get_data(filters):
 									`tabSales Order` so,`tabSales Order Item` so_item
 								where
 									so.name = '{0}' and so_item.parent ='{1}' and (so.status ='Draft' or so.status = 'To Deliver and Bill')
-								order by so.name desc""".format(order['name'],order['name']),as_list=1,debug=1)
+								order by so.name desc""".format(order['name'],order['name']),as_list=1)
 			
 			project_row= get_project_row(order)
 			data.extend(project_row)

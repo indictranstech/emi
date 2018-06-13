@@ -43,7 +43,7 @@ def get_data(filters):
 				raw_rsrd_qty = product_rsrd_qty[0][0] * float(row.qty);
 				data1 =[[filters.item_code,product_rsrd_qty,row.item_code,row.stock_uom,row.qty,0.0, 0.0,0.0,raw_rsrd_qty,0.0]]
 				qty_data = frappe.db.sql(""" select bn.warehouse,bn.item_code,bn.actual_qty,bn.ordered_qty,bn.planned_qty,
-											 bn.reserved_qty,bn.projected_qty from tabBin bn where bn.item_code ='{0}'""".format(row.item_code),as_list=1,debug=1)
+											 bn.reserved_qty,bn.projected_qty from tabBin bn where bn.item_code ='{0}'""".format(row.item_code),as_list=1)
 				for qty in qty_data:
 					data1[0][5]=float(data1[0][5])+float(qty[2])   #actual_qty '''
 					data1[0][6]=float(data1[0][6])+float(qty[3])   # ordered_qty"
@@ -77,7 +77,7 @@ def get_data(filters):
 						data1=[]
 						data1 =[[product['item_code'],product_rsrd_qty,row.item_code,row.stock_uom,row.qty,0.0, 0.0,0.0,raw_rsrd_qty,0.0]]
 						qty_data = frappe.db.sql(""" select bn.warehouse,bn.item_code,bn.actual_qty,bn.ordered_qty,bn.planned_qty,
-											 bn.reserved_qty,bn.projected_qty from tabBin bn where bn.item_code ='{0}'""".format(row.item_code),as_list=1,debug=1)
+											 bn.reserved_qty,bn.projected_qty from tabBin bn where bn.item_code ='{0}'""".format(row.item_code),as_list=1)
 						if qty_data:
 							for qty in qty_data:
 								data1[0][5]=float(data1[0][5]+qty[2])   #actual_qty '''

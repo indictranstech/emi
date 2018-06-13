@@ -165,7 +165,7 @@ class JobCard(Document):
 @frappe.whitelist()
 def get_info_production(doctype, txt, searchfield, start, page_len, filters):
 	#Production Order Process Filter in Job Card
-	return frappe.db.sql("""select name from `tabProduction Order` where status='In Process'""",as_list=1,debug=1)
+	return frappe.db.sql("""select name from `tabProduction Order` where status='In Process'""",as_list=1)
 
 """
 get_query for Pending Sales order report
@@ -222,7 +222,7 @@ def get_shortage_product_for_raw_material():
 					data1=[]
 					data1 =[[product['item_code'],product_rsrd_qty,row.item_code,row.qty,0.0, 0.0,0.0,raw_rsrd_qty,0.0]]
 					qty_data = frappe.db.sql(""" select bn.warehouse,bn.item_code,bn.actual_qty,bn.ordered_qty,bn.planned_qty,
-										 bn.reserved_qty,bn.projected_qty from tabBin bn where bn.item_code ='{0}'""".format(row.item_code),as_list=1,debug=1)
+										 bn.reserved_qty,bn.projected_qty from tabBin bn where bn.item_code ='{0}'""".format(row.item_code),as_list=1)
 					for qty in qty_data:
 						data1[0][4]=float(data1[0][4])+float(qty[2])   #actual_qty '''
 						data1[0][5]=float(data1[0][5])+float(qty[3])   # ordered_qty"

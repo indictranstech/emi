@@ -18,15 +18,12 @@ def execute(filters=None):
 	account_details = {}
 	for acc in frappe.db.sql("""select name, is_group from tabAccount where parent_account = 'Duties and Taxes - E'""", as_dict=1):
 		account_details.setdefault(acc.name, acc)
-	print "___________1 Accounts_____",account_details
 	validate_filters(filters, account_details)
 
 	validate_party(filters)
 
 	filters = set_account_currency(filters)
-	print "\n\n_____________2_________",filters
 	columns = get_columns(filters)
-	print "\n_____________3_columns________________",columns
 	res = get_result(filters, account_details)
 	# print"++++++++++++++++++",res
 	'''
@@ -136,7 +133,6 @@ def get_result(filters, account_details):
 def get_gl_entries(filters,account_details):
 
 	if filters.get('account'):
-		print "\n\n*****I have account"
 		select_fields = """, sum(debit_in_account_currency) as debit_in_account_currency,
 		sum(credit_in_account_currency) as credit_in_account_currency""" \
 		if filters.get("show_in_account_currency") else ""
@@ -156,10 +152,9 @@ def get_gl_entries(filters,account_details):
 			{group_by_condition}
 			order by posting_date, account"""\
 			.format(select_fields=select_fields, conditions=get_conditions(filters),
-				group_by_condition=group_by_condition), filters, as_dict=1, debug=1)
+				group_by_condition=group_by_condition), filters, as_dict=1)
 		return gl_entries
 	else:
-		print "\n\n*****I dont have account"
 		company = from_date =''
 		accounts = []
 		for key in filters:
@@ -167,15 +162,12 @@ def get_gl_entries(filters,account_details):
 				company =filters.get(key)
 			if key == 'from_date':
 				from_date = filters.get(key)
-		print "_____",company,from_date
 		# if account_details:		
 		# 	for row in dict(account_details):
 		# 		accounts.append(str(row))
 		account = ('RCM VAT - E','Output VAT  - E','Input Vat - E','VAT 5% - E')
 		accounts = tuple( acc.encode('UTF8') for acc in account if acc)
-		print "accounts",accounts
 		conditions = "and posting_date >= {0} and account in {1}".format(from_date,accounts)
-		print "conditions",conditions
 		
 		select_fields = """, sum(debit_in_account_currency) as debit_in_account_currency,
 		sum(credit_in_account_currency) as credit_in_account_currency""" \
@@ -196,8 +188,7 @@ def get_gl_entries(filters,account_details):
 			{group_by_condition}
 			order by posting_date, account"""\
 			.format(select_fields=select_fields,company=company,conditions=str(conditions),
-				group_by_condition=group_by_condition), as_dict=1, debug=1)
-		print "gl_entries",gl_entries
+				group_by_condition=group_by_condition), as_dict=1)
 		return gl_entries
 
 def get_conditions(filters):
@@ -375,7 +366,6 @@ def get_vat_data(filters=None):
 	for acc in frappe.db.sql("""select name, is_group from tabAccount""", as_dict=1):
 		account_details.setdefault(acc.name, acc)
 	'''Input VAT'''
-	print "_______________________________NOT USED_____________________________________________________________"
 	filters['account'] ='Input Vat - E'
 	validate_filters(filters, account_details)
 	validate_party(filters)
