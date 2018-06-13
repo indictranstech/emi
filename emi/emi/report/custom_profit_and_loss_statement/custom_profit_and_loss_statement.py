@@ -40,7 +40,6 @@ def execute(filters=None):
 	columns = get_columns(filters.periodicity, period_list, filters.accumulated_values, filters.company)
 	
 	chart = get_chart_data(filters, columns, income, expense, net_profit_loss)
-	print "data",data
 	return columns, data, None, chart
 
 def get_net_profit_loss(income, expense, period_list, company):

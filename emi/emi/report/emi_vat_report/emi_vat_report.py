@@ -156,7 +156,7 @@ def get_gl_entries(filters):
 		{group_by_condition}
 		order by posting_date, account"""\
 		.format(select_fields=select_fields, conditions=get_conditions(filters),
-			group_by_condition=group_by_condition), filters, as_dict=1, debug=1)
+			group_by_condition=group_by_condition), filters, as_dict=1)
 
 	return gl_entries
 

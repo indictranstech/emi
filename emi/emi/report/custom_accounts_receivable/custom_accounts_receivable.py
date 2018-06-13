@@ -19,7 +19,6 @@ class ReceivablePayableReport(object):
 		columns = self.get_columns(party_naming_by, args)
 		data = self.get_data(party_naming_by, args)
 		chart = self.get_chart_data(columns, data)
-		print "_______________\n\n\n",data
 		return columns, data, None, chart
 
 
@@ -396,7 +395,6 @@ def get_pdc_details(party_type):
 			group by pref.reference_name""", party_type, as_dict=1):
 			pdc_details.setdefault(pdc.invoice_no, pdc)
 
-	print"\n\n\n\pdc_details\n\n",pdc_details
 
 	return pdc_details
 
