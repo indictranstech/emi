@@ -9,26 +9,35 @@ from frappe.utils import money_in_words
 
 @frappe.whitelist()
 def validate(doc,method=None):
-	discount_amount = delivery_charge = 0.0
+	discount_amount = delivery_charge = other_amount =0.0
 	
 	if doc.shipping_rule:
 		shipping_rule_doc = frappe.get_doc("Shipping Rule",doc.shipping_rule)
 	''' Get Shipping Charges,VAT '''
 	
 	for tax in doc.taxes:
-		if doc.shipping_rule:
-			shipping_rule_doc = frappe.get_doc("Shipping Rule",doc.shipping_rule)
-			if tax.account_head == shipping_rule_doc.account:
-				doc.delivery_charge = tax.tax_amount
+		# if doc.shipping_rule:
+		# 	shipping_rule_doc = frappe.get_doc("Shipping Rule",doc.shipping_rule)
+		# 	if tax.account_head == shipping_rule_doc.account:
+		# 		doc.delivery_charge = tax.tax_amount
+		# 		tax.print_flag = 0
 
 		if tax.account_head == "Output VAT  - E":
 			doc.printformat_vat_tax = tax.tax_amount
+			tax.print_flag = 0
 
 		if doc.discount_amount:
 			discount_amount = doc.discount_amount
 
+	for tax in doc.taxes:
+		if tax.print_flag ==1:
+			other_amount = other_amount + tax.tax_amount
+	doc.printformat_other_total = other_amount
+	doc.printformat_net_total = (doc.total - doc.discount_amount) + flt(doc.printformat_other_total)
 
-	doc.printformat_net_total = (doc.total - doc.discount_amount) + flt(doc.delivery_charge)
+
+
+	
 
 def SI_submit_notification(doc,method=None):
 	if doc.docstatus == 1:
@@ -55,7 +64,8 @@ def SI_submit_notification(doc,method=None):
 		# 	frappe.throw(("Mail has not been Sent. Kindly Contact to Administrator"))
 
 
-	
+
+
 	
 
 
