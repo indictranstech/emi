@@ -278,7 +278,7 @@ def page_break(doc):
 				if row.idx == page_break_idx:
 					row.page_break = 1
 					page_break_idx += 15
-
+@frappe.whitelist()
 def get_sales_invoices():
 	#sales_incoice = frappe.get_all("Sales Invoice",filters = [['status', '!=', 'Cancelled']])
 	sales_incoice = frappe.db.sql(""" select name from `tabSales Invoice` where status != 'Cancelled' and name not in('SINV-00254','SINV-00296-1')""",as_dict=True)
