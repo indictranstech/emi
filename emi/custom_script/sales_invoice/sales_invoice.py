@@ -14,7 +14,7 @@ def validate(doc,method=None):
 	if doc.shipping_rule:
 		shipping_rule_doc = frappe.get_doc("Shipping Rule",doc.shipping_rule)
 	''' Get Shipping Charges,VAT '''
-	
+	doc.printformat_vat_tax = None
 	for tax in doc.taxes:
 		# if doc.shipping_rule:
 		# 	shipping_rule_doc = frappe.get_doc("Shipping Rule",doc.shipping_rule)
@@ -74,7 +74,7 @@ def get_sales_invoices():
 			if doc.shipping_rule:
 				shipping_rule_doc = frappe.get_doc("Shipping Rule",doc.shipping_rule)
 			''' Get Shipping Charges,VAT '''
-			
+			doc.printformat_vat_tax = None
 			for tax in doc.taxes:
 				# if doc.shipping_rule:
 				# 	shipping_rule_doc = frappe.get_doc("Shipping Rule",doc.shipping_rule)
